@@ -1,0 +1,85 @@
+/* style.css (CORREGIDO Y MEJORADO) */
+
+body {
+    background-color: #f8f9fa;
+}
+.tamañoletra {
+  margin: 0;
+  padding: 0;
+  font-size: 0.6rem;
+}
+.product-card {
+    /* ---- FIX 1: AÑADIDO ---- */
+    /* Esto es CLAVE. Le dice a los elementos hijos (como el badge) 
+       que se posicionen en relación a esta tarjeta. */
+    position: relative; 
+    
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 15px;
+    
+    /* Para que el botón no se salga de la tarjeta al animarse */
+    overflow: hidden; 
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* El badge ahora funcionará correctamente gracias al position: relative de arriba */
+.product-card .badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.8rem;
+    z-index: 10; /* Nos aseguramos que esté por encima de la imagen */
+}
+
+.product-card .old-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.product-card .new-price {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.sidebar-filter a {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.sidebar-filter a:hover, .sidebar-filter a.active {
+    color: #0d6efd !important;
+    font-weight: 500;
+}
+
+
+/* ---- FIX 2: ESTILOS MEJORADOS PARA EL BOTÓN ---- */
+
+/* Estado inicial del botón: Oculto y ligeramente abajo */
+.product-card .btn {
+    opacity: 0; /* Totalmente transparente */
+    transform: translateY(20px); /* Movido 20px hacia abajo */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Cuando pasas el mouse sobre la TARJETA... */
+.product-card:hover .btn {
+    opacity: 1; /* Se vuelve visible */
+    transform: translateY(0); /* Vuelve a su posición original */
+}/* Añade esto a tu style3.css */
+.product-link {
+  text-decoration: none;
+  color: inherit; /* Hereda el color del texto normal */
+}
+
+.product-link:hover .card {
+  /* Mantenemos el efecto hover que ya tenías */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
