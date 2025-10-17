@@ -1,0 +1,410 @@
+/* ==========================================
+   ESTILOS PÁGINA DE SESIÓN
+   ========================================== */
+
+/* Contenedor principal */
+.contenedor-principal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 85vh;
+  padding: 60px 40px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+}
+
+/* ==========================================
+   IMÁGENES LATERALES
+   ========================================== */
+.imagen-lateral {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s ease;
+}
+
+.imagen-lateral:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+}
+
+.imagen-lateral img {
+  max-width: 450px;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+  transition: transform 0.4s ease;
+}
+
+.imagen-lateral:hover img {
+  transform: scale(1.05);
+}
+
+/* Efecto overlay en hover */
+.imagen-lateral::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 20px;
+}
+
+.imagen-lateral:hover::after {
+  opacity: 1;
+}
+
+/* ==========================================
+   FORMULARIO
+   ========================================== */
+.formulario {
+  width: 100%;
+  max-width: 450px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 25px;
+  padding: 40px;
+  flex-shrink: 0;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+/* Efecto de fondo decorativo */
+.formulario::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+  transform: rotate(-15deg);
+  z-index: 0;
+}
+
+.formulario * {
+  position: relative;
+  z-index: 1;
+}
+
+.formulario h1 {
+  text-align: center;
+  padding-bottom: 25px;
+  margin-bottom: 30px;
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, #667eea, #764ba2);
+  border-image-slice: 1;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.formulario form {
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   INPUTS DEL FORMULARIO
+   ========================================== */
+form .username {
+  position: relative;
+  border-bottom: 3px solid #e2e8f0;
+  margin: 35px 0;
+  transition: all 0.3s ease;
+}
+
+form .username:focus-within {
+  border-bottom-color: #667eea;
+}
+
+.username input {
+  width: 100%;
+  padding: 12px 5px;
+  height: 50px;
+  font-size: 16px;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #2d3748;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.username input:focus {
+  padding-left: 10px;
+}
+
+.username label {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  color: #a0aec0;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  letter-spacing: 0.5px;
+}
+
+.username input:focus ~ label,
+.username input:valid ~ label {
+  top: -8px;
+  left: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #667eea;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Efecto de línea animada */
+.username::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.4s ease;
+}
+
+.username:focus-within::after {
+  width: 100%;
+}
+
+/* ==========================================
+   CHECKBOX Y ENLACES
+   ========================================== */
+.recordar {
+  margin: 0 0 25px 5px;
+  color: #667eea;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.recordar:hover {
+  color: #764ba2;
+  text-decoration: underline;
+  transform: translateX(3px);
+}
+
+/* ==========================================
+   BOTÓN DE SUBMIT
+   ========================================== */
+input[type="submit"] {
+  width: 100%;
+  height: 55px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de onda en el botón */
+input[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+input[type="submit"]:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+input[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+input[type="submit"]:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* ==========================================
+   SECCIÓN DE REGISTRO
+   ========================================== */
+.registrarse {
+  margin: 35px 0 0 0;
+  text-align: center;
+  font-size: 16px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.registrarse a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.registrarse a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s ease;
+}
+
+.registrarse a:hover {
+  color: #764ba2;
+}
+
+.registrarse a:hover::after {
+  width: 100%;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+/* Para pantallas medianas antes de ocultar imágenes */
+@media (max-width: 1200px) {
+  .contenedor-principal {
+    gap: 40px;
+    padding: 40px 30px;
+  }
+  
+  .imagen-lateral img {
+    max-width: 300px;
+  }
+  
+  .formulario {
+    max-width: 400px;
+    padding: 35px;
+  }
+}
+
+/* Para tablets - ocultamos las imágenes laterales */
+@media (max-width: 820px) {
+  .imagen-lateral {
+    display: none;
+  }
+  
+  .contenedor-principal {
+    gap: 0;
+    padding: 30px 20px;
+    justify-content: center;
+  }
+  
+  .formulario {
+    margin: 0 15px;
+    max-width: 500px;
+  }
+  
+  .formulario h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Para móviles */
+@media (max-width: 480px) {
+  .contenedor-principal {
+    padding: 20px 15px;
+    min-height: 70vh;
+  }
+  
+  .formulario {
+    max-width: 95%;
+    padding: 30px 25px;
+  }
+  
+  .formulario h1 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+  }
+  
+  .username {
+    margin: 30px 0;
+  }
+  
+  .username input {
+    height: 45px;
+    font-size: 15px;
+  }
+  
+  .username label {
+    font-size: 15px;
+  }
+  
+  input[type="submit"] {
+    height: 50px;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  
+  .registrarse {
+    font-size: 15px;
+    margin-top: 30px;
+  }
+}
+
+/* Para móviles muy pequeños */
+@media (max-width: 320px) {
+  .formulario {
+    padding: 25px 20px;
+  }
+  
+  .formulario h1 {
+    font-size: 1.3rem;
+  }
+  
+  .username input {
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  input[type="submit"] {
+    height: 45px;
+    font-size: 15px;
+  }
+}

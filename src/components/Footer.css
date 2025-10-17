@@ -1,0 +1,167 @@
+/* ==========================================
+   FOOTER STYLES
+   ========================================== */
+
+.footer {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  color: #fff;
+  padding: 50px 0 20px;
+  margin-top: auto;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.footer h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.footer h5::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+.footer p {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+/* Enlaces del footer */
+.footer .list-unstyled li {
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.footer .list-unstyled li:hover {
+  transform: translateX(5px);
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.footer a::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+.footer a:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.footer a:hover::before {
+  width: 100%;
+}
+
+/* Iconos sociales */
+.footer .bi {
+  transition: all 0.3s ease;
+  filter: brightness(0.8);
+}
+
+.footer a:hover .bi {
+  filter: brightness(1.2);
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* Colores específicos para cada red social */
+.footer a:hover .bi-instagram {
+  color: #E1306C;
+}
+
+.footer a:hover .bi-github {
+  color: #6e5494;
+}
+
+.footer a:hover .bi-facebook {
+  color: #1877F2;
+}
+
+.footer a:hover .bi-twitter {
+  color: #1DA1F2;
+}
+
+/* Borde superior del copyright */
+.footer .border-top {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  margin-top: 30px;
+  padding-top: 20px;
+}
+
+.footer .text-center p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 20px;
+  }
+
+  .footer .col-md-4 {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .footer h5 {
+    font-size: 1.1rem;
+  }
+
+  .footer h5::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer .list-unstyled li {
+    margin-bottom: 10px;
+  }
+
+  .footer .list-unstyled li:hover {
+    transform: translateX(0);
+  }
+
+  /* Iconos sociales centrados en móvil */
+  .footer .bi {
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer h5 {
+    font-size: 1rem;
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+  }
+
+  .footer .bi {
+    font-size: 1.5rem !important;
+  }
+}

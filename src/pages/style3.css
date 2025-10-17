@@ -1,85 +1,478 @@
-/* style.css (CORREGIDO Y MEJORADO) */
+/* ==========================================
+   ESTILOS PARA PÁGINAS DE PRODUCTOS
+   ========================================== */
 
+/* Estilos generales */
 body {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
 .tamañoletra {
   margin: 0;
   padding: 0;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
+
+/* ==========================================
+   SIDEBAR DE FILTROS
+   ========================================== */
+.sidebar-filter {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.sidebar-filter:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.sidebar-filter h4,
+.sidebar-filter h5 {
+  color: #2d3748;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}
+
+.sidebar-filter ul {
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-filter li {
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #4a5568;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-filter li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-filter li:hover {
+  background-color: #f7fafc;
+  color: #667eea;
+  padding-left: 20px;
+}
+
+.sidebar-filter li:hover::before,
+.sidebar-filter li.fw-bold::before {
+  transform: scaleY(1);
+}
+
+.sidebar-filter li.fw-bold {
+  background-color: #edf2f7;
+  color: #667eea;
+  font-weight: 700;
+  padding-left: 20px;
+}
+
+/* Slider de precio */
+.form-range {
+  height: 6px;
+  background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-range::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  background: #667eea;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #667eea;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-range::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+#priceValue {
+  color: #667eea;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ==========================================
+   BARRA DE BÚSQUEDA Y ORDENAMIENTO
+   ========================================== */
+.input-group {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.input-group-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: #fff;
+  padding: 12px 20px;
+}
+
+.input-group .form-control {
+  border: 2px solid #e2e8f0;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.input-group .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.form-select {
+  border: 2px solid #e2e8f0;
+  border-radius: 25px;
+  padding: 12px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.form-select:hover {
+  border-color: #667eea;
+}
+
+/* ==========================================
+   TARJETAS DE PRODUCTOS
+   ========================================== */
 .product-card {
-    /* ---- FIX 1: AÑADIDO ---- */
-    /* Esto es CLAVE. Le dice a los elementos hijos (como el badge) 
-       que se posicionen en relación a esta tarjeta. */
-    position: relative; 
-    
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    border: none;
-    border-radius: 15px;
-    
-    /* Para que el botón no se salga de la tarjeta al animarse */
-    overflow: hidden; 
+  position: relative;
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  height: 100%;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* El badge ahora funcionará correctamente gracias al position: relative de arriba */
+/* Badge de oferta */
 .product-card .badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 0.8rem;
-    z-index: 10; /* Nos aseguramos que esté por encima de la imagen */
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 10;
+  padding: 8px 16px;
+  border-radius: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+  animation: pulse 2s infinite;
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Imagen del producto */
+.product-card .card-img-top {
+  height: 300px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+/* Carrusel dentro de las tarjetas */
+.product-card .carousel {
+  height: 300px;
+  overflow: hidden;
+}
+
+.product-card .carousel-inner,
+.product-card .carousel-item {
+  height: 100%;
+}
+
+.product-card .carousel-control-prev,
+.product-card .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover .carousel-control-prev,
+.product-card:hover .carousel-control-next {
+  opacity: 1;
+}
+
+.product-card .carousel-control-prev {
+  left: 10px;
+}
+
+.product-card .carousel-control-next {
+  right: 10px;
+}
+
+.product-card .carousel-control-prev-icon,
+.product-card .carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Cuerpo de la tarjeta */
+.product-card .card-body {
+  padding: 20px;
+}
+
+.product-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-card .card-text {
+  margin-top: auto;
+}
+
+/* Precios */
 .product-card .old-price {
-    text-decoration: line-through;
-    color: #6c757d;
-    font-size: 0.9rem;
+  text-decoration: line-through;
+  color: #a0aec0;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .product-card .new-price {
-    color: #dc3545;
-    font-weight: bold;
-    font-size: 1.2rem;
+  color: #667eea;
+  font-weight: 800;
+  font-size: 1.4rem;
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.sidebar-filter a {
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.sidebar-filter a:hover, .sidebar-filter a.active {
-    color: #0d6efd !important;
-    font-weight: 500;
-}
-
-
-/* ---- FIX 2: ESTILOS MEJORADOS PARA EL BOTÓN ---- */
-
-/* Estado inicial del botón: Oculto y ligeramente abajo */
+/* Botón de ver detalles */
 .product-card .btn {
-    opacity: 0; /* Totalmente transparente */
-    transform: translateY(20px); /* Movido 20px hacia abajo */
-    transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-/* Cuando pasas el mouse sobre la TARJETA... */
 .product-card:hover .btn {
-    opacity: 1; /* Se vuelve visible */
-    transform: translateY(0); /* Vuelve a su posición original */
-}/* Añade esto a tu style3.css */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.product-card .btn:active {
+  transform: translateY(0);
+}
+
+/* Enlaces de productos */
 .product-link {
   text-decoration: none;
-  color: inherit; /* Hereda el color del texto normal */
+  color: inherit;
+  display: block;
+  height: 100%;
 }
 
-.product-link:hover .card {
-  /* Mantenemos el efecto hover que ya tenías */
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+.product-link:hover {
+  color: inherit;
+}
+
+/* Mensaje de no resultados */
+#no-results {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+#no-results h3 {
+  color: #4a5568;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+#no-results p {
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 991px) {
+  /* Sidebar en tablets */
+  .sidebar-filter {
+    margin-bottom: 30px;
+  }
+
+  .product-card {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Ajustes para móviles */
+  .sidebar-filter h4,
+  .sidebar-filter h5 {
+    font-size: 0.9rem;
+  }
+
+  .sidebar-filter li {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+  }
+
+  #priceValue {
+    font-size: 1rem;
+  }
+
+  .input-group-text {
+    padding: 10px 15px;
+  }
+
+  .input-group .form-control,
+  .form-select {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+
+  .product-card .card-title {
+    font-size: 1rem;
+  }
+
+  .product-card .new-price {
+    font-size: 1.2rem;
+  }
+
+  .product-card .btn {
+    opacity: 1;
+    transform: translateY(0);
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  #no-results h3 {
+    font-size: 1.5rem;
+  }
+
+  #no-results p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Ajustes para móviles pequeños */
+  .d-flex {
+    flex-direction: column;
+  }
+
+  .form-select {
+    margin-top: 15px;
+    margin-left: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .product-card .card-img-top,
+  .product-card .carousel {
+    height: 250px;
+  }
+
+  .product-card .badge {
+    font-size: 0.65rem;
+    padding: 6px 12px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .sidebar-filter {
+    padding: 20px 15px;
+  }
 }

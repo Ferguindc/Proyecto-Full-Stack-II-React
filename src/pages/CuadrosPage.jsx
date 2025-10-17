@@ -1,32 +1,12 @@
-// src/pages/CuadrosPage.jsx
-
 import React, { useState, useEffect } from 'react';
-import './style3.css'; // Sigue usando el mismo CSS, ya que el layout es idéntico
+import { Link } from 'react-router-dom';
+import './style3.css';
 
-// 1. Importamos las imágenes de los cuadros
-import givenCuadro from '../assets/img/givencuadro.jpg';
-// ...importa aquí el resto de tus cuadros...
+// 1. IMPORTAMOS LA LISTA CENTRAL
+import { allProducts } from '../data/products.js';
 
-// 2. Definimos nuestros cuadros como un array de objetos
-const todosLosCuadros = [
-  {
-    id: 1,
-    nombre: 'Cuadro Given',
-    precio: 24990,
-    categoria: 'cuadros',
-    imagen: givenCuadro,
-    link: 'singles2.html' // Más adelante cambiaremos esto
-  },
-  {
-    id: 2,
-    nombre: 'CUADRO PRUEBA',
-    precio: 1990,
-    categoria: 'cuadros',
-    imagen: givenCuadro, // Usando la misma imagen de ejemplo
-    link: 'singles2.html'
-  }
-  // ... aquí podrías agregar más cuadros
-];
+// 2. FILTRAMOS PARA TENER SOLO LOS CUADROS
+const todosLosCuadros = allProducts.filter(p => p.categoria === 'cuadros');
 
 
 function CuadrosPage() {

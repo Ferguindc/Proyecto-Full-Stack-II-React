@@ -1,0 +1,224 @@
+/* ==========================================
+   OPTIMIZACIONES DE PERFORMANCE CSS
+   ========================================== */
+
+/* Mejores prácticas de performance para CSS */
+
+/* ==========================================
+   WILL-CHANGE PARA ELEMENTOS ANIMADOS
+   ========================================== */
+.card,
+.product-card,
+.video-slide,
+.btn,
+.imagen-lateral {
+  will-change: transform;
+}
+
+.carousel-item img {
+  will-change: transform;
+}
+
+/* ==========================================
+   OPTIMIZACIÓN DE CAPAS DE COMPOSICIÓN
+   ========================================== */
+.card:hover,
+.product-card:hover,
+.btn:hover {
+  transform: translateZ(0); /* Fuerza la aceleración de hardware */
+}
+
+/* ==========================================
+   PREFETCH DE RECURSOS CRÍTICOS
+   ========================================== */
+/* Esto debería ir en el <head> del HTML */
+/*
+<link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/critical-images/logo.webp" as="image">
+*/
+
+/* ==========================================
+   CONTENIDO CRÍTICO ABOVE THE FOLD
+   ========================================== */
+.carousel-item img,
+.navbar-brand img {
+  /* Asegura que las imágenes críticas se carguen rápido */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* ==========================================
+   LAZY LOADING PARA IMÁGENES NO CRÍTICAS
+   ========================================== */
+.card img,
+.product-card img,
+.imagen-lateral img {
+  /* Optimización de renderizado de imágenes */
+  image-rendering: auto;
+  object-fit: cover;
+}
+
+/* ==========================================
+   OPTIMIZACIÓN DE SCROLL
+   ========================================== */
+.slider,
+#video-slider {
+  /* Scroll optimizado */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* ==========================================
+   CONTENIDO DINÁMICO - ESTADOS DE CARGA
+   ========================================== */
+.product-grid-loading {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ==========================================
+   REDUCCIÓN DE LAYOUT SHIFTS
+   ========================================== */
+.carousel-container {
+  /* Dimensiones fijas para evitar layout shift */
+  width: 100%;
+  height: 750px;
+  position: relative;
+}
+
+.product-grid {
+  /* Grid estable */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  min-height: 400px; /* Altura mínima para evitar saltos */
+}
+
+/* ==========================================
+   CRITICAL CSS INLINED
+   ========================================== */
+/* Estos estilos deberían estar inline en el HTML para renderizado rápido */
+.critical-content {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* ==========================================
+   OPTIMIZACIÓN DE FUENTES
+   ========================================== */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap; /* Evita FOIT (Flash of Invisible Text) */
+  src: url('/fonts/inter-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-semibold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-bold.woff2') format('woff2');
+}
+
+/* ==========================================
+   MEDIA QUERIES ESPECÍFICAS POR DISPOSITIVO
+   ========================================== */
+
+/* iPhone SE */
+@media only screen and (width: 375px) and (height: 667px) {
+  .card {
+    width: 280px;
+  }
+}
+
+/* iPhone 12/13/14 */
+@media only screen and (width: 390px) and (height: 844px) {
+  .carousel-item img {
+    height: 300px;
+  }
+}
+
+/* iPad */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .slider {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop 4K */
+@media only screen and (min-width: 2560px) {
+  .container {
+    max-width: 2000px;
+  }
+  
+  .card {
+    width: 350px;
+    height: 450px;
+  }
+}
+
+/* ==========================================
+   PRINT STYLES (OPCIONAL)
+   ========================================== */
+@media print {
+  .navbar,
+  .footer,
+  .btn,
+  .carousel {
+    display: none !important;
+  }
+  
+  .product-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+}
+
+/* ==========================================
+   DARK MODE SUPPORT (FUTURO)
+   ========================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #ffffff;
+    --color-light: #1a1a1a;
+    --color-white: #2d2d2d;
+    --color-gray: #a0a0a0;
+  }
+  
+  .formulario {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    color: #ffffff;
+  }
+  
+  .product-card {
+    background: #2d2d2d;
+    color: #ffffff;
+  }
+}

@@ -4,18 +4,30 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-// Importaciones de estilos
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+// --- ¡¡LA PARTE MÁS IMPORTANTE!! ---
+// Si estas líneas faltan o están mal escritas, NADA se verá bien.
+// Esta línea carga la grilla (row, col, etc.)
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+
+// Esta carga los iconos
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import './index.css';
+
+// Esta carga el JavaScript (para el carrusel, etc.)
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import App from './App';
+
+// --- Tu CSS global (el style.css original) ---
+import './globals.css';
+import './utils.css'; // Nuevas utilidades CSS
+import './performance.css'; // Optimizaciones de performance
+
+import App from './App.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter> {/* <-- 2. ENVUELVE TU APP */}
+    <BrowserRouter>
       <App />
-    </BrowserRouter> {/* <-- 3. CIERRA EL ENVOLTORIO */}
+    </BrowserRouter>
   </React.StrictMode>,
 )
