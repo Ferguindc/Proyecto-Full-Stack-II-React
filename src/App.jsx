@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 
 
 // Importamos nuestros componentes
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar.jsx';
 // (Aquí importaremos el Footer cuando lo creemos)
 
 
