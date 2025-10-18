@@ -1,0 +1,253 @@
+/* ==========================================
+   ADMINPAGE - ESTILOS OSCUROS
+   ========================================== */
+
+/* Fondo principal de toda la página */
+body.admin2 {
+  background-color: #121212; /* fondo oscuro general */
+  color: #f5f5f5;
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Barra lateral */
+.sidebar {
+  height: 100%;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+  border-right: 1px solid #333;
+}
+
+.sidebar h2 {
+  color: #f5f5f5;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* --- ESTILOS DE BOTONES DE SIDEBAR MODIFICADOS --- */
+.list-group-item {
+  background-color: transparent;
+  color: #8fa8d3; /* Color de texto azulado para inactivos */
+  border: 1px solid transparent; /* Borde transparente para mantener layout */
+  transition: all 0.3s ease;
+  padding: 0.75rem 1.25rem; /* Padding para más espacio */
+  border-radius: 8px; /* Esquinas redondeadas (estilo pill) */
+  text-align: left; /* Alinear texto a la izquierda */
+  margin-bottom: 5px; /* Espacio entre botones */
+  font-weight: 500;
+}
+
+.list-group-item:hover {
+  background-color: #2a2a2a !important; /* Hover sutil */
+  color: #fff !important;
+}
+
+.list-group-item.active {
+  background-color: #0d6efd; /* Color azul brillante para activo */
+  color: #fff !important;
+  border-color: #0d6efd; /* Borde del mismo color */
+  font-weight: 600;
+}
+/* --- FIN DE MODIFICACIONES DE SIDEBAR --- */
+
+
+/* Contenido principal */
+.main-content2 {
+  flex-grow: 1;
+  padding: 20px;
+  overflow: auto;
+  background-color: #181818;
+  color: #f5f5f5;
+}
+
+/* Encabezados dentro del contenido */
+.main-content2 h1,
+.main-content2 h2,
+.main-content2 h3 {
+  color: #ffffff;
+}
+
+/* Tablas */
+.table-dark2,
+.table-dark2 th,
+.table-dark2 td {
+  border-color: #555;
+  color: #f5f5f5;
+  background-color: #2c2c2c;
+}
+
+.table-dark2 tbody tr:hover {
+  background-color: #444;
+}
+
+/* Imágenes dentro de la tabla */
+.img-tabla {
+  max-height: 120px;
+  max-width: 120px;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  background-color: transparent;
+  object-fit: cover;
+}
+
+/* Formularios */
+.form-admin2 {
+  max-width: 600px;
+  background-color: #1f1f1f;
+  color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.form-admin2 .form-label {
+  color: #e0e0e0;
+}
+
+.form-admin2 .form-control,
+.form-admin2 .form-select,
+.form-admin2 textarea {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border: 1px solid #555;
+}
+
+.form-admin2 .form-control::placeholder,
+.form-admin2 textarea::placeholder {
+  color: #bfbfbf;
+}
+
+.form-admin2 .form-control:focus,
+.form-admin2 textarea:focus {
+  color: #ffffff;
+  background-color: #3a3a3a;
+  border-color: #667eea;
+}
+
+.form-admin2 textarea {
+  resize: vertical;
+}
+
+/* ==========================================
+   BOTONES MEJORADOS - SOLO LOS ESPECÍFICOS
+   ========================================== */
+
+/* Botón “Agregar Producto” */
+.btn-agregar {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(45deg, #28a745, #2ecc71);
+  color: #ffffff;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  margin-top: 8px; /* separa un poco del último input / textarea */
+}
+
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+
+/* Botón “Eliminar Producto” */
+.btn-eliminar {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(45deg, #e74c3c, #ff4d4d);
+  color: #ffffff;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+.btn-eliminar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+}
+
+/* Botones “+” y “-” dentro de tallas */
+.btn-talla {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  line-height: 40px;
+  border-radius: 50%;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6c757d, #495057);
+  color: #ffffff;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  margin-top: 10px; /* ajusta este valor para separar del input */
+}
+
+
+.btn-talla:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+}
+
+/* Mensajes de error / éxito */
+#mensajeAdmin2 {
+  color: #ff4d4d;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* Scrollbars personalizados para legibilidad */
+.main-content2::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content2::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.main-content2::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+  border: 2px solid #1e1e1e;
+}
+
+/* Inputs dentro de tablas si los hay */
+.input-tabla2 {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border: 1px solid #555;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Resaltar filas seleccionadas en tablas */
+.table-dark2 tbody tr.selected2 {
+  background-color: #555;
+  color: #ffffff;
+}
+/* Input tipo file más pequeño y con bordes suaves */
+.form-admin2 input[type="file"] {
+  padding: 6px 10px;        
+  font-size: 0.9rem;        
+  border-radius: 6px;       
+  border: 1px solid #555;   
+  background-color: #2c2c2c; 
+  color: #f5f5f5;           
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-admin2 input[type="file"]:hover {
+  background-color: #3a3a3a; 
+  border-color: #667eea;
+}

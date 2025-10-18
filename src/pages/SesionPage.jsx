@@ -1,79 +1,93 @@
 // src/pages/SesionPage.jsx
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './style2.css'; // <-- 1. ¡IMPORTAMOS TU CSS!
+import { useNavigate } from 'react-router-dom';
+import "../assets/styles/style2.css";
 
-// 2. Importamos las imágenes laterales
+// Importamos las imágenes laterales
 import powerImg from '../assets/img/power.png';
 import makimaImg from '../assets/img/makima.png';
 
 function SesionPage() {
-  // 3. Estados para controlar los campos del formulario
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // Estados para controlar los campos del formulario
+  const [usuario, setUsuario] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const navigate = useNavigate(); 
 
-  // 4. Función para manejar el envío del formulario
+  // Función para manejar login
   const handleLogin = (e) => {
-    e.preventDefault(); // Evita que la página se recargue
-    console.log('Iniciando sesión con:', { username, password });
-    // Aquí iría la lógica para enviar esto a tu backend
+    e.preventDefault();
+
+    console.log('Iniciando sesión con:', { usuario, contrasena });
+
+    // Validación simple de usuario y contraseña
+    if (usuario === "admin" && contrasena === "admin") {
+      navigate("/admin"); // Redirige a AdminPage
+    } else {
+      const errorElement = document.getElementById("loginError");
+      if (errorElement) errorElement.textContent = "Credenciales incorrectas.";
+    }
   };
 
   return (
-    // 5. Replicamos la estructura de tu HTML
     <div className="contenedor-principal">
-      
+
+      {/* Imagen izquierda */}
       <div className="imagen-lateral">
-        {/* El enlace ahora usa <Link> de React Router */}
-        <Link to="/">
-          <img src={powerImg} alt="Power" />
-        </Link>
+        <img
+          src={powerImg}
+          alt="Power"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/")} // Navega correctamente
+        />
       </div>
 
+      {/* Formulario central */}
       <div className="formulario">
         <h1>Inicio de Sesión SIGMA</h1>
         <form id="loginForm" onSubmit={handleLogin}>
           
-          {/* Campo de Usuario Controlado */}
+          {/* Campo de Usuario */}
           <div className="username">
-            <input 
-              type="text" 
-              id="username" 
-              required 
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+            <input
+              type="text"
+              id="username"
+              required
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
             />
-            <label>Nombre de usuario</label>
+            <label>E-MAIL</label>
           </div>
 
-          {/* Campo de Contraseña Controlado */}
+          {/* Campo de Contraseña */}
           <div className="username">
-            <input 
-              type="password" 
-              id="password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <input
+              type="password"
+              id="password"
+              required
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
             />
             <label>Contraseña</label>
           </div>
-          
-          <div className="recordar">¿Olvidó su contraseña?</div>
+
+          <div className="recordar">Restablecer contraseña</div>
           <p id="loginError" style={{ color: 'red' }}></p>
           <input type="submit" value="Iniciar sesión" />
-          
+
           <div className="registrarse">
-            ¿No tienes cuenta? Regístrate <a href="#">aquí!</a>
-            {/* Este enlace <a href="#"> lo podemos cambiar luego si creas una página de registro */}
+            ¿No tienes cuenta? Regístrate <a href="/registro">aquí!</a>
           </div>
         </form>
       </div>
 
+      {/* Imagen derecha */}
       <div className="imagen-lateral">
-        <Link to="/">
-          <img src={makimaImg} alt="Makima" />
-        </Link>
+        <img
+          src={makimaImg}
+          alt="Makima"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/")} // Navega correctamente a inicio
+        />
       </div>
 
     </div>

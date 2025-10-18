@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { allProducts } from '../data/products.js'; // Importamos la data
-import './single-style.css'; // Importamos el CSS
+import '../assets/styles/single-style.css'; // Importamos el CSS import "../assets/styles/style2";
+
 
 function SingleProductPage() {
   // 1. Obtenemos el ID de la URL (ej: /producto/1)

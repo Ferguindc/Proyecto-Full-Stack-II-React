@@ -144,7 +144,7 @@ form .username:focus-within {
   border: none;
   background: transparent;
   outline: none;
-  color: #2d3748;
+  color: #111111; /* negro para fondo claro */
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -407,4 +407,66 @@ input[type="submit"]:active {
     height: 45px;
     font-size: 15px;
   }
+
+  /* --- Estilos para el campo de teléfono (Añadir a style2.css) --- */
+
+/* Etiqueta simple para "Teléfono" 
+  (ya que el label flotante del input dirá "Número (9 dígitos)") 
+*/
+.telefono-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: #adadad; /* O el color que uses para labels */
+  margin-top: 15px; /* Espacio antes del campo */
+  margin-bottom: -10px; /* Acercar al campo */
+  font-size: 0.9rem;
+}
+
+/* Contenedor para el select y el input */
+.telefono-grupo {
+  display: flex;
+  align-items: flex-start; /* Alinear con el input 'username' */
+  gap: 10px; /* Espacio entre select e input */
+  width: 100%;
+  margin-top: 15px; /* Espacio normal del campo */
+}
+
+/* Estilo del Select de código de país */
+.codigo-pais-select {
+  /* Hacemos que se parezca a los inputs */
+  background: transparent;
+  border: 2px solid #adadad;
+  border-radius: 4px;
+  color: white; /* Asumiendo fondo oscuro */
+  padding: 10px 5px;
+  font-size: 1rem;
+  height: 50px; /* Misma altura que los inputs .username */
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.codigo-pais-select:focus {
+  outline: none;
+  border-color: #2691d9; /* Color de foco de tu plantilla */
+}
+
+/* Opciones del select */
+.codigo-pais-select option {
+  background: #333; /* Fondo oscuro para las opciones */
+  color: white;
+}
+
+/* Aseguramos que el div .username dentro del grupo 
+  ocupe el espacio restante 
+*/
+.telefono-grupo .username {
+  flex: 1; /* Ocupa el espacio restante */
+  margin: 0; /* Quitamos márgenes extra */
+}
+
+/* --- Fin de estilos de teléfono --- */
+
+
+  
 }

@@ -14,7 +14,8 @@ import CuadrosPage from './pages/CuadrosPage.jsx';
 import SesionPage from './pages/SesionPage.jsx';
 import HomePage from './pages/HomePage.jsx'
 import Footer from './components/Footer.jsx';
-
+import AdminPage from "./pages/AdminPage.jsx"; 
+import RegistroPage from './pages/RegistroPage.jsx';
 
 function App() {
   return (
@@ -28,7 +29,8 @@ function App() {
           <Route path="/productos" element={<ProductosPage />} />
           <Route path="/cuadros" element={<CuadrosPage />} />
           <Route path="/sesion" element={<SesionPage />} />
-
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/registro" element={<RegistroPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>

@@ -27,7 +27,7 @@ function Footer() {
           <div className="col-md-4 mb-3">
             <h5>Síguenos</h5>
             <a href="https://www.instagram.com/crimewave.store/?hl=es" target="_blank" rel="noopener noreferrer" className="text-light me-3"><i className="bi bi-instagram fs-4"></i></a>
-            <a href="https://github.com/Ferguindc/Proyecto-Desarrollo-Full-Stack-II" target="_blank" rel="noopener noreferrer" className="text-light me-3"><i className="bi bi-github fs-4"></i></a>
+            <a href="https://github.com/Ferguindc/Proyecto-Full-Stack-II-React" target="_blank" rel="noopener noreferrer" className="text-light me-3"><i className="bi bi-github fs-4"></i></a>
             <a href="#" className="text-light me-3"><i className="bi bi-facebook fs-4"></i></a>
             <a href="#" className="text-light me-3"><i className="bi bi-twitter fs-4"></i></a>
           </div>
