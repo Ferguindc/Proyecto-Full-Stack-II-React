@@ -83,7 +83,7 @@ function HomePage() {
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
-                <h3>Diseños</h3>
+                <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -91,7 +91,8 @@ function HomePage() {
             <div className="card hover-lift animate-fadeInLeft delay-100">
               <img src={productoOriginal} alt="Producto 2" />
               <div className="card-info">
-                <h3>2 FOR $40 MOCK NECK TEES</h3>
+                <h3>2 POR $35</h3>
+                <h3>POLERAS BÁSICAS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
