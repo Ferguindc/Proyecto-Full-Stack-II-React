@@ -20,8 +20,8 @@ import AdminPage from "./pages/AdminPage.jsx";
 import RegistroPage from './pages/RegistroPage.jsx';
 import SingleProductPage from './pages/SingleProductPage.jsx';
 import ClientePage from './pages/ClientePage.jsx';
-import FormularioEditarPage from './pages/FormularioEditarPage.jsx';
-import FormularioAddPage from './pages/FormularioAddPage.jsx';
+import CarritoPage from './pages/CarritoPage.jsx';
+import CartSidebar from './components/CartSidebar.jsx';
 
 function App() {
   return (
@@ -38,17 +38,18 @@ function App() {
           <Route path="/cuadros" element={<CuadrosPage />} />
           <Route path="/sesion" element={<SesionPage />} />
           <Route path="/cliente" element={<ClientePage />} />
-          <Route path="/cliente/editar" element={<FormularioEditarPage />} />
-          <Route path="/cliente/envio" element={<FormularioAddPage tipo="Envío" />} />
-          <Route path="/cliente/facturacion" element={<FormularioAddPage tipo="Facturación" />} />
+          <Route path="/carrito" element={<CarritoPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/registro" element={<RegistroPage />} />
           <Route path="/producto/:id" element={<SingleProductPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>
-    <Footer />
       
+      {/* Carrito lateral */}
+      <CartSidebar />
+      
+      <Footer />
     </>
   );
 }

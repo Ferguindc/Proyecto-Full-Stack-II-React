@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { allProducts } from '../data/products.js'; // Importamos la data
+import { useCart } from '../context/CartContext'; // Importamos el contexto del carrito
 import '../styles/single-style.css'; // Importamos el CSS
 
 
 function SingleProductPage() {
   // 1. Obtenemos el ID de la URL (ej: /producto/1)
   const { id } = useParams();
+  const { addToCart, toggleCart } = useCart();
 
   // 2. Buscamos el producto en nuestra "base de datos"
   // Usamos parseInt porque el ID de la URL es texto, y en nuestro array es número
@@ -39,6 +41,25 @@ function SingleProductPage() {
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
+  };
+
+  const handleAddToCart = () => {
+    // Crear el producto adaptado para el carrito
+    const cartProduct = {
+      id: product.id,
+      nombre: product.nombre,
+      precio: product.precio,
+      imagen: product.images[0], // Usamos la primera imagen
+      categoria: product.categoria
+    };
+    
+    addToCart(cartProduct, quantity, selectedSize);
+    
+    // Mostrar el carrito lateral después de agregar
+    toggleCart();
+    
+    // Opcional: Mostrar una notificación
+    alert(`¡${product.nombre} agregado al carrito!`);
   };
 
   // 6. Si no se encuentra el producto, mostramos un mensaje
@@ -121,7 +142,7 @@ function SingleProductPage() {
             </div>
           </div>
 
-          <button className="btn btn-primary w-100">
+          <button className="btn btn-primary w-100" onClick={handleAddToCart}>
             <i className="bi bi-cart-plus me-2"></i>
             Añadir al carrito
           </button>
