@@ -5,7 +5,7 @@ import './ProductCard.css';
 
 function ProductCard({ producto }) {
   const { addToCart, toggleCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedSize, setSelectedSize] = useState(producto.categoria === 'cuadros' ? '30x39' : 'M');
   const [showSizeSelector, setShowSizeSelector] = useState(false);
 
   const formatPrice = (price) => {
@@ -75,18 +75,20 @@ function ProductCard({ producto }) {
             </p>
           </Link>
           
-          {/* Selector de talla rápido */}
+          {/* Selector de talla/medida rápido */}
           {showSizeSelector && (
             <div className="size-selector-quick mb-2">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <small className="fw-bold">Selecciona talla:</small>
+                <small className="fw-bold">
+                  {producto.categoria === 'cuadros' ? 'Selecciona medida (cm):' : 'Selecciona talla:'}
+                </small>
                 <button 
                   className="btn-close btn-sm"
                   onClick={() => setShowSizeSelector(false)}
                 ></button>
               </div>
-              <div className="size-buttons-quick d-flex gap-1 mb-2">
-                {['S', 'M', 'L', 'XL'].map(size => (
+              <div className="size-buttons-quick d-flex gap-1 mb-2 flex-wrap">
+                {(producto.categoria === 'cuadros' ? producto.medidas || ['30x39', '40x50', '50x70', '70x81'] : ['S', 'M', 'L', 'XL']).map(size => (
                   <button
                     key={size}
                     className={`btn btn-sm ${selectedSize === size ? 'btn-primary' : 'btn-outline-primary'}`}

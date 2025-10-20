@@ -18,13 +18,19 @@ function SingleProductPage() {
 
   // 3. Estados para la funcionalidad
   const [mainImage, setMainImage] = useState('');
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  // 4. Efecto para poner la primera imagen del producto como la principal
+  // 4. Efecto para poner la primera imagen del producto como la principal y establecer talla/medida inicial
   useEffect(() => {
     if (product) {
       setMainImage(product.images[0]);
+      // Establecer talla/medida inicial según el tipo de producto
+      if (product.categoria === 'cuadros') {
+        setSelectedSize(product.medidas ? product.medidas[0] : '30x39');
+      } else {
+        setSelectedSize('M');
+      }
     }
   }, [product]); // Se ejecuta cada vez que el 'product' cambia
 
@@ -115,11 +121,16 @@ function SingleProductPage() {
           </div>
 
           <div className="product-options my-4">
-            {/* Opciones de Talla */}
+            {/* Opciones de Talla/Medida */}
             <div className="mb-3">
-              <label className="form-label fw-bold">Talla:</label>
-              <div className="size-buttons d-flex gap-2 mt-2">
-                {['S', 'M', 'L', 'XL'].map(size => (
+              <label className="form-label fw-bold">
+                {product.categoria === 'cuadros' ? 'Medida (cm):' : 'Talla:'}
+              </label>
+              <div className="size-buttons d-flex gap-2 mt-2 flex-wrap">
+                {(product.categoria === 'cuadros' 
+                  ? (product.medidas || ['30x39', '40x50', '50x70', '70x81'])
+                  : ['S', 'M', 'L', 'XL']
+                ).map(size => (
                   <button 
                     key={size}
                     className={`size-btn btn ${selectedSize === size ? 'active' : 'btn-outline-secondary'}`}
@@ -134,10 +145,10 @@ function SingleProductPage() {
             {/* Opciones de Cantidad */}
             <div className="mb-3">
               <label className="form-label fw-bold">Cantidad:</label>
-              <div className="quantity-controls d-flex align-items-center mt-2">
-                <button className="quantity-btn btn btn-outline-secondary" onClick={decreaseQuantity}>-</button>
+              <div className="quantity-controls mt-2">
+                <button className="quantity-btn" onClick={decreaseQuantity}>-</button>
                 <span className="quantity-display">{quantity}</span>
-                <button className="quantity-btn btn btn-outline-secondary" onClick={increaseQuantity}>+</button>
+                <button className="quantity-btn" onClick={increaseQuantity}>+</button>
               </div>
             </div>
           </div>
