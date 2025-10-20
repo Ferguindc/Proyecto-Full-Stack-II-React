@@ -92,49 +92,10 @@ function CuadrosPage() {
           </div>
           
           {/* --- GRILLA DE PRODUCTOS --- */}
-          <div id="product-grid" className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div id="product-grid" className="row">
             {productos.length > 0 ? (
               productos.map((producto) => (
-                <div 
-                  className="col product-item" 
-                  key={producto.id} 
-                >
-                  <Link to={`/producto/${producto.id}`} className="product-link">
-                    <div className="card h-100 product-card">
-                      <span className="badge bg-danger">Oferta</span>
-                      {/* --------Carrusel ---------*/}
-                      <div id={`carousel-${producto.id}`} className="carousel slide" data-bs-ride="carousel">
-                        <div className="carousel-inner">
-                          {producto.images.map((imagen, index) => (
-                            <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                              <img 
-                                style={{height:"300px"}} 
-                                src={imagen} 
-                                className="card-img-top" 
-                                alt={`${producto.nombre} - ${index + 1}`} 
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target={`#carousel-${producto.id}`} data-bs-slide="prev">
-                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target={`#carousel-${producto.id}`} data-bs-slide="next">
-                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                      <div className="card-body d-flex flex-column">
-                        <h5 className="card-title">{producto.nombre}</h5>
-                        <p className="card-text text-muted mt-auto">
-                          <span className="new-price">${producto.precio.toLocaleString('es-CL')}</span>
-                        </p>
-                        <div className="btn btn-primary w-100 mt-2">Ver detalles</div>
-                      </div>
-                    </div>
-                  </Link> 
-                </div>
+                <ProductCard key={producto.id} producto={producto} />
               ))
             ) : (
               <div id="no-results" className="text-center p-5 col-12">
