@@ -125,6 +125,7 @@ function ProductosPage() {
               <option value="price-desc">Precio: de mayor a menor</option>
             </select>
           </div>
+          
 
           {/* --- GRILLA DE PRODUCTOS --- */}
           <div id="product-grid" className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">

@@ -1,0 +1,90 @@
+/* src/components/Ticker.css (Versión Final) */
+
+/* --- Keyframes (Estos no cambian) --- */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  /* Mueve el 100% del ancho del primer span */
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* --- Contenedor principal --- */
+.ticker-section {
+  margin: 60px 0;
+  /* ¡LA CLAVE! La sección principal es la que corta. */
+  overflow: hidden; 
+  width: 100vw; 
+  max-width: 100%;
+}
+
+/* --- Estilo de cada barra --- */
+.ticker-bar {
+  display: flex;
+  background: var(--color-primary, #000); 
+  color: var(--color-white, #fff); 
+  padding: 10px 0;
+  
+  transform: rotate(-3deg);
+  
+  /* ¡LA SOLUCIÓN A LA PUNTITA! */
+  /* Hacemos la barra súper ancha (170%) y la movemos
+     para que las esquinas queden fuera del 'overflow' 
+     de la sección principal. */
+  width: 170%;
+  margin-left: -35%;
+}
+
+.ticker-bar.reverse {
+  background: var(--color-light, #f0f0f0); 
+  color: var(--color-primary, #000); 
+  transform: rotate(3deg); 
+  margin-top: 10px;
+  width: 170%;
+  margin-left: -35%;
+}
+
+/* --- Contenedor que se mueve --- */
+.ticker-content {
+  /* ¡LA CLAVE DEL LOOP! */
+  /* Hacemos que el contenedor sea el doble de ancho que la barra */
+  width: 200%; 
+  display: flex;
+  animation: scroll-left 40s linear infinite;
+}
+
+.ticker-bar.reverse .ticker-content {
+  animation-name: scroll-right;
+}
+
+/* --- Bloque de Texto (Cada copia) --- */
+.ticker-text-span {
+  /* Cada span ocupa el 50% del contenedor (o sea, el 100% de la barra) */
+  width: 50%;
+  white-space: nowrap; /* ¡Importante! */
+  flex-shrink: 0; /* ¡Importante! */
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0 20px;
+}
+
+.ticker-text-span .bi {
+  margin-right: 15px;
+  color: var(--color-secondary, #7760db); 
+}
+
+.ticker-bar.reverse .ticker-text-span .bi {
+  color: var(--color-accent, #dc3545); 
+}
