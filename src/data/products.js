@@ -58,12 +58,38 @@ export const allProducts = [
       poleronSatoru
     ]
   },
+   {
+    id: 5,
+    nombre: 'Polera Anime Básaica',
+    precio: 190,
+    categoria: 'poleras',
+    descripcion: 'Polera cómoda de algodón con diseños anime exclusivos.',
+    images: [
+      camisetaOlas,
+      satoruSingle,
+      poleronSatoru
+    ]
+  },
+    {
+    id: 6,
+    nombre: 'Polera Anime Bás22ica',
+    precio: 2990,
+    categoria: 'poleras',
+    descripcion: 'Polera cómoda de algodón con diseños anime exclusivos.',
+    images: [
+      camisetaOlas,
+      satoruSingle,
+      poleronSatoru,
+      camisetaOlas
+    ]
+  },
+  
 
   // POLERONES
   {
     id: 5,
     nombre: 'Poleron Satoru Gojo',
-    precio: 24990,
+    precio: 90,
     categoria: 'polerones',
     descripcion: 'Poleron de alta calidad con diseño exclusivo de Satoru Gojo.',
     images: [

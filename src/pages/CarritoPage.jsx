@@ -33,6 +33,9 @@ function CarritoPage() {
   });
   const [paymentMethod, setPaymentMethod] = useState('transferencia');
   const [orderNumber, setOrderNumber] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentError, setPaymentError] = useState('');
+  const [orderStatus, setOrderStatus] = useState(''); // 'confirmada' o 'rechazada'
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
@@ -55,6 +58,49 @@ function CarritoPage() {
     return required.every(field => customerData[field].trim() !== '');
   };
 
+  const validatePayment = () => {
+    // Limpiar errores previos
+    setPaymentError('');
+
+    // Verificar que se haya ingresado un monto
+    if (!paymentAmount || paymentAmount.trim() === '') {
+      setPaymentError('Debes ingresar el monto del pago');
+      return false;
+    }
+
+    // Convertir a número
+    const amount = parseFloat(paymentAmount);
+
+    // Verificar que sea un número válido
+    if (isNaN(amount)) {
+      setPaymentError('El monto debe ser un número válido');
+      return false;
+    }
+
+    // Verificar que no sea negativo o cero
+    if (amount <= 0) {
+      setPaymentError('El monto debe ser mayor a cero');
+      return false;
+    }
+
+    // Verificar que no sea un número demasiado grande (evitar bugs)
+    if (amount > 99999999) {
+      setPaymentError('El monto ingresado es demasiado grande');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePaymentChange = (e) => {
+    const value = e.target.value;
+    // Solo permitir números y un punto decimal
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setPaymentAmount(value);
+      setPaymentError(''); // Limpiar error al escribir
+    }
+  };
+
   const handleNextStep = () => {
     if (step === 1 && cartItems.length === 0) {
       alert('Tu carrito está vacío');
@@ -75,9 +121,25 @@ function CarritoPage() {
   };
 
   const processOrder = () => {
+    // Validar el pago antes de procesar
+    if (!validatePayment()) {
+      return;
+    }
+
     // Simular procesamiento de orden
     const newOrderNumber = generateOrderNumber();
     setOrderNumber(newOrderNumber);
+    
+    const paymentAmountNum = parseFloat(paymentAmount);
+    const totalAmount = getFinalTotal();
+    
+    // Determinar el estado del pedido basado en el pago
+    let status = 'rechazada';
+    if (paymentAmountNum >= totalAmount) {
+      status = 'confirmada';
+    }
+    
+    setOrderStatus(status);
     
     // Guardar orden en localStorage (simulación)
     const orderData = {
@@ -90,9 +152,11 @@ function CarritoPage() {
         subtotal: getTotalPrice(),
         discount: getDiscount(),
         shipping: getShippingCost(),
-        total: getFinalTotal()
+        total: totalAmount,
+        amountPaid: paymentAmountNum,
+        amountDue: Math.max(0, totalAmount - paymentAmountNum)
       },
-      status: 'confirmada'
+      status: status
     };
     
     // Guardar en historial de órdenes
@@ -113,7 +177,7 @@ function CarritoPage() {
           <p>¡Descubre nuestros increíbles productos!</p>
           <button 
             className="btn btn-primary btn-lg"
-            onClick={() => navigate('/productos')}
+            onClick={() => navigate('/')}
           >
             Ir a Comprar
           </button>
@@ -228,7 +292,7 @@ function CarritoPage() {
                 </button>
                 <button 
                   className="btn btn-outline-secondary w-100 mt-2"
-                  onClick={() => navigate('/productos')}
+                  onClick={() => navigate('/')}
                 >
                   Seguir Comprando
                 </button>
@@ -442,6 +506,55 @@ function CarritoPage() {
                     </div>
                   ))}
                 </div>
+
+                <div className="confirmation-section">
+                  <h5>Ingreso de Pago</h5>
+                  <p className="text-muted mb-3">
+                    Ingresa el monto que vas a pagar. Debe ser mayor o igual al total del pedido para confirmar la orden.
+                  </p>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label className="form-label">
+                        <strong>Monto a Pagar *</strong>
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text">$</span>
+                        <input
+                          type="text"
+                          className={`form-control ${paymentError ? 'is-invalid' : ''}`}
+                          placeholder="0"
+                          value={paymentAmount}
+                          onChange={handlePaymentChange}
+                        />
+                      </div>
+                      {paymentError && (
+                        <div className="invalid-feedback d-block">
+                          {paymentError}
+                        </div>
+                      )}
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">
+                        <strong>Total Requerido</strong>
+                      </label>
+                      <div className="alert alert-info mb-0">
+                        {formatPrice(getFinalTotal())}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    {paymentAmount && !paymentError && parseFloat(paymentAmount) >= getFinalTotal() && (
+                      <div className="alert alert-success">
+                        ✅ <strong>Pago suficiente</strong> - El pedido será confirmado
+                        {parseFloat(paymentAmount) > getFinalTotal() && (
+                          <div className="mt-1">
+                            <small>Vuelto: {formatPrice(parseFloat(paymentAmount) - getFinalTotal())}</small>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -479,9 +592,15 @@ function CarritoPage() {
                   <button 
                     className="btn btn-success btn-lg w-100"
                     onClick={processOrder}
+                    disabled={!paymentAmount || paymentError}
                   >
                     Confirmar Pedido
                   </button>
+                  {!paymentAmount && (
+                    <small className="text-muted mt-2 d-block text-center">
+                      Ingresa el monto del pago para continuar
+                    </small>
+                  )}
                 </div>
               </div>
             </div>
@@ -491,23 +610,46 @@ function CarritoPage() {
         {/* Step 4: Orden Completada */}
         {step === 4 && (
           <div className="order-success text-center">
-            <div className="success-icon">✅</div>
-            <h2>¡Pedido Confirmado!</h2>
-            <p className="lead">Tu orden #{orderNumber} ha sido procesada exitosamente</p>
+            <div className="success-icon">
+              {orderStatus === 'confirmada' ? '✅' : '❌'}
+            </div>
+            <h2>
+              {orderStatus === 'confirmada' 
+                ? '¡Pedido Confirmado!' 
+                : '¡Pedido Rechazado!'
+              }
+            </h2>
+            <p className="lead">
+              Tu orden #{orderNumber} ha sido procesada
+              {orderStatus === 'confirmada' ? ' exitosamente' : ' pero fue rechazada por pago insuficiente'}
+            </p>
             
             <div className="success-details">
-              <p>Recibirás un email de confirmación con los detalles del pedido y las instrucciones de pago.</p>
-              {paymentMethod === 'transferencia' && (
-                <div className="payment-info">
-                  <h5>Datos para Transferencia:</h5>
-                  <p><strong>Banco:</strong> Banco Estado</p>
-                  <p><strong>Cuenta Corriente:</strong> 12345678-9</p>
-                  <p><strong>RUT:</strong> 12.345.678-9</p>
-                  <p><strong>Nombre:</strong> Crime Wave Store</p>
-                  <p><strong>Monto:</strong> {formatPrice(getFinalTotal())}</p>
-                </div>
+              {orderStatus === 'confirmada' ? (
+                <>
+                  <p>Recibirás un email de confirmación con los detalles del pedido y las instrucciones de pago.</p>
+                  {paymentMethod === 'transferencia' && (
+                    <div className="payment-info">
+                      <h5>Datos para Transferencia:</h5>
+                      <p><strong>Banco:</strong> Banco Estado</p>
+                      <p><strong>Cuenta Corriente:</strong> 12345678-9</p>
+                      <p><strong>RUT:</strong> 12.345.678-9</p>
+                      <p><strong>Nombre:</strong> Crime Wave Store</p>
+                      <p><strong>Monto:</strong> {formatPrice(getFinalTotal())}</p>
+                    </div>
+                  )}
+                  <p><strong>Tiempo estimado de entrega:</strong> 3-5 días hábiles</p>
+                </>
+              ) : (
+                <>
+                  <div className="alert alert-danger">
+                    <h5>Motivo del Rechazo:</h5>
+                    <p>El monto pagado ({formatPrice(parseFloat(paymentAmount))}) es menor al total requerido ({formatPrice(getFinalTotal())}).</p>
+                    <p><strong>Monto faltante:</strong> {formatPrice(getFinalTotal() - parseFloat(paymentAmount))}</p>
+                  </div>
+                  <p>El pedido ha sido registrado en tu historial como "Rechazado". Puedes intentar realizar la compra nuevamente con el monto correcto.</p>
+                </>
               )}
-              <p><strong>Tiempo estimado de entrega:</strong> 3-5 días hábiles</p>
             </div>
 
             <div className="success-actions">
@@ -519,9 +661,16 @@ function CarritoPage() {
               </button>
               <button 
                 className="btn btn-outline-primary btn-lg"
-                onClick={() => navigate('/productos')}
+                onClick={() => {
+                  // Resetear estados para nueva compra
+                  setStep(1);
+                  setPaymentAmount('');
+                  setPaymentError('');
+                  setOrderStatus('');
+                  navigate('/');
+                }}
               >
-                Seguir Comprando
+                {orderStatus === 'confirmada' ? 'Seguir Comprando' : 'Intentar de Nuevo'}
               </button>
             </div>
           </div>

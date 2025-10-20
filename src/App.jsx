@@ -29,6 +29,9 @@ import GestionEmpleadosPage from './pages/GestionEmpleadosPage.jsx';
 import FormularioAddProductoPage from './pages/FormularioAddProductoPage.jsx';
 import FormularioEditarProductoPage from './pages/FormularioEditarProductoPage.jsx';
 import PreguntasFrecuentesPage from './pages/PreguntasFrecuentesPage.jsx';
+import BlogPage from './pages/BlogPage.jsx';
+import BlogPostPage from './pages/BlogPostPage.jsx';
+import CreateBlogPostPage from './pages/CreateBlogPostPage.jsx';
 
 function App() {
   return (
@@ -39,10 +42,12 @@ function App() {
         {/* Aquí es donde React cambiará el contenido de la página */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/productos" element={<ProductosPage />} />
           <Route path="/poleras" element={<PolerasPage />} />
           <Route path="/polerones" element={<PoleronesPage />} />
           <Route path="/cuadros" element={<CuadrosPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/crear" element={<CreateBlogPostPage />} />
+          <Route path="/blog/:id" element={<BlogPostPage />} />
           <Route path="/sesion" element={<SesionPage />} />
           <Route path="/cliente" element={<ClientePage />} />
           <Route path="/carrito" element={<CarritoPage />} />

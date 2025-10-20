@@ -105,99 +105,158 @@ function HistorialPedidos() {
 
   if (orders.length === 0) {
     return (
-      <div className="tab-pane fade show active cliente-content-wrapper">
-        <div className="card cliente-card"> 
-          <div className="card-body text-center">
-            <h5 className="card-title">Historial de pedidos</h5>
-            <hr />
-            <p>Aún no has realizado ningún pedido.</p>
-            <a href="/productos" className="btn btn-primary">
-              Explorar Productos
-            </a>
-          </div>
+      <div className="container-fluid py-4">
+        <h5 className="mb-4">Historial de Pedidos</h5>
+        <div className="text-center py-5">
+          <i className="bi bi-bag-x" style={{ fontSize: '4rem', color: '#6c757d' }}></i>
+          <h4 className="mt-3 mb-3">No hay pedidos</h4>
+          <p className="text-muted mb-4">Aún no has realizado ningún pedido.</p>
+          <a href="/" className="btn btn-primary">
+            Explorar Productos
+          </a>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="tab-pane fade show active cliente-content-wrapper">
-      <div className="row">
-        <div className="col-12">
-          <h5 className="mb-4">Historial de Pedidos</h5>
-          {orders.map((order) => (
-            <div key={order.orderNumber} className="card cliente-card mb-4">
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <div>
-                    <h6 className="mb-1">Pedido #{order.orderNumber}</h6>
-                    <small className="text-muted">{formatDate(order.date)}</small>
-                  </div>
-                  <span className={`badge ${getStatusBadgeClass(order.status)}`}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </span>
-                </div>
-                
-                <div className="row">
-                  <div className="col-md-8">
-                    <h6>Productos:</h6>
-                    {order.items.map((item) => (
-                      <div key={item.cartId} className="d-flex align-items-center mb-2">
-                        <img 
-                          src={item.imagen} 
-                          alt={item.nombre} 
-                          style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                          className="rounded me-3"
-                        />
-                        <div className="flex-grow-1">
-                          <small className="d-block">{item.nombre}</small>
-                          <small className="text-muted">Talla: {item.selectedSize} | Cantidad: {item.quantity}</small>
+    <div className="container-fluid py-4">
+      <h5 className="mb-4">Historial de Pedidos</h5>
+      <div className="table-responsive">
+        <table className="table table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th>Pedido</th>
+              <th>Fecha</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Método Pago</th>
+              <th>Estado</th>
+              <th>Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <React.Fragment key={order.orderNumber}>
+                <tr>
+                  <td>
+                    <strong>#{order.orderNumber}</strong>
+                  </td>
+                  <td>
+                    <small>{formatDate(order.date)}</small>
+                  </td>
+                  <td>
+                    <div className="d-flex flex-column">
+                      {order.items.map((item, index) => (
+                        <div key={item.cartId} className="d-flex align-items-center mb-1">
+                          <img 
+                            src={item.imagen} 
+                            alt={item.nombre} 
+                            style={{ width: '30px', height: '30px', objectFit: 'cover' }}
+                            className="rounded me-2"
+                          />
+                          <div className="flex-grow-1">
+                            <small className="d-block fw-bold">{item.nombre}</small>
+                            <small className="text-muted">Talla: {item.selectedSize} | Cant: {item.quantity}</small>
+                          </div>
                         </div>
-                        <small className="fw-bold">{formatPrice(item.precio * item.quantity)}</small>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="col-md-4">
-                    <div className="bg-light p-3 rounded">
-                      <div className="d-flex justify-content-between mb-1">
-                        <small>Subtotal:</small>
-                        <small>{formatPrice(order.payment.subtotal)}</small>
-                      </div>
-                      {order.payment.discount > 0 && (
-                        <div className="d-flex justify-content-between mb-1 text-success">
-                          <small>Descuento:</small>
-                          <small>-{formatPrice(order.payment.discount)}</small>
-                        </div>
+                      ))}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="d-flex flex-column">
+                      <span className="fw-bold">{formatPrice(order.payment.total)}</span>
+                      {order.payment.amountPaid && (
+                        <small className="text-muted">
+                          Pagado: {formatPrice(order.payment.amountPaid)}
+                        </small>
                       )}
-                      <div className="d-flex justify-content-between mb-1">
-                        <small>Envío:</small>
-                        <small>{order.payment.shipping === 0 ? 'GRATIS' : formatPrice(order.payment.shipping)}</small>
-                      </div>
-                      <hr className="my-2" />
-                      <div className="d-flex justify-content-between fw-bold">
-                        <small>Total:</small>
-                        <small>{formatPrice(order.payment.total)}</small>
+                      {order.payment.amountDue > 0 && (
+                        <small className="text-danger">
+                          Falta: {formatPrice(order.payment.amountDue)}
+                        </small>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <small>{order.payment.method === 'transferencia' ? 'Transferencia' : 'WebPay'}</small>
+                  </td>
+                  <td>
+                    <span className={`badge ${getStatusBadgeClass(order.status)}`}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </span>
+                  </td>
+                  <td>
+                    <button 
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => {
+                        const detailsRow = document.getElementById(`details-${order.orderNumber}`);
+                        if (detailsRow.style.display === 'none') {
+                          detailsRow.style.display = 'table-row';
+                        } else {
+                          detailsRow.style.display = 'none';
+                        }
+                      }}
+                    >
+                      <i className="bi bi-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr id={`details-${order.orderNumber}`} style={{ display: 'none' }}>
+                  <td colSpan="7">
+                    <div className="p-3 bg-light">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <h6>Información de Envío:</h6>
+                          <p className="mb-1"><strong>{order.customer.nombre}</strong></p>
+                          <p className="mb-1">{order.customer.email} | {order.customer.telefono}</p>
+                          <p className="mb-1">{order.customer.direccion}, {order.customer.comuna}</p>
+                          {order.customer.notas && <p className="mb-0"><em>Notas: {order.customer.notas}</em></p>}
+                        </div>
+                        <div className="col-md-6">
+                          <h6>Resumen de Pago:</h6>
+                          <div className="d-flex justify-content-between">
+                            <small>Subtotal:</small>
+                            <small>{formatPrice(order.payment.subtotal)}</small>
+                          </div>
+                          {order.payment.discount > 0 && (
+                            <div className="d-flex justify-content-between text-success">
+                              <small>Descuento:</small>
+                              <small>-{formatPrice(order.payment.discount)}</small>
+                            </div>
+                          )}
+                          <div className="d-flex justify-content-between">
+                            <small>Envío:</small>
+                            <small>{order.payment.shipping === 0 ? 'GRATIS' : formatPrice(order.payment.shipping)}</small>
+                          </div>
+                          <hr className="my-2" />
+                          <div className="d-flex justify-content-between fw-bold">
+                            <small>Total:</small>
+                            <small>{formatPrice(order.payment.total)}</small>
+                          </div>
+                          {order.payment.amountPaid && (
+                            <>
+                              <div className="d-flex justify-content-between">
+                                <small>Monto Pagado:</small>
+                                <small className="text-success">{formatPrice(order.payment.amountPaid)}</small>
+                              </div>
+                              {order.payment.amountDue > 0 && (
+                                <div className="d-flex justify-content-between">
+                                  <small>Monto Pendiente:</small>
+                                  <small className="text-danger">{formatPrice(order.payment.amountDue)}</small>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="mt-2">
-                      <small className="text-muted">
-                        Método de pago: {order.payment.method === 'transferencia' ? 'Transferencia' : 'WebPay'}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-3 pt-3 border-top">
-                  <small className="text-muted">
-                    <strong>Envío a:</strong> {order.customer.direccion}, {order.customer.comuna}
-                  </small>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
