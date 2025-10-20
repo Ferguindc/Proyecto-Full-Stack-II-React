@@ -176,9 +176,31 @@ function CarritoPage() {
           <h2>Tu carrito está vacío</h2>
           <p>¡Descubre nuestros increíbles productos!</p>
           <button 
-            className="btn btn-primary btn-lg"
-            onClick={() => navigate('/')}
+            className="btn btn-lg"
+            onClick={() => navigate('/poleras')}
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              color: 'white',
+              fontWeight: '600',
+              padding: '15px 35px',
+              borderRadius: '15px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
+              fontSize: '1.1rem'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-3px)';
+              e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+              e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.3)';
+              e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }}
           >
+            <i className="bi bi-shop me-2"></i>
             Ir a Comprar
           </button>
         </div>
@@ -291,9 +313,28 @@ function CarritoPage() {
                   Continuar
                 </button>
                 <button 
-                  className="btn btn-outline-secondary w-100 mt-2"
-                  onClick={() => navigate('/')}
+                  className="btn btn-gradient-secondary w-100 mt-2"
+                  onClick={() => navigate('/poleras')}
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: '600',
+                    padding: '12px 24px',
+                    borderRadius: '10px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+                  }}
                 >
+                  <i className="bi bi-arrow-left me-2"></i>
                   Seguir Comprando
                 </button>
               </div>
@@ -654,22 +695,64 @@ function CarritoPage() {
 
             <div className="success-actions">
               <button 
-                className="btn btn-primary btn-lg me-3"
+                className="btn btn-lg me-3"
                 onClick={() => navigate('/cliente')}
+                style={{
+                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  border: 'none',
+                  color: 'white',
+                  fontWeight: '600',
+                  padding: '12px 28px',
+                  borderRadius: '12px',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.4)';
+                  e.target.style.background = 'linear-gradient(135deg, #20c997 0%, #28a745 100%)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.3)';
+                  e.target.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                }}
               >
+                <i className="bi bi-box-seam me-2"></i>
                 Ver Mis Pedidos
               </button>
               <button 
-                className="btn btn-outline-primary btn-lg"
+                className="btn btn-lg"
                 onClick={() => {
                   // Resetear estados para nueva compra
                   setStep(1);
                   setPaymentAmount('');
                   setPaymentError('');
                   setOrderStatus('');
-                  navigate('/');
+                  navigate('/poleras');
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none',
+                  color: 'white',
+                  fontWeight: '600',
+                  padding: '12px 28px',
+                  borderRadius: '12px',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+                  e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+                  e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                 }}
               >
+                <i className="bi bi-arrow-left me-2"></i>
                 {orderStatus === 'confirmada' ? 'Seguir Comprando' : 'Intentar de Nuevo'}
               </button>
             </div>

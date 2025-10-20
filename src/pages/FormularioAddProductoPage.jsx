@@ -146,7 +146,7 @@ function FormularioAddProductoPage() {
             </div>
             <button 
               className="btn btn-outline-light"
-              onClick={() => navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/admin')}
+              onClick={() => navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/clienete')}
             >
               <i className="bi bi-arrow-left me-2"></i>
               Volver

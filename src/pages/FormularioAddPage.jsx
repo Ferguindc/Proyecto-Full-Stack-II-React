@@ -73,8 +73,46 @@ function FormularioAddPage({ tipo }) { // Recibe "Envío" o "Facturación"
             <div className="col-12"><div className="form-group"><label htmlFor="instagram">INSTAGRAM</label><input type="text" id="instagram" name="instagram" value={formData.instagram} onChange={handleInputChange} /></div></div>
           </div>
           <div className="form-actions">
-            <button type="button" className="btn btn-secondary-custom" onClick={() => navigate('/cliente')}>Volver</button>
-            <button type="submit" className="btn btn-confirmar">Confirmar</button>
+            <button 
+              type="button" 
+              className="btn"
+              onClick={() => navigate('/cliente')}
+              style={{
+                background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                border: '2px solid #6c757d',
+                borderRadius: '25px',
+                padding: '12px 24px',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                color: 'white',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(108, 117, 125, 0.3)',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                minWidth: '140px'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #5a6268 0%, #495057 100%)';
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 6px 18px rgba(108, 117, 125, 0.4)';
+                e.target.style.borderColor = '#5a6268';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(108, 117, 125, 0.3)';
+                e.target.style.borderColor = '#6c757d';
+              }}
+            >
+              <i className="bi bi-arrow-left me-2"></i>
+              Volver
+            </button>
+            <button type="submit" className="btn btn-confirmar">
+              <i className="bi bi-check-circle me-2"></i>
+              Confirmar
+            </button>
           </div>
         </form>
       </div>

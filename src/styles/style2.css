@@ -149,8 +149,10 @@ form .username:focus-within {
 
 .username input:focus {
   padding-left: 10px;
-  color: #ffffff;
+  color: #ffffff !important;
   text-shadow: 0 0 8px rgba(102, 126, 234, 0.6);
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
 }
 
 .username input:valid {
@@ -167,6 +169,27 @@ form .username:focus-within {
 .username input[type="email"],
 .username input[type="password"] {
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
+}
+
+/* Forzar color blanco específicamente durante la escritura */
+.username input:focus,
+.username input:active {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Evitar que el autocomplete cambie el color */
+.username input:-webkit-autofill,
+.username input:-webkit-autofill:hover,
+.username input:-webkit-autofill:focus,
+.username input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }
 
 /* Placeholder también blanco */
