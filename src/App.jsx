@@ -18,6 +18,8 @@ import HomePage from './pages/HomePage.jsx'
 import Footer from './components/Footer.jsx';
 import AdminPage from "./pages/AdminPage.jsx"; 
 import RegistroPage from './pages/RegistroPage.jsx';
+import SingleProductPage from './pages/SingleProductPage.jsx';
+import ClientePage from './pages/ClientePage.jsx';
 
 function App() {
   return (
@@ -33,8 +35,10 @@ function App() {
           <Route path="/polerones" element={<PoleronesPage />} />
           <Route path="/cuadros" element={<CuadrosPage />} />
           <Route path="/sesion" element={<SesionPage />} />
+          <Route path="/cliente" element={<ClientePage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/registro" element={<RegistroPage />} />
+          <Route path="/producto/:id" element={<SingleProductPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>

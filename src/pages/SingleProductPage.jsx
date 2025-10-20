@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { allProducts } from '../data/products.js'; // Importamos la data
-import '../assets/styles/single-style.css'; // Importamos el CSS import "../assets/styles/style2";
+import '../styles/single-style.css'; // Importamos el CSS
 
 
 function SingleProductPage() {

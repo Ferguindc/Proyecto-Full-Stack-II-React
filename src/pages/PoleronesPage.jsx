@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import "../assets/styles/style3.css";
+import "../styles/style3.css";
 import { allProducts } from '../data/products.js';
 
 // Filtramos para tener solo los polerones
