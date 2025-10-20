@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDirecciones } from '../context/DireccionesContext';
 import '../styles/ClientePagestyle.css'; // Reutilizamos los mismos estilos
 
 function FormularioAddPage({ tipo }) { // Recibe "Envío" o "Facturación"
   const navigate = useNavigate();
-  const { agregarDireccionEnvio, agregarDireccionFacturacion } = useDirecciones();
 
   // Estado para los campos del formulario
   const [formData, setFormData] = useState({
@@ -40,18 +38,9 @@ function FormularioAddPage({ tipo }) { // Recibe "Envío" o "Facturación"
       return;
     }
     
-    // Guardar la dirección según el tipo
-    let exito = false;
-    if (tipo === 'Envío') {
-      exito = agregarDireccionEnvio(formData);
-    } else if (tipo === 'Facturación') {
-      exito = agregarDireccionFacturacion(formData);
-    }
-    
-    if (exito) {
-      alert(`Dirección de ${tipo} guardada exitosamente`);
-      navigate('/cliente'); // Vuelve a la página de la cuenta
-    }
+    console.log('Datos del formulario:', { tipo, ...formData });
+    alert(`Dirección de ${tipo} guardada (simulación)`);
+    navigate('/cliente'); // Vuelve a la página de la cuenta
   };
 
   return (

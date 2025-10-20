@@ -1,71 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
 import { useAuth } from '../context/AuthContext';
-import { useDirecciones } from '../context/DireccionesContext';
 import { useNavigate, Link } from 'react-router-dom'; // 👈 Importa Link
 
 import '../styles/ClientePagestyle.css';
 
-// Componente para mostrar una dirección guardada
-function DireccionGuardada({ direccion, tipo, onEliminar, onEditar }) {
-  const handleEliminar = () => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar esta dirección de ${tipo.toLowerCase()}?`)) {
-      onEliminar(direccion.id);
-    }
-  };
-
-  return (
-    <div className="direccion-guardada mb-3">
-      <div className="direccion-header">
-        <h6 className="direccion-titulo">
-          Dirección #{direccion.id} 
-          {direccion.principal && <span className="badge-principal">PRINCIPAL</span>}
-        </h6>
-      </div>
-      
-      <div className="direccion-info">
-        <div className="row">
-          <div className="col-md-6">
-            <p className="info-item">
-              <span className="info-label">NOMBRE / APELLIDO</span><br />
-              {direccion.nombre} {direccion.apellidos}
-            </p>
-            <p className="info-item">
-              <span className="info-label">DIRECCIÓN COMPLETA</span><br />
-              {direccion.direccion}, {direccion.ciudad}, {direccion.region}, {direccion.pais}
-            </p>
-            <p className="info-item">
-              <span className="info-label">CELL</span><br />
-              {direccion.cell || 'No especificado'}
-            </p>
-          </div>
-          <div className="col-md-6">
-            <p className="info-item">
-              <span className="info-label">IDENTIFICACIÓN TRIBUTARIA</span><br />
-              {direccion.rutDni || direccion.rut}
-            </p>
-            <p className="info-item">
-              <span className="info-label">RUT (DNI)</span><br />
-              {direccion.rut}
-            </p>
-            <p className="info-item">
-              <span className="info-label">INSTAGRAM</span><br />
-              {direccion.instagram || 'No especificado'}
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="direccion-acciones">
-        <button className="btn btn-editar-direccion" onClick={() => onEditar(direccion.id)}>
-          <i className="bi bi-pencil-fill me-2"></i> Editar
-        </button>
-        <button className="btn btn-borrar-direccion" onClick={handleEliminar}>
-          <i className="bi bi-trash-fill me-2"></i> Borrar
-        </button>
-      </div>
-    </div>
-  );
-}
+// Componente para mostrar el historial de pedidos
 function HistorialPedidos() {
   const [orders, setOrders] = useState([]);
 
@@ -205,12 +144,6 @@ function HistorialPedidos() {
 
 function ClientePage() {
   const { currentUser, logout } = useAuth();
-  const { 
-    direccionesEnvio, 
-    direccionesFacturacion, 
-    eliminarDireccionEnvio, 
-    eliminarDireccionFacturacion 
-  } = useDirecciones();
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState('detalles');
@@ -226,15 +159,6 @@ function ClientePage() {
   }
   
   const telefonoUsuario = currentUser.telefono || '987654321';
-
-  const handleEditarDireccion = (id, tipo) => {
-    // Por ahora, redirigir al formulario de agregar (se puede mejorar más tarde)
-    if (tipo === 'envio') {
-      navigate('/cliente/envio');
-    } else {
-      navigate('/cliente/facturacion');
-    }
-  };
 
   return (
     <div className="container my-5"> 
@@ -274,7 +198,7 @@ function ClientePage() {
           <div className="tab-pane fade show active cliente-content-wrapper"> 
             <div className="row">
               
-              <div className="col-md-2 mb-4 mb-md-0"> 
+              <div className="col-md-4 mb-4 mb-md-0"> 
                 <div className="card cliente-card"> 
                   <div className="card-body">
                     <h5 className="card-title">Detalles de contacto</h5>
@@ -290,60 +214,29 @@ function ClientePage() {
                 </div>
               </div>
 
-              <div className="col-md-10 direcciones-container"> 
-                <div className="card direcciones-card mb-4">
+              <div className="col-md-8"> 
+                <div className="card cliente-card mb-4">
                   <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h5 className="card-title mb-0">Direcciones de envío</h5>
-                      {direccionesEnvio.length < 2 && (
-                        <Link to="/cliente/envio" className="btn btn-outline-primary-custom">
-                          <i className="bi bi-plus-circle me-1"></i> Agregar nueva
-                        </Link>
-                      )}
-                    </div>
+                    <h5 className="card-title">Direcciones de envío</h5>
                     <hr />
+                    <p className="mb-2">Aún no tienes datos de envío. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente cuando realices una compra.</p>
                     
-                    {direccionesEnvio.length === 0 ? (
-                      <p>Aún no tienes datos de envío. Puedes incorporarlos haciendo clic en el botón de arriba o se agregarán automáticamente cuando realices una compra.</p>
-                    ) : (
-                      direccionesEnvio.map((direccion) => (
-                        <DireccionGuardada
-                          key={direccion.id}
-                          direccion={direccion}
-                          tipo="Envío"
-                          onEliminar={eliminarDireccionEnvio}
-                          onEditar={(id) => handleEditarDireccion(id, 'envio')}
-                        />
-                      ))
-                    )}
+                    {/* 👇 Botón "Añadir" es ahora un Link */}
+                    <Link to="/cliente/envio" className="btn btn-outline-primary-custom">
+                      <i className="bi bi-plus-circle me-1"></i> Añadir Dirección de Envío
+                    </Link>
                   </div>
                 </div>
-                
-                <div className="card direcciones-card">
+                <div className="card cliente-card">
                   <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h5 className="card-title mb-0">Direcciones de Facturación</h5>
-                      {direccionesFacturacion.length < 2 && (
-                        <Link to="/cliente/facturacion" className="btn btn-outline-primary-custom">
-                          <i className="bi bi-plus-circle me-1"></i> Agregar nueva
-                        </Link>
-                      )}
-                    </div>
+                    <h5 className="card-title">Direcciones de Facturación</h5>
                     <hr />
+                    <p className="mb-2">Aún no tienes datos de facturación. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente cuando realices una compra.</p>
                     
-                    {direccionesFacturacion.length === 0 ? (
-                      <p>Aún no tienes datos de facturación. Puedes incorporarlos haciendo clic en el botón de arriba o se agregarán automáticamente cuando realices una compra.</p>
-                    ) : (
-                      direccionesFacturacion.map((direccion) => (
-                        <DireccionGuardada
-                          key={direccion.id}
-                          direccion={direccion}
-                          tipo="Facturación"
-                          onEliminar={eliminarDireccionFacturacion}
-                          onEditar={(id) => handleEditarDireccion(id, 'facturacion')}
-                        />
-                      ))
-                    )}
+                    {/* 👇 Botón "Añadir" es ahora un Link */}
+                    <Link to="/cliente/facturacion" className="btn btn-outline-primary-custom">
+                      <i className="bi bi-plus-circle me-1"></i> Añadir dirección de facturación
+                    </Link>
                   </div>
                 </div>
               </div>
