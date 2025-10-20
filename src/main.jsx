@@ -11,7 +11,6 @@ import { AuthProvider } from './context/AuthContext';
 // --- ¡¡LA PARTE MÁS IMPORTANTE!! ---
 // Si estas líneas faltan o están mal escritas, NADA se verá bien.
 // Esta línea carga la grilla (row, col, etc.)
-import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Esta carga los iconos
