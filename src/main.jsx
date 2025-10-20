@@ -7,6 +7,7 @@ import SesionPage from "./pages/SesionPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { BlogProvider } from './context/BlogContext';
 
 
 // --- ¡¡LA PARTE MÁS IMPORTANTE!! ---
@@ -34,7 +35,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <App />
+          <BlogProvider>
+            <App />
+          </BlogProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

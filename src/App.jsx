@@ -27,6 +27,10 @@ import BlogPostPage from './pages/BlogPostPage.jsx';
 import CreateBlogPostPage from './pages/CreateBlogPostPage.jsx';
 import FormularioAddPage from './pages/FormularioAddPage.jsx';
 import FormularioEditarPage from './pages/FormularioEditarPage.jsx';
+import PanelEmpleadoPage from './pages/PanelEmpleadoPage.jsx';
+import GestionEmpleadosPage from './pages/GestionEmpleadosPage.jsx';
+import FormularioAddProductoPage from './pages/FormularioAddProductoPage.jsx';
+import FormularioEditarProductoPage from './pages/FormularioEditarProductoPage.jsx';
 
 function App() {
   return (
@@ -53,6 +57,10 @@ function App() {
           <Route path="/cliente/editar" element={<FormularioEditarPage />} />
           <Route path="/cliente/envio" element={<FormularioAddPage tipo="Envío" />} />
           <Route path="/cliente/facturacion" element={<FormularioAddPage tipo="Facturación" />} />
+          <Route path="/panel-empleado" element={<PanelEmpleadoPage />} />
+          <Route path="/gestion-empleados" element={<GestionEmpleadosPage />} />
+          <Route path="/formulario-add" element={<FormularioAddProductoPage />} />
+          <Route path="/formulario-editar/:id" element={<FormularioEditarProductoPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>

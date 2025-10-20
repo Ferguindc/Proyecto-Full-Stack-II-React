@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { adminProductos } from "../data/adminProductos";
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import GestionEmpleadosPage from './GestionEmpleadosPage';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -10,6 +12,7 @@ import "../styles/styleadmin.css";
 
 export default function AdminPage() {
   const { productos, agregarProducto, eliminarProducto } = adminProductos();
+  const { currentUser } = useAuth();
   const [mensaje, setMensaje] = useState("");
   const navigate = useNavigate(); 
   
@@ -47,7 +50,7 @@ export default function AdminPage() {
     }
 
     const producto = { nombre, precio, categoria, descripcion, tallas };
-    await agregarProducto(producto, imagenArchivo);
+    await agregarProducto(producto, imagenArchivo, currentUser);
 
     setMensaje(`Producto "${nombre}" agregado correctamente!`);
     setNombre(""); 
@@ -110,6 +113,13 @@ export default function AdminPage() {
             onClick={() => cambiarTab('devoluciones')}
           >
             Devoluciones
+          </button>
+          <button 
+            className={`list-group-item mb-1 ${activeTab === 'empleados' ? 'active' : ''}`}
+            onClick={() => cambiarTab('empleados')}
+          >
+            <i className="bi bi-people me-2"></i>
+            Empleados
           </button>
         </div>
         
@@ -231,6 +241,9 @@ export default function AdminPage() {
                     <th>Tallas / Cantidad</th>
                     <th>Categoría</th>
                     <th>Descripción</th>
+                    <th>Stock</th>
+                    <th>Creado Por</th>
+                    <th>Última Modificación</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -240,13 +253,68 @@ export default function AdminPage() {
                       <td>
                         <img src={p.imagen} className="img-tabla" alt={p.nombre} />
                       </td>
-                      <td>{p.nombre}</td>
-                      <td>{p.precio}</td>
-                      <td>{p.tallas.map(t => `${t.talla} x${t.cantidad}`).join(", ")}</td>
-                      <td>{p.categoria}</td>
-                      <td>{p.descripcion}</td>
                       <td>
-                        <button className="btn-eliminar btn-sm" onClick={() => eliminarProducto(index)}>Eliminar</button>
+                        <div className="fw-semibold">{p.nombre}</div>
+                        {p.id && <small className="text-muted">ID: {p.id}</small>}
+                      </td>
+                      <td>
+                        <span className="fw-semibold text-success">
+                          ${p.precio?.toLocaleString()}
+                        </span>
+                      </td>
+                      <td>{p.tallas?.map(t => `${t.talla} x${t.cantidad}`).join(", ") || 'N/A'}</td>
+                      <td>
+                        <span className="badge bg-info">{p.categoria}</span>
+                      </td>
+                      <td>
+                        <div style={{maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                          {p.descripcion}
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`badge ${p.stock > 10 ? 'bg-success' : p.stock > 0 ? 'bg-warning' : 'bg-danger'}`}>
+                          {p.stock || 0} unidades
+                        </span>
+                      </td>
+                      <td>
+                        <div>
+                          <strong>{p.creadorNombre || p.creadoPor || 'Admin'}</strong>
+                          <br />
+                          <small className="text-muted">
+                            {p.fechaCreacion ? new Date(p.fechaCreacion).toLocaleDateString('es-ES') : 'N/A'}
+                          </small>
+                        </div>
+                      </td>
+                      <td>
+                        {p.modificadoPor ? (
+                          <div>
+                            <strong>{p.modificadorNombre || p.modificadoPor}</strong>
+                            <br />
+                            <small className="text-muted">
+                              {p.fechaModificacion ? new Date(p.fechaModificacion).toLocaleDateString('es-ES') : 'N/A'}
+                            </small>
+                          </div>
+                        ) : (
+                          <span className="text-muted">Sin modificaciones</span>
+                        )}
+                      </td>
+                      <td>
+                        <div className="btn-group">
+                          <button 
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() => navigate(`/formulario-editar/${p.id}`)}
+                            title="Editar producto"
+                          >
+                            <i className="bi bi-pencil"></i>
+                          </button>
+                          <button 
+                            className="btn btn-outline-danger btn-sm" 
+                            onClick={() => eliminarProducto(index)}
+                            title="Eliminar producto"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -274,6 +342,11 @@ export default function AdminPage() {
         {activeTab === 'devoluciones' && (
             <h1>Gestión de Devoluciones</h1>
             // ... Aquí iría el contenido de la sección Devoluciones ...
+        )}
+
+        {/* Pestaña EMPLEADOS */}
+        {activeTab === 'empleados' && (
+          <GestionEmpleadosPage />
         )}
 
       </div>
