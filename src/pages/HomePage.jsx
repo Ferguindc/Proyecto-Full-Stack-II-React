@@ -14,21 +14,25 @@ import productoGorro from '../assets/img/gorro.avif';
 import productoSatoru from '../assets/img/satoru 2.jpg';
 import producto6 from '../assets/img/62419863-4d2a-429d-9c26-6e29411812f0.jpg';
 import productoPoleron from '../assets/img/poleron.avif';
-import bannerWeb from '../assets/img/Halloween.png';
+import bannerWeb from '../assets/img/bannersamurai.jpg';
 import colImg1 from '../assets/img/neg1.avif';
 import colImg2 from '../assets/img/rub1.avif';
 import cat1 from '../assets/img/11.png';
 import cat2 from '../assets/img/22.png';
 import cat3 from '../assets/img/223.png';
 import cat4 from '../assets/img/cuadroanime.png';
-import bannerFinal from '../assets/img/BANNER_18_DE_SEPTIEBRE_2025.webp';
+import cat5 from '../assets/img/poleraanime.png';
+import cat6 from '../assets/img/makima.png';
+import cat7 from '../assets/img/power.png';
+import cat8 from '../assets/img/jjk.jpg';
+import bannerFinal from '../assets/img/bannersatoruhalowin.png';
 import videoGorra from '../assets/img/gorras.mp4';
 import video2 from '../assets/img/video2.mp4';
 import video3 from '../assets/img/video3.mp4';
 import video4 from '../assets/img/video4.mp4';
 import Ticker from '../components/Ticker.jsx';
 import video5 from '../assets/img/Premium hoodie with low price, get extra discount now (1).mp4';
-import poleraanime from '../assets/img/poleraanime.avif';
+import poleraanime from '../assets/img/poleraanime.png';
 
 // import ruletaImg from '../assets/img/pngtree-roulette-lottery-wheel-of-fortune-illustration-with-vector-png-image_2992805.jpg';
 
@@ -165,7 +169,10 @@ function HomePage() {
           <span className="visually-hidden">Next</span>
         </button>
       </div>
-    <Ticker/>
+
+      <Ticker />
+      
+
       {/* ===== Sección de Productos (Slider 1) ===== */}
       <section className="productos-destacados animate-fadeIn">
         <h2 className="titulo text-gradient">----------- Seccion de Productos -----------</h2>
@@ -184,29 +191,29 @@ function HomePage() {
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/productos"> <img src={productoPoleron} alt="Producto 2" /></Link>
+              <Link to="/poleras"> <img src={productoPoleron} alt="Producto 2" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/productos"> <img src={poleraanime} alt="Producto 3" /></Link>
+              <Link to="polerass"> <img src={poleraanime} alt="Producto 3" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
+              <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
             <div className="card hover-lift animate-fadeInLeft delay-100">
@@ -215,7 +222,7 @@ function HomePage() {
                 <h3>2 POR $35</h3>
                 <h3>POLERAS BÁSICAS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
             <div className="card hover-lift animate-fadeInLeft delay-200">
@@ -231,7 +238,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>PRODUCTOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
           </div>
@@ -274,62 +281,56 @@ function HomePage() {
             <div className="card">
               <img src={cat1} alt="Categoría 1" />
               <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
-              </div>
-            </div>
-             <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
-              </div>
-            </div>
-             <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
-              </div>
-            </div>
-             <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
-              </div>
-            </div>
-             <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
-              </div>
-            </div>
-
-             <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>2 por $40.000</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+                <h3>CATEGORÍA 1</h3>
+                <p>Diseños Especiales</p>
+                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
             
             <div className="card">
               <img src={cat2} alt="Categoría 2" />
               <div className="card-info">
-                <h3>POLERAS PARA VERANO</h3>
-                {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+                <h3>CATEGORÍA 2</h3>
+                <p>Poleras Premium</p>
+                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
-            {/* ... más cards ... */}
+            
+            <div className="card">
+              <img src={cat3} alt="Categoría 3" />
+              <div className="card-info">
+                <h3>CATEGORÍA 3</h3>
+                <p>Colección Limitada</p>
+                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+            
+            <div className="card">
+              <img src={cat4} alt="Categoría 4" />
+              <div className="card-info">
+                <h3>CATEGORÍA 4</h3>
+                <p>Cuadros Anime</p>
+                <Link to="/cuadros"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+            
+            <div className="card">
+              <img src={cat5} alt="Categoría 5" />
+              <div className="card-info">
+                <h3>CATEGORÍA 5</h3>
+                <p>Anime Collection</p>
+                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+            
+            <div className="card">
+              <img src={cat8} alt="Categoría 8" />
+              <div className="card-info">
+                <h3>CATEGORÍA 8</h3>
+                <p>Jujutsu Kaisen</p>
+                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
           </div>
 
           <button className="btn next" onClick={() => handleScroll(categorySliderRef, 'right')}>❯</button>
@@ -341,11 +342,7 @@ function HomePage() {
         <Link to="/poleras"> <img src={bannerFinal} alt="Banner final" /></Link>
       </div>
 
-      <Ticker>
-        <div className="ticker-item">¡Nuevos productos disponibles!</div>
-        <div className="ticker-item">¡Envío gratis en compras sobre $50.000!</div>
-        <div className="ticker-item">¡Descuentos especiales para miembros!</div>
-      </Ticker>
+      <Ticker />
 
       {/* ===== Sección Videos (Slider 3) - CARRUSEL INFINITO ===== */}
       <section className="shop-feed animate-fadeIn">

@@ -88,3 +88,138 @@
 .ticker-bar.reverse .ticker-text-span .bi {
   color: var(--color-accent, #dc3545); 
 }
+
+/* --- Estilos para ticker personalizado (estilo noticias) --- */
+.ticker-section.news-style {
+  margin: 10px 0;
+}
+
+.ticker-bar.single-bar {
+  background: linear-gradient(135deg, #ff6b00, #8B0000, #000000);
+  color: #ff6b00;
+  transform: rotate(0deg);
+  width: 100%;
+  margin-left: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4), 0 0 30px rgba(139, 0, 0, 0.3);
+  border: 2px solid #ff8c00;
+  position: relative;
+  overflow: hidden;
+  padding: 5px 0;
+}
+
+.ticker-bar.single-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.3), transparent);
+  animation: halloweenShine 3s infinite;
+}
+
+@keyframes halloweenShine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Contenido del ticker personalizado - más rápido */
+.ticker-bar.single-bar .ticker-content {
+  width: 300%; /* Más ancho para más repeticiones */
+  display: flex;
+  animation: scroll-left-fast 15s linear infinite;
+}
+
+@keyframes scroll-left-fast {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%); /* Se mueve un tercio para loop perfecto */
+  }
+}
+
+.ticker-text-span.custom-ticker {
+  width: 33.33%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff8c00;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.1);
+  }
+}
+
+@keyframes halloweenPulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1) rotate(0deg);
+    color: #ffaa00;
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.2) rotate(5deg);
+    color: #ff6b00;
+  }
+  50% { 
+    opacity: 0.9; 
+    transform: scale(1.3) rotate(-5deg);
+    color: #ff8c00;
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(3deg);
+    color: #ffa500;
+  }
+}
+
+.ticker-text-span.custom-ticker .ticker-item {
+  margin-right: 35px;
+  position: relative;
+  animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 107, 0, 0.5);
+  }
+  100% {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.8), 0 0 30px rgba(255, 165, 0, 0.6);
+  }
+}
+
+.ticker-text-span.custom-ticker .ticker-item:not(:last-child)::after {
+  content: '🎃';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  animation: pumpkinBounce 2s ease-in-out infinite;
+}
+
+@keyframes pumpkinBounce {
+  0%, 100% { 
+    transform: translateY(-50%) scale(1);
+  }
+  50% { 
+    transform: translateY(-60%) scale(1.1);
+  }
+}

@@ -5,6 +5,9 @@ import logo from '../assets/img/LOGODEF (2).png';
 import './Navbar.css'; 
 import { useAuth } from '../context/AuthContext'; // 👈 1. Importa useAuth
 import { useCart } from '../context/CartContext';
+import Ticker from '../components/Ticker.jsx';
+
+
 
 function Navbar() {
   // 2. Obtenemos el usuario actual y la función logout del contexto
@@ -17,7 +20,11 @@ function Navbar() {
       <nav className="navbar bg-dark">
         <div className="container-fluid d-flex justify-content-center">
           <p className="tamañoletra text-white mb-0">
-            Envíos gratis sobre $50.000
+                  <Ticker>
+                  <div className="ticker-item">¡Feliz Halloween!</div>
+                  <div className="ticker-item">Envíos gratis sobre $50.000</div>
+                  <div className="ticker-item">¡Feliz Halloween!</div>
+                </Ticker>
           </p>
         </div>
       </nav>

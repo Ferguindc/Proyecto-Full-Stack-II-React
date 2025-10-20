@@ -71,14 +71,14 @@
 .formulario {
   width: 100%;
   max-width: 450px;
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  background: linear-gradient(145deg, #2d3748, #1a202c);
   border-radius: 25px;
   padding: 40px;
   flex-shrink: 0;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 /* Efecto de fondo decorativo */
@@ -89,7 +89,7 @@
   right: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
   transform: rotate(-15deg);
   z-index: 0;
 }
@@ -106,14 +106,12 @@
   border-bottom: 3px solid transparent;
   border-image: linear-gradient(90deg, #667eea, #764ba2);
   border-image-slice: 1;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .formulario form {
@@ -127,7 +125,7 @@
    ========================================== */
 form .username {
   position: relative;
-  border-bottom: 3px solid #e2e8f0;
+  border-bottom: 3px solid #4a5568;
   margin: 35px 0;
   transition: all 0.3s ease;
 }
@@ -144,20 +142,59 @@ form .username:focus-within {
   border: none;
   background: transparent;
   outline: none;
-  color: #2d3748; /* Negro para mejor visibilidad */
+  color: #ffffff !important; /* Texto blanco forzado */
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .username input:focus {
   padding-left: 10px;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(102, 126, 234, 0.6);
+}
+
+.username input:valid {
+  color: #ffffff !important;
+  text-shadow: 0 0 6px rgba(118, 75, 162, 0.5);
+}
+
+/* Asegurar que el texto siempre sea blanco en todos los estados */
+.username input,
+.username input:focus,
+.username input:valid,
+.username input:active,
+.username input[type="text"],
+.username input[type="email"],
+.username input[type="password"] {
+  color: #ffffff !important;
+}
+
+/* Placeholder también blanco */
+.username input::placeholder {
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+
+.username input::-webkit-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+
+.username input::-moz-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+
+.username input:-ms-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7;
 }
 
 .username label {
   position: absolute;
   top: 50%;
   left: 5px;
-  color: #a0aec0;
+  color: #ffffff;
   transform: translateY(-50%);
   font-size: 16px;
   font-weight: 500;
@@ -172,11 +209,8 @@ form .username:focus-within {
   left: 0;
   font-size: 13px;
   font-weight: 700;
-  color: #667eea;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
 }
 
 /* Efecto de línea animada */
@@ -200,7 +234,7 @@ form .username:focus-within {
    ========================================== */
 .recordar {
   margin: 0 0 25px 5px;
-  color: #667eea;
+  color: #ffffff;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
@@ -273,12 +307,12 @@ input[type="submit"]:active {
   margin: 35px 0 0 0;
   text-align: center;
   font-size: 16px;
-  color: #4a5568;
+  color: #ffffff;
   font-weight: 500;
 }
 
 .registrarse a {
-  color: #667eea;
+  color: #ffffff;
   text-decoration: none;
   font-weight: 700;
   transition: all 0.3s ease;

@@ -34,7 +34,38 @@ const TickerTextReverse = () => (
   </span>
 );
 
-function Ticker() {
+// Componente para ticker personalizado (acepta children)
+const CustomTickerText = ({ children }) => {
+  const items = React.Children.toArray(children);
+  
+  return (
+    <span className="ticker-text-span custom-ticker">
+      {items.map((item, index) => (
+        <React.Fragment key={index}>
+          {item}
+        </React.Fragment>
+      ))}
+    </span>
+  );
+};
+
+function Ticker({ children }) {
+  // Si se pasan children, usamos SOLO el ticker personalizado
+  if (children) {
+    return (
+      <section className="ticker-section news-style">
+        <div className="ticker-bar single-bar">
+          <div className="ticker-content">
+            <CustomTickerText>{children}</CustomTickerText>
+            <CustomTickerText>{children}</CustomTickerText>
+            <CustomTickerText>{children}</CustomTickerText>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  // Si no hay children, usamos el ticker original (SIN CAMBIOS)
   return (
     <section className="ticker-section">
       

@@ -147,95 +147,124 @@ function GestionEmpleadosPage() {
             </div>
           )}
 
-          {/* Tabla de empleados */}
-          <div className="card">
-            <div className="card-body">
-              {empleados.length === 0 ? (
-                <div className="text-center py-5">
-                  <i className="bi bi-people display-1 text-muted"></i>
-                  <h4 className="text-muted mt-3">No hay empleados registrados</h4>
-                  <p className="text-muted">Crea el primer empleado para comenzar</p>
-                </div>
-              ) : (
-                <div className="table-responsive">
-                  <table className="table table-hover">
-                    <thead className="table-dark">
-                      <tr>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Cargo</th>
-                        <th>Departamento</th>
-                        <th>Estado</th>
-                        <th>Fecha Creación</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {empleados.map(empleado => (
-                        <tr key={empleado.id}>
-                          <td>
-                            <div className="d-flex align-items-center">
-                              <div className="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                {empleado.nombre.charAt(0)}{empleado.apellido.charAt(0)}
-                              </div>
-                              <div>
-                                <div className="fw-semibold">{empleado.nombre} {empleado.apellido}</div>
-                                {empleado.telefono && (
-                                  <small className="text-muted">
-                                    <i className="bi bi-telephone me-1"></i>
-                                    {empleado.telefono}
-                                  </small>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td>{empleado.email}</td>
-                          <td>
-                            {empleado.cargo && (
-                              <span className="badge bg-info">{empleado.cargo}</span>
-                            )}
-                          </td>
-                          <td>{empleado.departamento || '-'}</td>
-                          <td>
+          {/* Cards de empleados */}
+          {empleados.length === 0 ? (
+            <div className="text-center py-5">
+              <i className="bi bi-people display-1 text-muted"></i>
+              <h4 className="text-muted mt-3">No hay empleados registrados</h4>
+              <p className="text-muted">Crea el primer empleado para comenzar</p>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {empleados.map(empleado => (
+                <div key={empleado.id} className="col-lg-6 col-xl-4">
+                  <div className="card h-100 shadow-sm border-0" style={{borderRadius: '15px'}}>
+                    <div className="card-body p-4">
+                      {/* Header con avatar y estado */}
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <div className="d-flex align-items-center">
+                          <div className="avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                            <span className="fw-bold fs-4">
+                              {empleado.nombre.charAt(0)}{empleado.apellido.charAt(0)}
+                            </span>
+                          </div>
+                          <div>
+                            <h5 className="card-title mb-1 fw-bold">
+                              {empleado.nombre} {empleado.apellido}
+                            </h5>
                             <span className={`badge ${empleado.activo ? 'bg-success' : 'bg-danger'}`}>
                               <i className={`bi bi-${empleado.activo ? 'check-circle' : 'x-circle'} me-1`}></i>
                               {empleado.activo ? 'Activo' : 'Inactivo'}
                             </span>
-                          </td>
-                          <td>
-                            <small className="text-muted">
-                              {new Date(empleado.fechaCreacion).toLocaleDateString('es-ES')}
-                              <br />
-                              <i className="bi bi-person me-1"></i>
-                              {empleado.creadoPor}
-                            </small>
-                          </td>
-                          <td>
-                            <div className="btn-group btn-group-sm">
-                              <button 
-                                className="btn btn-outline-primary"
-                                onClick={() => handleEditar(empleado)}
-                                title="Editar"
-                              >
-                                <i className="bi bi-pencil"></i>
-                              </button>
-                              <button 
-                                className={`btn btn-outline-${empleado.activo ? 'danger' : 'success'}`}
-                                onClick={() => handleToggleActivo(empleado.id)}
-                                title={empleado.activo ? 'Desactivar' : 'Activar'}
-                              >
-                                <i className={`bi bi-${empleado.activo ? 'x-circle' : 'check-circle'}`}></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Información principal */}
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center mb-2">
+                          <i className="bi bi-envelope-fill text-primary me-2"></i>
+                          <span className="text-muted small">Email:</span>
+                        </div>
+                        <p className="mb-0 ms-3">{empleado.email}</p>
+                      </div>
+
+                      {empleado.telefono && (
+                        <div className="mb-3">
+                          <div className="d-flex align-items-center mb-2">
+                            <i className="bi bi-telephone-fill text-success me-2"></i>
+                            <span className="text-muted small">Teléfono:</span>
+                          </div>
+                          <p className="mb-0 ms-3">{empleado.telefono}</p>
+                        </div>
+                      )}
+
+                      {empleado.cargo && (
+                        <div className="mb-3">
+                          <div className="d-flex align-items-center mb-2">
+                            <i className="bi bi-briefcase-fill text-info me-2"></i>
+                            <span className="text-muted small">Cargo:</span>
+                          </div>
+                          <span className="badge bg-info ms-3">{empleado.cargo}</span>
+                        </div>
+                      )}
+
+                      {empleado.departamento && (
+                        <div className="mb-3">
+                          <div className="d-flex align-items-center mb-2">
+                            <i className="bi bi-building text-warning me-2"></i>
+                            <span className="text-muted small">Departamento:</span>
+                          </div>
+                          <p className="mb-0 ms-3">{empleado.departamento}</p>
+                        </div>
+                      )}
+
+                      {/* Información de creación */}
+                      <div className="border-top pt-3 mt-4">
+                        <div className="d-flex align-items-center mb-2">
+                          <i className="bi bi-calendar-event text-secondary me-2"></i>
+                          <span className="text-muted small">Fecha de registro:</span>
+                        </div>
+                        <p className="mb-2 ms-3 small">
+                          {new Date(empleado.fechaCreacion).toLocaleDateString('es-ES')}
+                        </p>
+                        <div className="d-flex align-items-center">
+                          <i className="bi bi-person-plus text-secondary me-2"></i>
+                          <span className="text-muted small">Creado por:</span>
+                        </div>
+                        <p className="mb-0 ms-3 small">{empleado.creadoPor}</p>
+                      </div>
+
+                      {/* Acciones */}
+                      <div className="d-flex gap-2 mt-4">
+                        <button 
+                          className="btn btn-outline-primary flex-fill"
+                          onClick={() => handleEditar(empleado)}
+                        >
+                          <i className="bi bi-pencil me-1"></i>
+                          Editar
+                        </button>
+                        <button 
+                          className="btn btn-outline-primary flex-fill"
+                          onClick={() => {
+                            const accion = empleado.activo ? 'desactivar' : 'activar';
+                            const confirmMessage = `¿Estás seguro de que deseas ${accion} a ${empleado.nombre} ${empleado.apellido}?`;
+                            if (window.confirm(confirmMessage)) {
+                              handleToggleActivo(empleado.id);
+                            }
+                          }}
+                          title={empleado.activo ? 'Desactivar empleado' : 'Activar empleado'}
+                        >
+                          <i className={`bi bi-${empleado.activo ? 'x-circle-fill' : 'check-circle-fill'} me-1`}></i>
+                          {empleado.activo ? 'Desactivar' : 'Activar'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -394,6 +423,62 @@ function GestionEmpleadosPage() {
           height: 40px;
           font-size: 0.8rem;
           font-weight: 600;
+        }
+        
+        .avatar-lg {
+          width: 60px;
+          height: 60px;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+        
+        .card {
+          transition: all 0.3s ease;
+          border: 1px solid rgba(0,0,0,0.1) !important;
+        }
+        
+        .card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        
+        .card-body {
+          background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        }
+        
+        .badge {
+          font-size: 0.75rem;
+          padding: 0.5em 0.75em;
+        }
+        
+        .btn {
+          border-radius: 8px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          border-width: 2px;
+        }
+        
+        .btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline-danger:hover {
+          background-color: #dc3545;
+          border-color: #dc3545;
+          color: white;
+        }
+        
+        .btn-outline-success:hover {
+          background-color: #198754;
+          border-color: #198754;
+          color: white;
+        }
+        
+        .btn-outline-primary:hover {
+          background-color: #0d6efd;
+          border-color: #0d6efd;
+          color: white;
         }
       `}</style>
     </div>
