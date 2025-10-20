@@ -1,52 +1,45 @@
-// src/pages/SesionPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../assets/styles/style2.css";
-
-// Importamos las imágenes laterales
+import "../styles/style2.css";
 import powerImg from '../assets/img/power.png';
 import makimaImg from '../assets/img/makima.png';
+import { useAuth } from '../context/AuthContext'; // 👈 1. Importa el hook useAuth
 
 function SesionPage() {
-  // Estados para controlar los campos del formulario
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
+  const [error, setError] = useState(''); // 👈 2. Estado de error local
   const navigate = useNavigate(); 
+  const { login } = useAuth(); // 👈 3. Obtén la función login del contexto
 
-  // Función para manejar login
   const handleLogin = (e) => {
     e.preventDefault();
+    setError(''); // Limpia errores
 
-    console.log('Iniciando sesión con:', { usuario, contrasena });
+    // 👈 4. Llama a la función login del contexto
+    const success = login(usuario, contrasena);
 
-    // Validación simple de usuario y contraseña
-    if (usuario === "admin" && contrasena === "admin") {
-      navigate("/admin"); // Redirige a AdminPage
-    } else {
-      const errorElement = document.getElementById("loginError");
-      if (errorElement) errorElement.textContent = "Credenciales incorrectas.";
+    if (!success) {
+      setError("Credenciales incorrectas."); // 👈 5. Muestra error si falla
     }
+    // Si tiene éxito, la función 'login' del contexto se encargará de redirigir
   };
 
   return (
     <div className="contenedor-principal">
-
-      {/* Imagen izquierda */}
       <div className="imagen-lateral">
         <img
           src={powerImg}
           alt="Power"
           style={{ cursor: "pointer" }}
-          onClick={() => navigate("/")} // Navega correctamente
+          onClick={() => navigate("/")}
         />
       </div>
 
-      {/* Formulario central */}
       <div className="formulario">
         <h1>Inicio de Sesión SIGMA</h1>
         <form id="loginForm" onSubmit={handleLogin}>
           
-          {/* Campo de Usuario */}
           <div className="username">
             <input
               type="text"
@@ -58,7 +51,6 @@ function SesionPage() {
             <label>E-MAIL</label>
           </div>
 
-          {/* Campo de Contraseña */}
           <div className="username">
             <input
               type="password"
@@ -71,7 +63,10 @@ function SesionPage() {
           </div>
 
           <div className="recordar">Restablecer contraseña</div>
-          <p id="loginError" style={{ color: 'red' }}></p>
+          
+          {/* 👈 6. Muestra el error local */}
+          {error && <p id="loginError" style={{ color: 'red' }}>{error}</p>}
+          
           <input type="submit" value="Iniciar sesión" />
 
           <div className="registrarse">
@@ -80,16 +75,14 @@ function SesionPage() {
         </form>
       </div>
 
-      {/* Imagen derecha */}
       <div className="imagen-lateral">
         <img
           src={makimaImg}
           alt="Makima"
           style={{ cursor: "pointer" }}
-          onClick={() => navigate("/")} // Navega correctamente a inicio
+          onClick={() => navigate("/")}
         />
       </div>
-
     </div>
   );
 }

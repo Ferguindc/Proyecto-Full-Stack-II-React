@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 
 
 // Importamos nuestros componentes
-import Navbar from './components/Navbar.jsx';
+import Navbar from './components/navbar.jsx';
 // (Aquí importaremos el Footer cuando lo creemos)
 
 
@@ -18,7 +18,6 @@ import HomePage from './pages/HomePage.jsx'
 import Footer from './components/Footer.jsx';
 import AdminPage from "./pages/AdminPage.jsx"; 
 import RegistroPage from './pages/RegistroPage.jsx';
-import SingleProductPage from './pages/SingleProductPage.jsx';
 
 function App() {
   return (
@@ -36,7 +35,6 @@ function App() {
           <Route path="/sesion" element={<SesionPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/registro" element={<RegistroPage />} />
-          <Route path="/producto/:id" element={<SingleProductPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>

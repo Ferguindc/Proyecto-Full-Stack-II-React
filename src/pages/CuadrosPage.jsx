@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import "../assets/styles/style3.css";
+=======
+import "../styles/style3.css";
+
+// 1. IMPORTAMOS LA LISTA CENTRAL
+>>>>>>> b34ad0d45450610dde6669d06994f285035bd969
 import { allProducts } from '../data/products.js';
 
 // Filtramos para tener solo los cuadros
