@@ -24,6 +24,7 @@ import CarritoPage from './pages/CarritoPage.jsx';
 import CartSidebar from './components/CartSidebar.jsx';
 import FormularioAddPage from './pages/FormularioAddPage.jsx';
 import FormularioEditarPage from './pages/FormularioEditarPage.jsx';
+import PreguntasFrecuentesPage from './pages/PreguntasFrecuentesPage.jsx';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route path="/cliente/editar" element={<FormularioEditarPage />} />
           <Route path="/cliente/envio" element={<FormularioAddPage tipo="Envío" />} />
           <Route path="/cliente/facturacion" element={<FormularioAddPage tipo="Facturación" />} />
+          <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>
