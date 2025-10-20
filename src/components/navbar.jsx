@@ -4,10 +4,12 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/img/LOGODEF (2).png';
 import './Navbar.css'; 
 import { useAuth } from '../context/AuthContext'; // 👈 1. Importa useAuth
+import { useCart } from '../context/CartContext';
 
 function Navbar() {
   // 2. Obtenemos el usuario actual y la función logout del contexto
   const { currentUser, logout } = useAuth();
+  const { getTotalItems, toggleCart } = useCart();
 
   return (
     <>
@@ -67,7 +69,23 @@ function Navbar() {
 
             {/* ----- INICIO DE LA MODIFICACIÓN ----- */}
             {/* 3. Usamos currentUser (del contexto) en lugar de isLoggedIn (del estado local) */}
-            <ul className="navbar-nav mb-2 mb-lg-0"> 
+            <ul className="navbar-nav mb-2 mb-lg-0">
+              {/* Carrito */}
+              <li className="nav-item">
+                <button 
+                  className="nav-link btn btn-link position-relative"
+                  onClick={toggleCart}
+                  style={{ border: 'none', background: 'none', color: 'inherit' }}
+                >
+                  <i className="bi bi-bag"></i>
+                  {getTotalItems() > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </button>
+              </li>
+              
               {currentUser ? (
                 // --- MENÚ SI ESTÁ LOGUEADO ---
                 <li className="nav-item dropdown">

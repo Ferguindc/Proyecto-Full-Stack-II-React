@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/style3.css";
+import ProductCard from '../components/ProductCard';
 import { allProducts } from '../data/products.js';
 
 // Filtramos para tener solo los cuadros

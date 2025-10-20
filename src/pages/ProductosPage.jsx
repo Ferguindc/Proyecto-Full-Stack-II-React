@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // <-- Importamos Link
 import "../styles/style3.css";
+import ProductCard from '../components/ProductCard';
 
 // 1. IMPORTAMOS LA LISTA CENTRAL
 import { allProducts } from '../data/products.js';
@@ -128,50 +129,11 @@ function ProductosPage() {
           
 
           {/* --- GRILLA DE PRODUCTOS --- */}
-          <div id="product-grid" className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div id="product-grid" className="row">
             
             {productos.length > 0 ? (
               productos.map((producto) => (
-                <div 
-                  className="col product-item" 
-                  key={producto.id} 
-                >
-                  {/* El <Link> usa el ID del producto para la URL */}
-                  <Link to={`/producto/${producto.id}`} className="product-link">
-                    <div className="card h-100 product-card">
-                      <span className="badge bg-danger">Oferta</span>
-                      {/* --------Carrusel ---------*/}
-                      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                          <div class="carousel-item active">
-                           <img style ={{height:"300px"}} src={producto.images[0]} className="card-img-top" alt={producto.nombre} />
-                          </div>
-                          <div class="carousel-item">
-                            <img style ={{height:"300px"}} src={producto.images[1]} className="card-img-top" alt={producto.nombre} />
-                          </div>
-                          <div class="carousel-item">
-                            <img style ={{height:"300px"}} src={producto.images[2]} className="card-img-top" alt={producto.nombre} />
-                          </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                      <div className="card-body d-flex flex-column">
-                        <h5 className="card-title">{producto.nombre}</h5>
-                        <p className="card-text text-muted mt-auto">
-                          <span className="new-price">${producto.precio.toLocaleString('es-CL')}</span>
-                        </p>
-                        <div className="btn btn-primary w-100 mt-2">Ver detalles</div>
-                      </div>
-                    </div>
-                  </Link> 
-                </div>
+                <ProductCard key={producto.id} producto={producto} />
               ))
             ) : (
               // Mensaje de "no resultados"

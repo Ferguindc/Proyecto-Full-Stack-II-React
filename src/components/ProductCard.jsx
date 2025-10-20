@@ -1,0 +1,127 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import './ProductCard.css';
+
+function ProductCard({ producto }) {
+  const { addToCart, toggleCart } = useCart();
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [showSizeSelector, setShowSizeSelector] = useState(false);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    }).format(price);
+  };
+
+  const handleAddToCart = (e) => {
+    e.preventDefault(); // Evitar que el link se active
+    e.stopPropagation();
+    
+    // Crear el producto adaptado para el carrito
+    const cartProduct = {
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.images[0], // Usamos la primera imagen
+      categoria: producto.categoria
+    };
+    
+    addToCart(cartProduct, 1, selectedSize);
+    
+    // Mostrar el carrito lateral después de agregar
+    toggleCart();
+    
+    // Ocultar selector de talla
+    setShowSizeSelector(false);
+  };
+
+  const handleQuickAdd = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowSizeSelector(!showSizeSelector);
+  };
+
+  return (
+    <div className="col-md-6 col-lg-4 mb-4">
+      <div className="card product-card h-100">
+        <Link to={`/producto/${producto.id}`} className="text-decoration-none">
+          <div className="card-img-container">
+            <img 
+              src={producto.images[0]} 
+              className="card-img-top" 
+              alt={producto.nombre}
+            />
+            <div className="card-overlay">
+              <button 
+                className="btn btn-primary btn-sm quick-add-btn"
+                onClick={handleQuickAdd}
+                title="Agregar al carrito"
+              >
+                <i className="bi bi-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </Link>
+        
+        <div className="card-body d-flex flex-column">
+          <Link to={`/producto/${producto.id}`} className="text-decoration-none text-dark">
+            <h5 className="card-title">{producto.nombre}</h5>
+            <p className="card-text text-muted small">{producto.descripcion}</p>
+            <p className="card-price fw-bold text-primary">
+              {formatPrice(producto.precio)}
+            </p>
+          </Link>
+          
+          {/* Selector de talla rápido */}
+          {showSizeSelector && (
+            <div className="size-selector-quick mb-2">
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <small className="fw-bold">Selecciona talla:</small>
+                <button 
+                  className="btn-close btn-sm"
+                  onClick={() => setShowSizeSelector(false)}
+                ></button>
+              </div>
+              <div className="size-buttons-quick d-flex gap-1 mb-2">
+                {['S', 'M', 'L', 'XL'].map(size => (
+                  <button
+                    key={size}
+                    className={`btn btn-sm ${selectedSize === size ? 'btn-primary' : 'btn-outline-primary'}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedSize(size);
+                    }}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              <button 
+                className="btn btn-success btn-sm w-100"
+                onClick={handleAddToCart}
+              >
+                <i className="bi bi-cart-plus me-1"></i>
+                Agregar al Carrito
+              </button>
+            </div>
+          )}
+          
+          <div className="mt-auto">
+            <Link 
+              to={`/producto/${producto.id}`} 
+              className="btn btn-outline-primary w-100"
+            >
+              Ver Detalles
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ProductCard;
