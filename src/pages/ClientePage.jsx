@@ -207,7 +207,7 @@ function ClientePage() {
                     <p><small>TELÉFONO</small><br />{telefonoUsuario}</p>
                     
                     {/* 👇 Botón "Editar" es ahora un Link */}
-                    <Link to="/cuenta/editar" className="btn btn-editar">
+                    <Link to="/cliente/editar" className="btn btn-editar">
                       <i className="bi bi-pencil-fill me-2"></i> Editar
                     </Link>
                   </div>
@@ -219,10 +219,10 @@ function ClientePage() {
                   <div className="card-body">
                     <h5 className="card-title">Direcciones de envío</h5>
                     <hr />
-                    <p className="mb-2">Aún no tienes datos de envío...</p>
+                    <p className="mb-2">Aún no tienes datos de envío. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente cuando realices una compra.</p>
                     
                     {/* 👇 Botón "Añadir" es ahora un Link */}
-                    <Link to="/cuenta/envio" className="btn btn-outline-primary-custom">
+                    <Link to="/cliente/envio" className="btn btn-outline-primary-custom">
                       <i className="bi bi-plus-circle me-1"></i> Añadir Dirección de Envío
                     </Link>
                   </div>
@@ -231,10 +231,10 @@ function ClientePage() {
                   <div className="card-body">
                     <h5 className="card-title">Direcciones de Facturación</h5>
                     <hr />
-                    <p className="mb-2">Aún no tienes datos de facturación...</p>
+                    <p className="mb-2">Aún no tienes datos de facturación. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente cuando realices una compra.</p>
                     
                     {/* 👇 Botón "Añadir" es ahora un Link */}
-                    <Link to="/cuenta/facturacion" className="btn btn-outline-primary-custom">
+                    <Link to="/cliente/facturacion" className="btn btn-outline-primary-custom">
                       <i className="bi bi-plus-circle me-1"></i> Añadir dirección de facturación
                     </Link>
                   </div>
