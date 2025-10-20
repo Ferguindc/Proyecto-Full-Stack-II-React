@@ -22,11 +22,9 @@ import SingleProductPage from './pages/SingleProductPage.jsx';
 import ClientePage from './pages/ClientePage.jsx';
 import CarritoPage from './pages/CarritoPage.jsx';
 import CartSidebar from './components/CartSidebar.jsx';
-import BlogPage from './pages/BlogPage.jsx';
-import BlogPostPage from './pages/BlogPostPage.jsx';
-import CreateBlogPostPage from './pages/CreateBlogPostPage.jsx';
 import FormularioAddPage from './pages/FormularioAddPage.jsx';
 import FormularioEditarPage from './pages/FormularioEditarPage.jsx';
+import PreguntasFrecuentesPage from './pages/PreguntasFrecuentesPage.jsx';
 
 function App() {
   return (
@@ -44,15 +42,13 @@ function App() {
           <Route path="/sesion" element={<SesionPage />} />
           <Route path="/cliente" element={<ClientePage />} />
           <Route path="/carrito" element={<CarritoPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/blog/crear" element={<CreateBlogPostPage />} />
-          <Route path="/blog/:id" element={<BlogPostPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/registro" element={<RegistroPage />} />
           <Route path="/producto/:id" element={<SingleProductPage />} />
           <Route path="/cliente/editar" element={<FormularioEditarPage />} />
           <Route path="/cliente/envio" element={<FormularioAddPage tipo="Envío" />} />
           <Route path="/cliente/facturacion" element={<FormularioAddPage tipo="Facturación" />} />
+          <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           {/* Más adelante agregaremos las otras rutas aquí */}
         </Routes>
       </main>
