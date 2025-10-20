@@ -1,15 +1,14 @@
-// src/components/Navbar.jsx
-
-// 1. Importamos NavLink además de Link
+// 1. Importamos NavLink, Link y AÑADIMOS useAuth
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom'; 
 import logo from '../assets/img/LOGODEF (2).png';
 import './Navbar.css'; 
-
-// Asegúrate de tener los íconos de Bootstrap importados en tu App.jsx o index.js
-// import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useAuth } from '../context/AuthContext'; // 👈 1. Importa useAuth
 
 function Navbar() {
+  // 2. Obtenemos el usuario actual y la función logout del contexto
+  const { currentUser, logout } = useAuth();
+
   return (
     <>
       {/* ----- Barra de envíos ----- */}
@@ -32,12 +31,9 @@ function Navbar() {
           
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             
-            {/* 2. Usamos 'mx-auto' (margin horizontal automático) para centrar la lista */}
+            {/* Links centrados */}
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
-              
-              {/* 3. Reemplazamos <Link> por <NavLink> para el manejo automático de la clase 'active' */}
               <li className="nav-item">
-                {/* Añadimos 'end' para que 'Inicio' (/) no esté activo en otras rutas como /cuadros */}
                 <NavLink className="nav-link" to="/" end>
                   Inicio
                 </NavLink>
@@ -68,38 +64,75 @@ function Navbar() {
                 </a>
               </li>
             </ul>
-            
-            {/* 1. Barra de búsqueda y botón eliminados */}
 
-            {/* Menú de Acceso (Dropdown) - 'ms-auto' lo empuja al final si fuera necesario,
-                pero al estar después del 'mx-auto' de los links, ya queda a la derecha. */}
+            {/* ----- INICIO DE LA MODIFICACIÓN ----- */}
+            {/* 3. Usamos currentUser (del contexto) en lugar de isLoggedIn (del estado local) */}
             <ul className="navbar-nav mb-2 mb-lg-0"> 
-              <li className="nav-item dropdown">
-                <a 
-                  className="nav-link dropdown-toggle" 
-                  href="#"
-                  role="button" 
-                  data-bs-toggle="dropdown" 
-                  aria-expanded="false"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <i className="bi bi-person-circle me-2"></i> 
-                  Acceso
-                </a>
-                <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                  <li>
-                    <Link className="dropdown-item" to="/sesion">
-                      Ingresar
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/registro">
-                      Crear cuenta
-                    </Link>
-                  </li>
-                </ul>
-              </li>
+              {currentUser ? (
+                // --- MENÚ SI ESTÁ LOGUEADO ---
+                <li className="nav-item dropdown">
+                  <a 
+                    className="nav-link dropdown-toggle" 
+                    href="#"
+                    role="button" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <i className="bi bi-person-circle me-2"></i> 
+                    {/* Opcional: Mostrar email del admin o "Mi Cuenta" */}
+                    {currentUser.role === 'admin' ? 'Admin' : 'Mi cuenta'}
+                  </a>
+                  <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                    <li>
+                      <Link className="dropdown-item" to="/cliente">
+                        Ir a Mi cuenta
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/cliente/editar">
+                        Editar mis detalles
+                      </Link>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      {/* 4. Usamos la función logout del contexto */}
+                      <button className="dropdown-item" onClick={logout}>
+                        Cerrar sesión
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              ) : (
+                // --- MENÚ SI NO ESTÁ LOGUEADO ---
+                <li className="nav-item dropdown">
+                  <a 
+                    className="nav-link dropdown-toggle" 
+                    href="#"
+                    role="button" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <i className="bi bi-person-circle me-2"></i> 
+                    Acceso
+                  </a>
+                  <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                    <li>
+                      <Link className="dropdown-item" to="/sesion">
+                        Ingresar
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/registro">
+                        Crear cuenta
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              )}
             </ul>
+            {/* ----- FIN DE LA MODIFICACIÓN ----- */}
             
           </div>
         </div>

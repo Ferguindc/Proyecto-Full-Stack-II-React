@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import "../assets/styles/style3.css";
+import "../styles/style3.css";
 
 // 1. IMPORTAMOS LA LISTA CENTRAL
 import { allProducts } from '../data/products.js';

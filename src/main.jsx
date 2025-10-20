@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import SesionPage from "./pages/SesionPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import { AuthProvider } from './context/AuthContext';
 
 
 // --- ¡¡LA PARTE MÁS IMPORTANTE!! ---
@@ -12,6 +13,7 @@ import AdminPage from "./pages/AdminPage.jsx";
 // Esta línea carga la grilla (row, col, etc.)
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 // Esta carga los iconos
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -29,7 +31,9 @@ import App from './App.jsx';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

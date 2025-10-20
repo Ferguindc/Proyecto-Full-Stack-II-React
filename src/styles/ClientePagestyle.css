@@ -1,0 +1,155 @@
+/* src/styles/ClientePagestyle.css */
+
+/* Contenedor principal de la página (ya no el .cliente-container) */
+/* El .container de Bootstrap gestiona el ancho */
+
+/* Contenedor del contenido de la pestaña activa para aplicar el padding y sombra */
+.cliente-content-wrapper {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+/* Cabecera con Email y botón Cerrar Sesión */
+.cliente-header {
+  /* No border-bottom aquí, ya que las pestañas van debajo */
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem; /* Menos espacio antes de las pestañas */
+  padding-left: 15px; /* Alineación con el contenido principal */
+  padding-right: 15px; /* Alineación con el contenido principal */
+}
+
+.cliente-header h2 {
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: #212529;
+}
+
+/* --- ESTILOS DE NAVEGACIÓN DE PESTAÑAS (HORIZONTAL) --- */
+.cliente-tabs {
+  border-bottom: 1px solid #dee2e6; /* Borde inferior de las pestañas */
+  margin-bottom: 1.5rem; /* Espacio debajo de las pestañas */
+  padding-left: 15px; /* Alineación con el contenido */
+  padding-right: 15px; /* Alineación con el contenido */
+}
+
+.cliente-tabs .nav-link {
+  color: #6c757d; /* Color por defecto de los enlaces */
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  margin-bottom: -1px; /* Para que el borde se superponga */
+  padding: 0.5rem 1rem; /* Ajustar padding */
+}
+
+.cliente-tabs .nav-link:hover {
+  border-color: #e9ecef #e9ecef #dee2e6;
+  background-color: #e9f4f8; /* Un color suave al pasar el mouse */
+  color: #0d6efd; /* Azul al pasar el mouse */
+}
+
+.cliente-tabs .nav-link.active {
+  color: #003366; /* Color de texto para la pestaña activa */
+  background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+  border-color: #dee2e6 #dee2e6 #ffffff; /* Borde blanco inferior para la pestaña activa */
+  font-weight: 600;
+}
+
+/* --- ESTILOS DE BOTONES --- */
+
+/* Botón "Cerrar sesión" */
+.btn-cerrar-sesion {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  padding: 0.45rem 1rem;
+  transition: background-color 0.2s ease;
+}
+.btn-cerrar-sesion:hover {
+  background-color: #5a6268;
+}
+
+/* Botón "Editar" (Blanco con borde celeste) */
+.btn-editar {
+  background-color: #ffffff;
+  border: 1px solid #c2d9e8;
+  color: #003366; 
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  width: auto; /* Ajustar ancho al contenido */
+  margin: 0 auto; /* Centrar horizontalmente si el contenedor es flex */
+}
+.btn-editar:hover {
+  background-color: #f8f9fa;
+  border-color: #a9cbe0;
+}
+
+/* Botones celestes "Añadir Dirección" (Celeste con texto azul) */
+.btn-outline-primary-custom {
+  background-color: #e9f4f8; 
+  border: 1px solid #c2d9e8; 
+  color: #003366; 
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 4px; 
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  width: auto; /* Ajustar ancho al contenido */
+  margin: 0 auto; /* Centrar horizontalmente si el contenedor es flex */
+}
+.btn-outline-primary-custom:hover {
+  background-color: #d8ecf5; 
+  border-color: #a9cbe0; 
+  color: #002244;
+}
+
+/* --- FIN DE ESTILOS DE BOTONES --- */
+
+
+/* Estilos para las tarjetas de contenido */
+.cliente-card {
+  border: 1px solid #e9ecef; /* Borde más sutil */
+  border-radius: 8px;
+}
+
+.cliente-content-wrapper .card-title {
+  font-weight: 600;
+  color: #1d1f21;
+  font-size: 1.2rem;
+}
+
+.cliente-content-wrapper p {
+  color: #495057; /* Texto más oscuro para mejor legibilidad */
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Títulos de sección (Direcciones de Envío/Facturación) */
+h4 {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem; /* Ligeramente más grande */
+}
+
+/* Etiquetas "CORREO ELECTRÓNICO", "TELÉFONO" */
+.cliente-content-wrapper p small {
+  text-transform: uppercase;
+  color: #6c757d;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Placeholder para cuando no hay direcciones */
+.empty-address-card {
+  background-color: #f8f9fa; /* Fondo gris claro */
+  border: 1px dashed #ced4da; /* Borde punteado */
+}

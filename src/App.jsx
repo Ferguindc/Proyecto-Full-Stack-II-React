@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 
 
 // Importamos nuestros componentes
-import Navbar from './components/Navbar.jsx';
+import Navbar from './components/navbar.jsx';
 // (Aquí importaremos el Footer cuando lo creemos)
 
 
@@ -16,6 +16,7 @@ import HomePage from './pages/HomePage.jsx'
 import Footer from './components/Footer.jsx';
 import AdminPage from "./pages/AdminPage.jsx"; 
 import RegistroPage from './pages/RegistroPage.jsx';
+import ClientePage from './pages/ClientePage.jsx';
 
 function App() {
   return (
@@ -31,7 +32,8 @@ function App() {
           <Route path="/sesion" element={<SesionPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/registro" element={<RegistroPage />} />
-          {/* Más adelante agregaremos las otras rutas aquí */}
+          <Route path="/cliente" element={<ClientePage />} />
+          <Route path="/cliente/editar" element={<ClientePage />} />
         </Routes>
       </main>
     <Footer />
