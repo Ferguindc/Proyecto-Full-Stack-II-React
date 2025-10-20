@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // 👈 Importa Link
 
 import '../styles/ClientePagestyle.css'; 
 
@@ -60,60 +60,45 @@ function ClientePage() {
           <div className="tab-pane fade show active cliente-content-wrapper"> 
             <div className="row">
               
-              {/* Columna Izquierda (CUADRADO) - 4 de 12 */}
               <div className="col-md-4 mb-4 mb-md-0"> 
                 <div className="card cliente-card"> 
                   <div className="card-body">
                     <h5 className="card-title">Detalles de contacto</h5>
                     <hr />
-                    <p>
-                      <small>CORREO ELECTRÓNICO</small><br />
-                      {currentUser.email}
-                    </p>
-                    <p>
-                      <small>TELÉFONO</small><br />
-                      {telefonoUsuario}
-                    </p>
-                    {/* Botón "Editar" (ya no centrado) */}
-                    <button className="btn btn-editar">
+                    <p><small>CORREO ELECTRÓNICO</small><br />{currentUser.email}</p>
+                    <p><small>TELÉFONO</small><br />{telefonoUsuario}</p>
+                    
+                    {/* 👇 Botón "Editar" es ahora un Link */}
+                    <Link to="/cuenta/editar" className="btn btn-editar">
                       <i className="bi bi-pencil-fill me-2"></i> Editar
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
 
-              {/* Columna Derecha (RECTÁNGULOS) - 8 de 12 */}
               <div className="col-md-8"> 
-                
-                {/* --- CAMBIO AQUÍ --- */}
-                {/* Tarjeta de Direcciones de Envío */}
-                <div className="card cliente-card mb-4"> {/* Solo 'card' y 'cliente-card' */}
-                  <div className="card-body"> {/* Añadido card-body */}
-                    <h5 className="card-title">Direcciones de envío</h5> {/* Título movido adentro */}
-                    <hr /> {/* Añadido hr */}
-                    <p className="mb-2">
-                      Aún no tienes datos de envío. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente when realices una compra.
-                    </p>
-                    {/* Botón "Añadir" (ya no centrado) */}
-                    <button className="btn btn-outline-primary-custom">
+                <div className="card cliente-card mb-4">
+                  <div className="card-body">
+                    <h5 className="card-title">Direcciones de envío</h5>
+                    <hr />
+                    <p className="mb-2">Aún no tienes datos de envío...</p>
+                    
+                    {/* 👇 Botón "Añadir" es ahora un Link */}
+                    <Link to="/cuenta/envio" className="btn btn-outline-primary-custom">
                       <i className="bi bi-plus-circle me-1"></i> Añadir Dirección de Envío
-                    </button>
+                    </Link>
                   </div>
                 </div>
-
-                {/* --- CAMBIO AQUÍ --- */}
-                {/* Tarjeta de Direcciones de Facturación */}
-                <div className="card cliente-card"> {/* Solo 'card' y 'cliente-card' */}
-                  <div className="card-body"> {/* Añadido card-body */}
-                    <h5 className="card-title">Direcciones de Facturación</h5> {/* Título movido adentro */}
-                    <hr /> {/* Añadido hr */}
-                    <p className="mb-2">
-                      Aún no tienes datos de facturación. Puedes incorporarlos haciendo clic en el botón de abajo o se agregarán automáticamente when realices una compra.
-                    </p>
-                    {/* Botón "Añadir" (ya no centrado) */}
-                    <button className="btn btn-outline-primary-custom">
+                <div className="card cliente-card">
+                  <div className="card-body">
+                    <h5 className="card-title">Direcciones de Facturación</h5>
+                    <hr />
+                    <p className="mb-2">Aún no tienes datos de facturación...</p>
+                    
+                    {/* 👇 Botón "Añadir" es ahora un Link */}
+                    <Link to="/cuenta/facturacion" className="btn btn-outline-primary-custom">
                       <i className="bi bi-plus-circle me-1"></i> Añadir dirección de facturación
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
