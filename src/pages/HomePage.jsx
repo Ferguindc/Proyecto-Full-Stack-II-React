@@ -249,7 +249,7 @@ function HomePage() {
           <div className="texto">
             <h3>NUEVA ERA 'CORAL'</h3>
             {/* --- ENLACE CORREGIDO --- */}
-            <Link to="/productos"><button>COMPRA AHORA</button></Link>
+            <Link to="/blog"><button>VER BLOG</button></Link>
           </div>
         </div>
         <div className="col">
@@ -257,7 +257,7 @@ function HomePage() {
           <div className="texto">
             <h3>LOITER 'VERANO'</h3>
             {/* --- ENLACE CORREGIDO --- */}
-            <Link to="/productos"> <button>COMPRA AHORA</button></Link>
+            <Link to="/blog"> <button>VER BLOG</button></Link>
           </div>
         </div>
       </div>

@@ -283,15 +283,22 @@
 }
 
 .form-control {
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 12px 15px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border-radius: 10px !important;
+  border: 2px solid #e2e8f0 !important;
+  padding: 12px 15px !important;
+  transition: all 0.3s ease !important;
+  background: #ffffff !important;
+  color: #2d3748 !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
 }
 
 .form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
+  background: #ffffff !important;
+  color: #2d3748 !important;
+  transform: translateY(-1px) !important;
 }
 
 .payment-methods {

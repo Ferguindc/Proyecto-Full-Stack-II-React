@@ -1,0 +1,679 @@
+/* ==========================================
+   ESTILOS UNIFICADOS PARA TODA LA APLICACIÓN
+   ========================================== */
+
+/* ==========================================
+   BOTONES ESTANDARIZADOS
+   ========================================== */
+
+/* ==========================================
+   BOTONES DE HOMEPAGE (MANTENER ESTILOS ORIGINALES)
+   ========================================== */
+
+/* Botones de navegación del slider (flechas) - Estilos originales */
+.productos-destacados .btn.prev,
+.productos-destacados .btn.next,
+.slider-container .btn {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid #000000 !important;
+  font-size: 28px !important;
+  cursor: pointer !important;
+  padding: 15px !important;
+  border-radius: 50% !important;
+  width: 50px !important;
+  height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: normal !important;
+}
+
+.productos-destacados .btn.prev:hover,
+.productos-destacados .btn.next:hover,
+.slider-container .btn:hover {
+  background: #000000 !important;
+  color: white !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Botones específicos de HomePage - Colores originales */
+.card-info button,
+.texto button,
+.btn-gradient {
+  background: white !important;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 10px 20px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-info button:hover,
+.texto button:hover,
+.btn-gradient:hover {
+  background: #000000 !important;
+  color: white !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3) !important;
+  text-decoration: none !important;
+}
+
+/* Botones de productos (azules con blanco) - Solo para otras páginas */
+.btn-product,
+.btn-primary:not(.productos-destacados .btn-primary):not(.contenedor .btn-primary) {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  color: white !important;
+  border: 2px solid #007bff !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.btn-product:hover,
+.btn-primary:not(.productos-destacados .btn-primary):not(.contenedor .btn-primary):hover {
+  background: linear-gradient(135deg, #0056b3, #004085) !important;
+  color: white !important;
+  border-color: #0056b3 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4) !important;
+  text-decoration: none !important;
+}
+
+/* Botones secundarios (grises/transparentes) */
+.btn-secondary,
+.btn-outline-secondary {
+  background: transparent !important;
+  color: #6c757d !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+  background: #6c757d !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+  text-decoration: none !important;
+}
+
+/* Botones de tamaño pequeño */
+.btn-sm {
+  padding: 8px 16px !important;
+  font-size: 12px !important;
+  border-radius: 20px !important;
+}
+
+/* Botones de tamaño grande */
+.btn-lg {
+  padding: 14px 28px !important;
+  font-size: 16px !important;
+  border-radius: 30px !important;
+}
+
+/* ==========================================
+   CAMPOS DE TEXTO ESTANDARIZADOS
+   ========================================== */
+
+/* Todos los inputs de texto */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea,
+select,
+.form-control {
+  background: #ffffff !important;
+  color: #2d3748 !important; /* Negro para buena visibilidad */
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Estados de foco para inputs */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+  outline: none !important;
+  border-color: #007bff !important;
+  background: #ffffff !important;
+  color: #2d3748 !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Placeholders */
+input::placeholder,
+textarea::placeholder {
+  color: #a0aec0 !important;
+  font-weight: 400 !important;
+}
+
+/* ==========================================
+   ESTILOS ESPECIALES PARA FORMULARIOS
+   ========================================== */
+
+/* Botones de submit en formularios */
+input[type="submit"],
+button[type="submit"] {
+  width: 100% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 15px 20px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+}
+
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6) !important;
+}
+
+/* ==========================================
+   BOTONES DE BLOG
+   ========================================== */
+
+/* Botón de crear blog post */
+.btn-create-blog {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  color: white !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+}
+
+.btn-create-blog:hover {
+  background: linear-gradient(135deg, #218838, #1a7f64) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* ==========================================
+   BOTONES DEL CARRITO
+   ========================================== */
+
+/* Botones del carrito */
+.btn-cart {
+  background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  color: white !important;
+  border: 2px solid #dc3545 !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+.btn-cart:hover {
+  background: linear-gradient(135deg, #c82333, #a71e2a) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* ==========================================
+   ARREGLOS ESPECÍFICOS PARA COMPONENTES
+   ========================================== */
+
+/* Arreglar inputs en formularios de sesión/registro */
+.username input {
+  color: #2d3748 !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  padding: 12px 5px !important;
+}
+
+.username input:focus {
+  border-bottom-color: #007bff !important;
+  background: transparent !important;
+}
+
+/* Botones en modals y overlays */
+.modal .btn,
+.overlay .btn {
+  margin: 5px !important;
+}
+
+/* ==========================================
+   BOOTSTRAP OVERRIDES
+   ========================================== */
+
+/* Override Bootstrap button styles */
+.btn:not(.btn-outline-white):not(.btn-ini):not(.navbar-toggler):not(.carousel-control-prev):not(.carousel-control-next) {
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  padding: 10px 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Específicamente para botones primarios de Bootstrap */
+.btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border-color: #007bff !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3, #004085) !important;
+  border-color: #0056b3 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4) !important;
+}
+
+/* Específicamente para botones secundarios de Bootstrap */
+.btn-secondary {
+  background: transparent !important;
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+}
+
+.btn-secondary:hover {
+  background: #6c757d !important;
+  color: white !important;
+}
+
+/* Fix Bootstrap form controls */
+.bootstrap .form-control,
+.form-group .form-control,
+.container .form-control,
+.row .form-control {
+  color: #2d3748 !important;
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+}
+
+/* Arreglar inputs de Bootstrap específicamente en formularios */
+form .form-control {
+  color: #2d3748 !important;
+  background: #ffffff !important;
+}
+
+/* Arreglar selects de Bootstrap */
+.form-select {
+  color: #2d3748 !important;
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+}
+
+/* ==========================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+  }
+  
+  input[type="submit"],
+  button[type="submit"] {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+  
+  input,
+  textarea,
+  select,
+  .form-control {
+    font-size: 14px !important;
+    padding: 10px 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    letter-spacing: 0.5px !important;
+  }
+  
+  input,
+  textarea,
+  select,
+  .form-control {
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+  }
+}
+
+/* ==========================================
+   ANIMACIONES MEJORADAS
+   ========================================== */
+
+@keyframes buttonPress {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(1px); }
+  100% { transform: translateY(0); }
+}
+
+.btn:active {
+  animation: buttonPress 0.1s ease !important;
+}
+
+/* ==========================================
+   ARREGLOS ESPECIALES PARA PÁGINAS ESPECÍFICAS
+   ========================================== */
+
+/* ==========================================
+   BOTONES PROBLEMÁTICOS ESPECÍFICOS
+   ========================================== */
+
+/* Botón de cerrar sesión - específico */
+.btn-cerrar-sesion {
+  background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  color: white !important;
+  border: 2px solid #dc3545 !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+.btn-cerrar-sesion:hover {
+  background: linear-gradient(135deg, #c82333, #a71e2a) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Botón dropdown de cerrar sesión en navbar */
+.dropdown-item {
+  background: transparent !important;
+  color: #212529 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa !important;
+  color: #dc3545 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Botón de agregar tip - específico */
+.btn-outline-primary {
+  background: transparent !important;
+  color: #007bff !important;
+  border: 2px solid #007bff !important;
+  border-radius: 25px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
+}
+
+.btn-outline-primary:hover {
+  background: #007bff !important;
+  color: white !important;
+  border-color: #007bff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+/* Botón cancelar específico */
+.btn-outline-secondary {
+  background: transparent !important;
+  color: #6c757d !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2) !important;
+}
+
+.btn-outline-secondary:hover {
+  background: #6c757d !important;
+  color: white !important;
+  border-color: #6c757d !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* Arreglar botones que aparecen transparentes */
+.btn[style*="background"],
+button[style*="background"] {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  color: white !important;
+  border: 2px solid #007bff !important;
+}
+
+/* Arreglar texto en campos que se ve blanco */
+input[style*="color"],
+textarea[style*="color"] {
+  color: #2d3748 !important;
+}
+
+/* Forzar estilos para componentes que no aplicaban bien */
+.blog-page .btn,
+.cart-page .btn,
+.create-blog-page .btn {
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* ==========================================
+   BOTONES DE PÁGINA INDIVIDUAL DE PRODUCTO
+   ========================================== */
+
+/* Botones de tamaño en SingleProductPage */
+.size-btn {
+  background: transparent !important;
+  color: #007bff !important;
+  border: 2px solid #007bff !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  min-width: 45px !important;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
+}
+
+.size-btn:hover,
+.size-btn.active {
+  background: #007bff !important;
+  color: white !important;
+  border-color: #007bff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+/* Botones de cantidad */
+.quantity-btn {
+  background: transparent !important;
+  color: #6c757d !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 50% !important;
+  padding: 8px 12px !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  transition: all 0.3s ease !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2) !important;
+}
+
+.quantity-btn:hover {
+  background: #6c757d !important;
+  color: white !important;
+  border-color: #6c757d !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* Botón de agregar al carrito de tamaño completo */
+.btn.w-100 {
+  width: 100% !important;
+  padding: 15px 20px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  border-radius: 25px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Asegurar que los inputs en cualquier parte se vean bien */
+.container input,
+.container textarea,
+.container select,
+.row input,
+.row textarea,
+.row select,
+.col input,
+.col textarea,
+.col select {
+  color: #2d3748 !important;
+  background: #ffffff !important;
+}
+
+/* ==========================================
+   OVERRIDES FINALES PARA PROBLEMAS ESPECÍFICOS
+   ========================================== */
+
+/* Forzar estilos para botones que se ven mal */
+button[class*="btn"]:not(.navbar-toggler):not(.carousel-control):not(.close) {
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+}
+
+/* Arreglar botones outline que se ven transparentes */
+.btn-outline-primary.btn-sm,
+.btn-outline-secondary.btn-sm {
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  border-radius: 20px !important;
+}
+
+/* Arreglar Links que actúan como botones */
+a.btn {
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+a.btn:hover {
+  text-decoration: none !important;
+}
+
+/* Arreglar botones en formularios específicamente */
+form button,
+form .btn {
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+}
+
+/* Arreglar botones con iconos */
+.btn i {
+  margin-right: 5px !important;
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
+/* Focus visible para accesibilidad */
+.btn:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #007bff !important;
+  outline-offset: 2px !important;
+}
+
+/* Mejorar contraste para usuarios con discapacidades visuales */
+@media (prefers-contrast: high) {
+  .btn,
+  input,
+  textarea,
+  select {
+    border-width: 3px !important;
+  }
+}

@@ -144,7 +144,7 @@ form .username:focus-within {
   border: none;
   background: transparent;
   outline: none;
-  color: #d1e2d2; /* negro para fondo claro */
+  color: #2d3748; /* Negro para mejor visibilidad */
   font-weight: 500;
   transition: all 0.3s ease;
 }
