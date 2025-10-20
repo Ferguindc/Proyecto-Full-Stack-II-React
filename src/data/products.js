@@ -9,51 +9,153 @@ import satoruSingle from '../assets/img/satoru 2.jpg'; // Imagen de single.html
 // src/data/products.js
 
 export const allProducts = [
+  // POLERAS
   {
     id: 1,
-    nombre: 'Poleron Satoru Gojo',
-    precio: 24990,
-    categoria: 'ropa',
-    descripcion: 'Un poleron de alta calidad con un diseño exclusivo de Satoru Gojo. Perfecto para fans de Jujutsu Kaisen.',
-    // Array de imágenes para la galería
+    nombre: 'Polera Anime Básica',
+    precio: 12990,
+    categoria: 'poleras',
+    descripcion: 'Polera cómoda de algodón con diseños anime exclusivos.',
     images: [
-      poleronSatoru,
-      satoruSingle, // Usamos la de single.html como ejemplo
-      camisetaOlas // Ejemplo
+      camisetaOlas,
+      satoruSingle,
+      poleronSatoru
     ]
   },
   {
     id: 2,
-    nombre: 'Camiseta "Olas"',
-    precio: 1990,
-    categoria: 'ropa',
-    descripcion: 'Camiseta fresca y ligera con diseño de olas, ideal para el verano.',
+    nombre: 'Polera "Olas" Premium',
+    precio: 15990,
+    categoria: 'poleras',
+    descripcion: 'Polera premium con diseño de olas, perfecta para el verano.',
     images: [
       camisetaOlas,
-      poleronSatoru // Ejemplo
+      poleronSatoru,
+      satoruSingle
     ]
   },
   {
     id: 3,
-    nombre: 'Cuadro Given',
-    precio: 24990,
-    categoria: 'cuadros',
-    descripcion: 'Cuadro decorativo de alta resolución del anime Given. Dale un toque musical a tu habitación.',
+    nombre: 'Polera Satoru Gojo',
+    precio: 18990,
+    categoria: 'poleras',
+    descripcion: 'Polera con el diseño exclusivo de Satoru Gojo de Jujutsu Kaisen.',
     images: [
-      givenCuadro,
-      givenCuadro // Ejemplo
+      satoruSingle,
+      camisetaOlas,
+      poleronSatoru
     ]
   },
   {
     id: 4,
-    nombre: 'CUADRO PRUEBA',
-    precio: 1990,
+    nombre: 'Polera Vintage Anime',
+    precio: 16990,
+    categoria: 'poleras',
+    descripcion: 'Polera con estilo vintage y diseños clásicos de anime.',
+    images: [
+      camisetaOlas,
+      satoruSingle,
+      poleronSatoru
+    ]
+  },
+
+  // POLERONES
+  {
+    id: 5,
+    nombre: 'Poleron Satoru Gojo',
+    precio: 24990,
+    categoria: 'polerones',
+    descripcion: 'Poleron de alta calidad con diseño exclusivo de Satoru Gojo.',
+    images: [
+      poleronSatoru,
+      satoruSingle,
+      camisetaOlas
+    ]
+  },
+  {
+    id: 6,
+    nombre: 'Poleron Anime Premium',
+    precio: 29990,
+    categoria: 'polerones',
+    descripcion: 'Poleron premium con capucha y diseños anime únicos.',
+    images: [
+      poleronSatoru,
+      camisetaOlas,
+      satoruSingle
+    ]
+  },
+  {
+    id: 7,
+    nombre: 'Poleron Básico Anime',
+    precio: 22990,
+    categoria: 'polerones',
+    descripcion: 'Poleron cómodo y abrigado con estampados anime.',
+    images: [
+      poleronSatoru,
+      satoruSingle,
+      camisetaOlas
+    ]
+  },
+  {
+    id: 8,
+    nombre: 'Poleron Edición Limitada',
+    precio: 34990,
+    categoria: 'polerones',
+    descripcion: 'Poleron de edición limitada con diseños exclusivos.',
+    images: [
+      poleronSatoru,
+      camisetaOlas,
+      satoruSingle
+    ]
+  },
+
+  // CUADROS
+  {
+    id: 9,
+    nombre: 'Cuadro Given',
+    precio: 19990,
     categoria: 'cuadros',
-    descripcion: 'Un cuadro de prueba para demostrar la funcionalidad de la galería.',
+    descripcion: 'Cuadro decorativo de alta resolución del anime Given.',
     images: [
       givenCuadro,
-      poleronSatoru // Ejemplo
+      givenCuadro,
+      givenCuadro
+    ]
+  },
+  {
+    id: 10,
+    nombre: 'Cuadro Jujutsu Kaisen',
+    precio: 22990,
+    categoria: 'cuadros',
+    descripcion: 'Cuadro con personajes de Jujutsu Kaisen en alta calidad.',
+    images: [
+      givenCuadro,
+      satoruSingle,
+      givenCuadro
+    ]
+  },
+  {
+    id: 11,
+    nombre: 'Cuadro Anime Clásico',
+    precio: 18990,
+    categoria: 'cuadros',
+    descripcion: 'Cuadro con diseños de anime clásico para decorar tu habitación.',
+    images: [
+      givenCuadro,
+      givenCuadro,
+      satoruSingle
+    ]
+  },
+  {
+    id: 12,
+    nombre: 'Cuadro Personalizado',
+    precio: 25990,
+    categoria: 'cuadros',
+    descripcion: 'Cuadro personalizable con tu anime favorito.',
+    images: [
+      givenCuadro,
+      givenCuadro,
+      givenCuadro
     ]
   }
-  // ... AQUÍ AÑADIRÍAS EL RESTO DE TUS PRODUCTOS Y CUADROS
 ];

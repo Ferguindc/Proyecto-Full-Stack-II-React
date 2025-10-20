@@ -1,6 +1,6 @@
 // src/pages/HomePage.jsx
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // <-- IMPORTANTE: importamos Link
 
 // IMPORTAMOS LAS IMÁGENES Y VIDEOS
@@ -14,7 +14,7 @@ import productoGorro from '../assets/img/gorro.avif';
 import productoSatoru from '../assets/img/satoru 2.jpg';
 import producto6 from '../assets/img/62419863-4d2a-429d-9c26-6e29411812f0.jpg';
 import productoPoleron from '../assets/img/poleron.avif';
-import bannerWeb from '../assets/img/photo-1706977470443-e71503f38c1d.avif';
+import bannerWeb from '../assets/img/Halloween.png';
 import colImg1 from '../assets/img/neg1.avif';
 import colImg2 from '../assets/img/rub1.avif';
 import cat1 from '../assets/img/11.png';
@@ -26,6 +26,7 @@ import videoGorra from '../assets/img/gorras.mp4';
 import video2 from '../assets/img/video2.mp4';
 import video3 from '../assets/img/video3.mp4';
 import video4 from '../assets/img/video4.mp4';
+import Ticker from '../components/Ticker.jsx';
 import video5 from '../assets/img/Premium hoodie with low price, get extra discount now (1).mp4';
 // import ruletaImg from '../assets/img/pngtree-roulette-lottery-wheel-of-fortune-illustration-with-vector-png-image_2992805.jpg';
 
@@ -34,6 +35,27 @@ function HomePage() {
   const productSliderRef = useRef(null);
   const categorySliderRef = useRef(null);
   const videoSliderRef = useRef(null);
+  
+  // Estado para el carrusel de videos
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(2); // Empezar en el centro
+  const videos = [videoGorra, video2, video3, video4, video5];
+  const videoRefs = useRef([]);
+  
+  // Crear un array que siempre muestre 5 videos centrados en el actual
+  const getVisibleVideos = () => {
+    const visibleVideos = [];
+    for (let i = 0; i < 5; i++) {
+      const videoIndex = (currentVideoIndex - 2 + i + videos.length) % videos.length;
+      visibleVideos.push({
+        video: videos[videoIndex],
+        originalIndex: videoIndex,
+        displayIndex: i
+      });
+    }
+    return visibleVideos;
+  };
+  
+  const visibleVideos = getVisibleVideos();
 
   const handleScroll = (ref, direction) => {
     if (ref.current) {
@@ -45,6 +67,76 @@ function HomePage() {
       }
     }
   };
+
+  // Función para navegar en el carrusel de videos
+  const handleVideoNavigation = (direction) => {
+    if (direction === 'left') {
+      setCurrentVideoIndex((prev) => (prev - 1 + videos.length) % videos.length);
+    } else {
+      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+    }
+  };
+
+  // Función para determinar la clase CSS de cada video
+  const getVideoClass = (displayIndex) => {
+    if (displayIndex === 2) { // El centro siempre es el índice 2 (posición del medio)
+      return 'video-slide center';
+    }
+    
+    // Videos adyacentes (posiciones 1 y 3)
+    if (displayIndex === 1 || displayIndex === 3) {
+      return 'video-slide adjacent';
+    }
+    
+    return 'video-slide';
+  };
+
+  // Función para controlar la reproducción de videos
+  const controlVideoPlayback = () => {
+    videoRefs.current.forEach((videoRef, displayIndex) => {
+      if (videoRef) {
+        if (displayIndex === 2) { // Solo el del centro se reproduce
+          videoRef.play().catch(e => console.log('Error playing video:', e));
+        } else {
+          videoRef.pause();
+        }
+      }
+    });
+  };
+
+  // Efecto para controlar la reproducción cuando cambia el índice
+  useEffect(() => {
+    controlVideoPlayback();
+  }, [currentVideoIndex]);
+
+  // Efecto para controlar la reproducción cuando cambia el índice
+  useEffect(() => {
+    // Pequeño delay para que los videos se actualicen primero
+    setTimeout(() => {
+      controlVideoPlayback();
+    }, 100);
+  }, [currentVideoIndex]);
+
+  // Efecto inicial para configurar videos
+  useEffect(() => {
+    setTimeout(() => {
+      controlVideoPlayback();
+    }, 200);
+  }, []);
+
+  // Navegación con teclado (opcional)
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'ArrowLeft') {
+        handleVideoNavigation('left');
+      } else if (event.key === 'ArrowRight') {
+        handleVideoNavigation('right');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
 
 
   return (
@@ -71,7 +163,7 @@ function HomePage() {
           <span className="visually-hidden">Next</span>
         </button>
       </div>
-
+    <Ticker/>
       {/* ===== Sección de Productos (Slider 1) ===== */}
       <section className="productos-destacados animate-fadeIn">
         <h2 className="titulo text-gradient">----------- Seccion de Productos -----------</h2>
@@ -80,6 +172,33 @@ function HomePage() {
           
           <div className="slider" ref={productSliderRef}>
             <div className="card hover-lift animate-fadeInLeft">
+              {/* --- ENLACE CORREGIDO --- */}
+              <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
+              <div className="card-info">
+                <h3>DISEÑOS</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card hover-lift animate-fadeInLeft">
+              {/* --- ENLACE CORREGIDO --- */}
+              <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
+              <div className="card-info">
+                <h3>DISEÑOS</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card hover-lift animate-fadeInLeft">
+              {/* --- ENLACE CORREGIDO --- */}
+              <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
+              <div className="card-info">
+                <h3>DISEÑOS</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
@@ -119,7 +238,7 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="imagenweb img-fluid">
+      <div className="banner-standard">
         <img src={bannerWeb} alt="Banner intermedio" />
       </div>
 
@@ -142,7 +261,7 @@ function HomePage() {
           </div>
         </div>
       </div>
-
+      
       {/* ===== Sección Categorías (Slider 2) ===== */}
       <section className="productos-destacados animate-slideInUp">
         <h2 className="titulo text-gradient">----------- CATEGORIAS -----------</h2>
@@ -158,6 +277,48 @@ function HomePage() {
                 <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
+             <div className="card">
+              <img src={cat1} alt="Categoría 1" />
+              <div className="card-info">
+                <h3>2 por $40.000</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card">
+              <img src={cat1} alt="Categoría 1" />
+              <div className="card-info">
+                <h3>2 por $40.000</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card">
+              <img src={cat1} alt="Categoría 1" />
+              <div className="card-info">
+                <h3>2 por $40.000</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+             <div className="card">
+              <img src={cat1} alt="Categoría 1" />
+              <div className="card-info">
+                <h3>2 por $40.000</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+
+             <div className="card">
+              <img src={cat1} alt="Categoría 1" />
+              <div className="card-info">
+                <h3>2 por $40.000</h3>
+                {/* --- ENLACE CORREGIDO --- */}
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
+              </div>
+            </div>
+            
             <div className="card">
               <img src={cat2} alt="Categoría 2" />
               <div className="card-info">
@@ -173,29 +334,60 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="imagenweb img-fluid padin">
+      <div className="banner-standard">
         {/* --- ENLACE CORREGIDO --- */}
         <Link to="/productos"> <img src={bannerFinal} alt="Banner final" /></Link>
       </div>
 
-      {/* ===== Sección Videos (Slider 3) ===== */}
+      {/* ===== Sección Videos (Slider 3) - CARRUSEL INFINITO ===== */}
       <section className="shop-feed animate-fadeIn">
         <h2 className="titulo text-gradient">----------- PRODUCTOS DE TIENDA -----------</h2>
         <div className="slider-container-video">
-          <button className="btn prev-video" onClick={() => handleScroll(videoSliderRef, 'left')}>❮</button>
+          <button className="btn prev-video" onClick={() => handleVideoNavigation('left')}>❮</button>
           
           <div className="slider-wrapper">
-            <div className="slider" id="video-slider" ref={videoSliderRef}>
-              <div className="video-slide"><video src={videoGorra} autoPlay muted loop></video></div>
-              <div className="video-slide"><video src={video2} autoPlay muted loop></video></div>
-              <div className="video-slide"><video src={video3} autoPlay muted loop></video></div>
-              <div className="video-slide"><video src={video4} autoPlay muted loop></video></div>
-              <div className="video-slide"><video src={video5} autoPlay muted loop></video></div>
+            <div 
+              className="slider" 
+              id="video-slider" 
+              ref={videoSliderRef}
+            >
+              {visibleVideos.map((videoData, displayIndex) => (
+                <div 
+                  key={`video-${videoData.originalIndex}-${displayIndex}`} 
+                  className={getVideoClass(displayIndex)}
+                  onClick={() => {
+                    // Calcular cuántos pasos necesita para llegar al centro
+                    const stepsToCenter = displayIndex - 2;
+                    let newIndex = currentVideoIndex;
+                    
+                    for (let i = 0; i < Math.abs(stepsToCenter); i++) {
+                      if (stepsToCenter > 0) {
+                        newIndex = (newIndex + 1) % videos.length;
+                      } else {
+                        newIndex = (newIndex - 1 + videos.length) % videos.length;
+                      }
+                    }
+                    
+                    setCurrentVideoIndex(newIndex);
+                  }}
+                >
+                  <video 
+                    ref={(el) => (videoRefs.current[displayIndex] = el)}
+                    src={videoData.video} 
+                    muted 
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                </div>
+              ))}
             </div>
           </div>
           
-          <button className="btn next-video" onClick={() => handleScroll(videoSliderRef, 'right')}>❯</button>
+          <button className="btn next-video" onClick={() => handleVideoNavigation('right')}>❯</button>
         </div>
+        
+
       </section>
       
       {/* El Footer se renderiza desde App.jsx */}

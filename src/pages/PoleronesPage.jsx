@@ -1,20 +1,22 @@
+// src/pages/PoleronesPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "../assets/styles/style3.css";
 import { allProducts } from '../data/products.js';
 
-// Filtramos para tener solo los cuadros
-const todosLosCuadros = allProducts.filter(p => p.categoria === 'cuadros');
+// Filtramos para tener solo los polerones
+const todosLosPolerones = allProducts.filter(p => p.categoria === 'polerones');
 
-function CuadrosPage() {
+function PoleronesPage() {
   // Estados
-  const [productos, setProductos] = useState(todosLosCuadros);
+  const [productos, setProductos] = useState(todosLosPolerones);
   const [precioMax, setPrecioMax] = useState(50000);
   const [busqueda, setBusqueda] = useState('');
 
   // useEffect (función de filtrado)
   useEffect(() => {
-    let productosFiltrados = todosLosCuadros;
+    let productosFiltrados = todosLosPolerones;
 
     productosFiltrados = productosFiltrados.filter(
       (producto) => producto.precio <= precioMax
@@ -36,7 +38,6 @@ function CuadrosPage() {
     setBusqueda(evento.target.value);
   };
 
-
   return (
     <div className="container mt-5 mb-5">
       <div className="row">
@@ -46,7 +47,7 @@ function CuadrosPage() {
             <h4 className="mb-4">Filtros</h4>
             <div className="mb-4 sidebar-filter">
               <h5>Categoría</h5>
-              <p className="fw-bold text-primary">CUADROS</p>
+              <p className="fw-bold text-primary">POLERONES</p>
             </div>
             <hr />
             <div className="mb-4">
@@ -69,7 +70,7 @@ function CuadrosPage() {
         {/* --- Columna de Productos --- */}
         <div className="col-lg-9">
           <div className="mb-4">
-            <h2 className="mb-3">CUADROS</h2>
+            <h2 className="mb-3">POLERONES</h2>
             <div className="d-flex justify-content-between align-items-center">
               <div className="input-group" style={{ maxWidth: '300px' }}>
                 <span className="input-group-text"><i className="bi bi-search"></i></span>
@@ -77,7 +78,7 @@ function CuadrosPage() {
                   id="searchInput" 
                   type="text" 
                   className="form-control" 
-                  placeholder="Buscar cuadros..." 
+                  placeholder="Buscar polerones..." 
                   value={busqueda}
                   onChange={handleBusquedaChange}
                 />
@@ -137,7 +138,7 @@ function CuadrosPage() {
               ))
             ) : (
               <div id="no-results" className="text-center p-5 col-12">
-                <h3>No se encontraron cuadros</h3>
+                <h3>No se encontraron polerones</h3>
                 <p>Intenta ajustar tus filtros de búsqueda.</p>
               </div>
             )}
@@ -148,4 +149,4 @@ function CuadrosPage() {
   );
 }
 
-export default CuadrosPage;
+export default PoleronesPage;

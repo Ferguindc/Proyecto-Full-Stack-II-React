@@ -1,0 +1,263 @@
+/* single-style.css - Estilos para la página de producto individual */
+
+.product-detail-container {
+  min-height: 80vh;
+  padding: 2rem 0;
+}
+
+/* Imagen principal */
+.main-image {
+  width: 100%;
+  max-width: 500px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+/* Contenedor de thumbnails */
+.thumbnail-images {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Thumbnails pequeños */
+.img-thumbnail {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.img-thumbnail:hover {
+  border-color: #007bff;
+  transform: scale(1.05);
+}
+
+.img-thumbnail.active {
+  border-color: #007bff;
+  border-width: 3px;
+}
+
+/* Detalles del producto */
+.product-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.product-price {
+  margin-bottom: 1.5rem;
+}
+
+.new-price {
+  font-size: 1.8rem;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.product-options {
+  margin: 2rem 0;
+}
+
+.product-options .form-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Botones de talla */
+.size-buttons {
+  gap: 0.5rem;
+}
+
+.size-btn {
+  width: 45px;
+  height: 45px;
+  border: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.size-btn:hover {
+  border-color: #666;
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.size-btn.active {
+  border-color: #333;
+  background-color: #333;
+  color: white;
+}
+
+/* Controles de cantidad */
+.quantity-controls {
+  gap: 0;
+  display: inline-flex;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: white;
+  width: fit-content;
+}
+
+.quantity-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  color: #666;
+  font-weight: 400;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.quantity-btn:hover {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.quantity-btn:first-child {
+  border-right: 1px solid #ddd;
+}
+
+.quantity-btn:last-child {
+  border-left: 1px solid #ddd;
+}
+
+.quantity-display {
+  background-color: white;
+  border: none;
+  padding: 2px 4px;
+  font-weight: 400;
+  color: #333;
+  min-width: 16px;
+  width: 24px;
+  text-align: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Accordion personalizado */
+.accordion-item {
+  border: 1px solid #dee2e6;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+}
+
+.accordion-button {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #e7f3ff;
+  color: #0066cc;
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: #007bff;
+}
+
+.accordion-body {
+  padding: 1.5rem;
+  background-color: white;
+}
+
+/* Botón añadir al carrito */
+.btn-primary {
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  text-transform: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .product-detail-container {
+    padding: 1rem 0;
+  }
+  
+  .product-title {
+    font-size: 1.5rem;
+  }
+  
+  .new-price {
+    font-size: 1.5rem;
+  }
+  
+  .main-image {
+    height: 300px;
+  }
+  
+  .img-thumbnail {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .size-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 13px;
+  }
+  
+  .quantity-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+  
+  .quantity-display {
+    padding: 2px 3px;
+    min-width: 14px;
+    width: 22px;
+    font-size: 11px;
+  }
+  
+  .btn-primary {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
+  
+  .accordion-body {
+    padding: 1rem;
+  }
+}

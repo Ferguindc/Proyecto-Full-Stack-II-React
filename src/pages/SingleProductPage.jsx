@@ -8,14 +8,16 @@ import '../assets/styles/single-style.css'; // Importamos el CSS import "../asse
 
 function SingleProductPage() {
   // 1. Obtenemos el ID de la URL (ej: /producto/1)
-  const { productId } = useParams();
+  const { id } = useParams();
 
   // 2. Buscamos el producto en nuestra "base de datos"
   // Usamos parseInt porque el ID de la URL es texto, y en nuestro array es número
-  const product = allProducts.find(p => p.id === parseInt(productId));
+  const product = allProducts.find(p => p.id === parseInt(id));
 
-  // 3. Estado para manejar la imagen principal que se está viendo
+  // 3. Estados para la funcionalidad
   const [mainImage, setMainImage] = useState('');
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [quantity, setQuantity] = useState(1);
 
   // 4. Efecto para poner la primera imagen del producto como la principal
   useEffect(() => {
@@ -24,7 +26,22 @@ function SingleProductPage() {
     }
   }, [product]); // Se ejecuta cada vez que el 'product' cambia
 
-  // 5. Si no se encuentra el producto, mostramos un mensaje
+  // 5. Funciones para manejar interacciones
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+  };
+
+  const increaseQuantity = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
+  // 6. Si no se encuentra el producto, mostramos un mensaje
   if (!product) {
     return (
       <div className="container text-center my-5">
@@ -35,7 +52,7 @@ function SingleProductPage() {
     );
   }
 
-  // 6. Si se encuentra, renderizamos la página
+  // 7. Si se encuentra, renderizamos la página
   return (
     <div className="container product-detail-container my-5">
       <div className="row">
@@ -76,33 +93,79 @@ function SingleProductPage() {
             {/* <span className="old-price text-muted ms-2">$2,500</span> */}
           </div>
 
-          <p className="product-description">{product.descripcion}</p>
-
           <div className="product-options my-4">
             {/* Opciones de Talla */}
             <div className="mb-3">
-              <label htmlFor="sizeSelect" className="form-label fw-bold">Talla:</label>
-              <select id="sizeSelect" className="form-select w-50">
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
+              <label className="form-label fw-bold">Talla:</label>
+              <div className="size-buttons d-flex gap-2 mt-2">
+                {['S', 'M', 'L', 'XL'].map(size => (
+                  <button 
+                    key={size}
+                    className={`size-btn btn ${selectedSize === size ? 'active' : 'btn-outline-secondary'}`}
+                    onClick={() => handleSizeSelect(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Opciones de Cantidad */}
             <div className="mb-3">
-              <label htmlFor="quantityInput" className="form-label fw-bold">Cantidad:</label>
-              <input type="number" id="quantityInput" className="form-control w-25" defaultValue="1" min="1" />
+              <label className="form-label fw-bold">Cantidad:</label>
+              <div className="quantity-controls d-flex align-items-center mt-2">
+                <button className="quantity-btn btn btn-outline-secondary" onClick={decreaseQuantity}>-</button>
+                <span className="quantity-display">{quantity}</span>
+                <button className="quantity-btn btn btn-outline-secondary" onClick={increaseQuantity}>+</button>
+              </div>
             </div>
           </div>
 
-          <button className="btn btn-primary btn-lg w-100">
+          <button className="btn btn-primary w-100">
             <i className="bi bi-cart-plus me-2"></i>
             Añadir al carrito
           </button>
         </div>
 
+      </div>
+
+      {/* Secciones desplegables */}
+      <div className="row mt-4">
+        <div className="col-12">
+          <div className="accordion" id="productAccordion">
+            
+            {/* Descripción Completa */}
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="headingDescription">
+                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDescription" aria-expanded="true" aria-controls="collapseDescription">
+                  Descripción Completa
+                </button>
+              </h2>
+              <div id="collapseDescription" className="accordion-collapse collapse show" aria-labelledby="headingDescription" data-bs-parent="#productAccordion">
+                <div className="accordion-body">
+                  <p>{product.descripcion}</p>
+                  <p>Esta camiseta ha sido diseñada pensando en la comodidad y la durabilidad. El corte es moderno y se ajusta perfectamente al cuerpo sin ser demasiado apretado. El estampado utiliza una técnica de serigrafía de alta calidad para garantizar que los colores se mantengan vivos lavado tras lavado.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Material y Cuidado */}
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="headingMaterial">
+                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMaterial" aria-expanded="false" aria-controls="collapseMaterial">
+                  Material y Cuidado
+                </button>
+              </h2>
+              <div id="collapseMaterial" className="accordion-collapse collapse" aria-labelledby="headingMaterial" data-bs-parent="#productAccordion">
+                <div className="accordion-body">
+                  <p><strong>Material:</strong> 100% Algodón Orgánico Peinado.</p>
+                  <p><strong>Cuidado:</strong> Lavar a máquina con agua fría, del revés. No usar blanqueador. Secar a baja temperatura o colgar.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   );
