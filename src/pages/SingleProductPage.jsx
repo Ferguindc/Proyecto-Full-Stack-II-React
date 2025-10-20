@@ -133,7 +133,8 @@ function SingleProductPage() {
                 ).map(size => (
                   <button 
                     key={size}
-                    className={`size-btn btn ${selectedSize === size ? 'active' : 'btn-outline-secondary'}`}
+                    className={`size-btn ${selectedSize === size ? 'active' : ''}`}
+                    data-cuadro={product.categoria === 'cuadros' ? 'true' : 'false'}
                     onClick={() => handleSizeSelect(size)}
                   >
                     {size}
