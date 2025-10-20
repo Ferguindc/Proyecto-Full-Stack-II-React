@@ -98,10 +98,12 @@ function Navbar() {
                     style={{ display: 'flex', alignItems: 'center' }}
                   >
                     <i className="bi bi-person-circle me-2"></i> 
-                    {/* Opcional: Mostrar email del admin o "Mi Cuenta" */}
-                    {currentUser.role === 'admin' ? 'Admin' : 'Mi cuenta'}
+                    {/* Mostrar rol del usuario */}
+                    {currentUser.role === 'admin' ? 'Administrador' : 
+                     currentUser.role === 'empleado' ? 'Empleado' : 'Mi cuenta'}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                    {/* Opciones comunes */}
                     <li>
                       <Link className="dropdown-item" to="/cliente">
                         Ir a Mi cuenta
@@ -112,10 +114,50 @@ function Navbar() {
                         Editar mis detalles
                       </Link>
                     </li>
+                    
+                    {/* Opciones específicas para admin */}
+                    {currentUser.role === 'admin' && (
+                      <>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li>
+                          <Link className="dropdown-item" to="/admin">
+                            <i className="bi bi-gear me-2"></i>
+                            Panel Admin
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/formulario-add">
+                            <i className="bi bi-person-plus me-2"></i>
+                            Panel de Empleados
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/gestion-empleados">
+                            <i className="bi bi-people me-2"></i>
+                            Gestión de Empleados
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    
+                    {/* Opciones específicas para empleados */}
+                    {currentUser.role === 'empleado' && (
+                      <>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li>
+                          <Link className="dropdown-item" to="/panel-empleado">
+                            <i className="bi bi-briefcase me-2"></i>
+                            Panel de Empleado
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    
                     <li><hr className="dropdown-divider" /></li>
                     <li>
                       {/* 4. Usamos la función logout del contexto */}
                       <button className="dropdown-item" onClick={logout}>
+                        <i className="bi bi-box-arrow-right me-2"></i>
                         Cerrar sesión
                       </button>
                     </li>

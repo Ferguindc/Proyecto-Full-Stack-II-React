@@ -19,7 +19,7 @@ function Footer() {
             <h5>Enlaces útiles</h5>
             <ul className="list-unstyled">
               <li><Link to="/" className="text-light text-decoration-none">Inicio</Link></li>
-              <li><Link to="/productos" className="text-light text-decoration-none">Productos</Link></li>
+              <li><Link to="/poleras" className="text-light text-decoration-none">Productos</Link></li>
               <li><Link to="/cuadros" className="text-light text-decoration-none">Cuadros</Link></li>
               <li><Link to="/sesion" className="text-light text-decoration-none">Contacto</Link></li>
             </ul>

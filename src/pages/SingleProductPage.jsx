@@ -74,7 +74,7 @@ function SingleProductPage() {
       <div className="container text-center my-5">
         <h1>Producto no encontrado</h1>
         <p>El producto que buscas no existe.</p>
-        <Link to="/productos" className="btn btn-primary">Volver a la tienda</Link>
+        <Link to="/poleras" className="btn btn-primary">Volver a la tienda</Link>
       </div>
     );
   }

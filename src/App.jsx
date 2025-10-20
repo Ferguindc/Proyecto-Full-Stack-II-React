@@ -9,7 +9,6 @@ import Navbar from './components/navbar.jsx';
 // (Aquí importaremos el Footer cuando lo creemos)
 
 
-import ProductosPage from './pages/ProductosPage.jsx';
 import CuadrosPage from './pages/CuadrosPage.jsx';
 import PolerasPage from './pages/PolerasPage.jsx';
 import PoleronesPage from './pages/PoleronesPage.jsx';

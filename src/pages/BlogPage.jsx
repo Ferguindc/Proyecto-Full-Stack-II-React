@@ -132,9 +132,9 @@ function BlogPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm('Cuidado del Hogar'); }}>
-                    <i className="bi bi-house"></i>
-                    Cuidado del Hogar
+                  <a href="#" onClick={(e) => { e.preventDefault(); setSearchTerm('Cuidado de Accesorios'); }}>
+                    <i className="bi bi-gem"></i>
+                    Cuidado de Accesorios
                     <span className="count">(1)</span>
                   </a>
                 </li>

@@ -59,7 +59,7 @@ function CartSidebar() {
                 className="btn btn-primary"
                 onClick={() => {
                   setIsCartOpen(false);
-                  navigate('/productos');
+                  navigate('/poleras');
                 }}
               >
                 Ir a Comprar
