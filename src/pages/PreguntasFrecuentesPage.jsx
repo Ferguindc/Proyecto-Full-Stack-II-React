@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-import '../styles/faq-styles.css'; // Estilos específicos para FAQ
+import '../styles/faq-style.css'; // Estilos específicos para FAQ
 
 
 
