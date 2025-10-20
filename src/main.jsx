@@ -25,6 +25,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './globals.css';
 import './utils.css'; // Nuevas utilidades CSS
 import './performance.css'; // Optimizaciones de performance
+import './unified-styles.css'; // Estilos unificados para botones y campos
 
 import App from './App.jsx';
 
