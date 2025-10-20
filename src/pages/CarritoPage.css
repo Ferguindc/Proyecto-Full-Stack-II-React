@@ -522,3 +522,101 @@
     padding: 30px 20px;
   }
 }
+
+/* --- ESTILOS RECTANGULARES PARA BOTONES DE CARRITO --- */
+
+/* Botón primario rectangular - Azul */
+.btn-primary {
+  background-color: #007bff !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  padding: 0.6rem 1.5rem !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  transition: background-color 0.2s ease !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3 !important;
+}
+
+/* Botón secundario rectangular - Gris */
+.btn-outline-secondary {
+  background-color: #6c757d !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  padding: 0.6rem 1.5rem !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  transition: background-color 0.2s ease !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #5a6268 !important;
+}
+
+/* Botón de éxito rectangular - Verde */
+.btn-success {
+  background-color: #28a745 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  padding: 0.6rem 1.5rem !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  transition: background-color 0.2s ease !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+.btn-success:hover {
+  background-color: #218838 !important;
+}
+
+/* Botón outline primario rectangular */
+.btn-outline-primary {
+  background-color: #ffffff !important;
+  color: #007bff !important;
+  border: 2px solid #007bff !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  padding: 0.6rem 1.5rem !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  transition: all 0.2s ease !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+/* Tamaños especiales */
+.btn-lg {
+  font-size: 1rem !important;
+  padding: 0.75rem 2rem !important;
+  min-width: 140px !important;
+}
+
+/* Ancho completo */
+.w-100 {
+  width: 100% !important;
+  min-width: auto !important;
+}
+
+/* --- FIN DE ESTILOS RECTANGULARES --- */
