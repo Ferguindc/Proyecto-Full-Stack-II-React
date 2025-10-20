@@ -28,6 +28,8 @@ import video3 from '../assets/img/video3.mp4';
 import video4 from '../assets/img/video4.mp4';
 import Ticker from '../components/Ticker.jsx';
 import video5 from '../assets/img/Premium hoodie with low price, get extra discount now (1).mp4';
+import poleraanime from '../assets/img/poleraanime.avif';
+
 // import ruletaImg from '../assets/img/pngtree-roulette-lottery-wheel-of-fortune-illustration-with-vector-png-image_2992805.jpg';
 
 
@@ -182,29 +184,29 @@ function HomePage() {
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
+              <Link to="/productos"> <img src={productoPoleron} alt="Producto 2" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
+              <Link to="/productos"> <img src={poleraanime} alt="Producto 3" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card hover-lift animate-fadeInLeft">
               {/* --- ENLACE CORREGIDO --- */}
-              <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
+              <Link to="/productos"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
                 <h3>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
             <div className="card hover-lift animate-fadeInLeft delay-100">
@@ -213,7 +215,7 @@ function HomePage() {
                 <h3>2 POR $35</h3>
                 <h3>POLERAS BÁSICAS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
             <div className="card hover-lift animate-fadeInLeft delay-200">
@@ -229,7 +231,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>PRODUCTOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
+                <Link to="/productos"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
             </div>
           </div>
@@ -274,7 +276,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card">
@@ -282,7 +284,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card">
@@ -290,7 +292,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card">
@@ -298,7 +300,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
              <div className="card">
@@ -306,7 +308,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
 
@@ -315,7 +317,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>2 por $40.000</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
             
@@ -324,7 +326,7 @@ function HomePage() {
               <div className="card-info">
                 <h3>POLERAS PARA VERANO</h3>
                 {/* --- ENLACE CORREGIDO --- */}
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+                <Link to="/productos"><button>COMPRA AHORA</button></Link>
               </div>
             </div>
             {/* ... más cards ... */}
@@ -338,6 +340,12 @@ function HomePage() {
         {/* --- ENLACE CORREGIDO --- */}
         <Link to="/poleras"> <img src={bannerFinal} alt="Banner final" /></Link>
       </div>
+
+      <Ticker>
+        <div className="ticker-item">¡Nuevos productos disponibles!</div>
+        <div className="ticker-item">¡Envío gratis en compras sobre $50.000!</div>
+        <div className="ticker-item">¡Descuentos especiales para miembros!</div>
+      </Ticker>
 
       {/* ===== Sección Videos (Slider 3) - CARRUSEL INFINITO ===== */}
       <section className="shop-feed animate-fadeIn">
@@ -386,6 +394,7 @@ function HomePage() {
           
           <button className="btn next-video" onClick={() => handleVideoNavigation('right')}>❯</button>
         </div>
+        
         
 
       </section>

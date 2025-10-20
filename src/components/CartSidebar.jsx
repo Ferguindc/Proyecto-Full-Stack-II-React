@@ -54,7 +54,13 @@ function CartSidebar() {
         <div className="cart-content">
           {cartItems.length === 0 ? (
             <div className="cart-empty">
+              <div className="empty-cart-icon">
+                <i className="bi bi-bag" style={{ fontSize: '3rem', color: '#ccc', marginBottom: '15px' }}></i>
+              </div>
               <p>Tu carrito está vacío</p>
+              <p style={{ fontSize: '0.9rem', color: '#999', marginBottom: '25px' }}>
+                ¡Descubre nuestros increíbles productos!
+              </p>
               <button 
                 className="btn btn-primary"
                 onClick={() => {
@@ -62,6 +68,7 @@ function CartSidebar() {
                   navigate('/poleras');
                 }}
               >
+                <i className="bi bi-bag-plus me-2"></i>
                 Ir a Comprar
               </button>
             </div>
@@ -116,12 +123,17 @@ function CartSidebar() {
                     className="btn btn-primary btn-checkout"
                     onClick={handleCheckout}
                   >
+                    <i className="bi bi-cart-check me-2"></i>
                     Ver Carrito Completo
                   </button>
                   <button 
                     className="btn btn-outline-primary btn-continue"
-                    onClick={() => setIsCartOpen(false)}
+                    onClick={() => {
+                      setIsCartOpen(false);
+                      navigate('/poleras');
+                    }}
                   >
+                    <i className="bi bi-arrow-left me-2"></i>
                     Seguir Comprando
                   </button>
                 </div>

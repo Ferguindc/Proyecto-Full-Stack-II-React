@@ -80,14 +80,43 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
+}
+
+.empty-cart-icon {
+  margin-bottom: 10px;
 }
 
 .cart-empty p {
   color: #666;
   margin-bottom: 20px;
   font-size: 1.1rem;
+}
+
+.cart-empty .btn {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border: 2px solid #007bff !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 200px !important;
+}
+
+.cart-empty .btn:hover {
+  background: linear-gradient(135deg, #0056b3, #004085) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4) !important;
+  border-color: #0056b3 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
 .cart-items {
@@ -225,11 +254,32 @@
   margin-bottom: 10px;
   padding: 12px;
   font-weight: 600;
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.btn-checkout:hover {
+  background: linear-gradient(135deg, #218838, #1a7f64) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+  border-color: #218838 !important;
 }
 
 .btn-continue {
   width: 100%;
   padding: 10px;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-continue:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2) !important;
 }
 
 /* Responsive */

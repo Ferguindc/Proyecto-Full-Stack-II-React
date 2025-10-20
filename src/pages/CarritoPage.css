@@ -32,8 +32,34 @@
   position: absolute;
   top: 20px;
   left: 25%;
-  right: 25%;
-  height: 2px;
+  right: /* Botón outline secundario - Estilo mejorado */
+.btn-outline-secondary {
+  background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 180px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.btn-outline-secondary:hover {
+  background: linear-gradient(135deg, #5a6268, #495057) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(108, 117, 125, 0.4) !important;
+  border-color: #5a6268 !important;
+  color: white !important;
+  text-decoration: none !important;
+};
   background-color: #e9ecef;
   z-index: 1;
 }
@@ -518,64 +544,91 @@
 
 /* --- ESTILOS RECTANGULARES PARA BOTONES DE CARRITO --- */
 
-/* Botón primario rectangular - Azul */
+/* Botón primario - Estilo mejorado */
 .btn-primary {
-  background-color: #007bff !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 6px !important;
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border: 2px solid #007bff !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
   font-size: 0.9rem !important;
-  padding: 0.6rem 1.5rem !important;
-  min-width: 120px !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 180px !important;
   text-align: center !important;
   white-space: nowrap !important;
-  transition: background-color 0.2s ease !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3 !important;
+  background: linear-gradient(135deg, #0056b3, #004085) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4) !important;
+  border-color: #0056b3 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
-/* Botón secundario rectangular - Gris */
+/* Botón secundario - Estilo mejorado */
 .btn-outline-secondary {
-  background-color: #6c757d !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 6px !important;
+  background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
   font-size: 0.9rem !important;
-  padding: 0.6rem 1.5rem !important;
-  min-width: 120px !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 180px !important;
   text-align: center !important;
   white-space: nowrap !important;
-  transition: background-color 0.2s ease !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
 }
 
 .btn-outline-secondary:hover {
-  background-color: #5a6268 !important;
+  background: linear-gradient(135deg, #5a6268, #495057) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(108, 117, 125, 0.4) !important;
+  border-color: #5a6268 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
-/* Botón de éxito rectangular - Verde */
+/* Botón de éxito - Estilo mejorado */
 .btn-success {
-  background-color: #28a745 !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 6px !important;
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
   font-size: 0.9rem !important;
-  padding: 0.6rem 1.5rem !important;
-  min-width: 120px !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 180px !important;
   text-align: center !important;
   white-space: nowrap !important;
-  transition: background-color 0.2s ease !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
 }
 
 .btn-success:hover {
-  background-color: #218838 !important;
+  background: linear-gradient(135deg, #218838, #1a7f64) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4) !important;
+  border-color: #218838 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
 /* Botón outline primario rectangular */

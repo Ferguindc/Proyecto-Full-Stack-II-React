@@ -60,59 +60,93 @@
 
 /* --- ESTILOS DE BOTONES --- */
 
-/* Botón "Cerrar sesión" - Rectangular */
+/* Botón "Cerrar sesión" - Estilo mejorado */
 .btn-cerrar-sesion {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px; /* Bordes ligeramente más redondeados para forma rectangular */
-  font-size: 0.9rem;
-  padding: 0.6rem 1.5rem; /* Mayor padding horizontal para forma rectangular */
-  min-width: 140px; /* Ancho mínimo para asegurar que quepa el texto completo */
-  text-align: center; /* Centrar el texto */
-  white-space: nowrap; /* Evitar que el texto se corte */
-  transition: background-color 0.2s ease;
-  font-weight: 500;
+  background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  border: 2px solid #dc3545 !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 160px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  cursor: pointer !important;
 }
+
 .btn-cerrar-sesion:hover {
-  background-color: #5a6268;
+  background: linear-gradient(135deg, #c82333, #bd2130) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4) !important;
+  border-color: #c82333 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
-/* Botón "Editar" (Blanco con borde celeste) */
+/* Botón "Editar" - Estilo mejorado */
 .btn-editar {
-  background-color: #ffffff;
-  border: 1px solid #c2d9e8;
-  color: #003366; 
-  font-weight: 500;
-  padding: 0.45rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  width: auto; /* Ajustar ancho al contenido */
-  margin: 0 auto; /* Centrar horizontalmente si el contenedor es flex */
-}
-.btn-editar:hover {
-  background-color: #f8f9fa;
-  border-color: #a9cbe0;
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 25px !important;
+  padding: 12px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-/* Botones celestes "Añadir Dirección" (Celeste con texto azul) */
-.btn-outline-primary-custom {
-  background-color: #e9f4f8; 
-  border: 1px solid #c2d9e8; 
-  color: #003366; 
-  font-weight: 500;
-  padding: 0.45rem 1rem;
-  border-radius: 4px; 
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  width: auto; /* Ajustar ancho al contenido */
-  margin: 0 auto; /* Centrar horizontalmente si el contenedor es flex */
+.btn-editar:hover {
+  background: linear-gradient(135deg, #218838, #1a7f64) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4) !important;
+  border-color: #218838 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
+
+/* Botones "Añadir Dirección" - Estilo mejorado */
+.btn-outline-primary-custom {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border: 2px solid #007bff !important;
+  border-radius: 25px !important;
+  padding: 12px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 150px !important;
+  text-align: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .btn-outline-primary-custom:hover {
-  background-color: #d8ecf5; 
-  border-color: #a9cbe0; 
-  color: #002244;
+  background: linear-gradient(135deg, #0056b3, #004085) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4) !important;
+  border-color: #0056b3 !important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
 /* --- FIN DE ESTILOS DE BOTONES --- */
@@ -304,41 +338,57 @@ h4 {
 }
 
 .btn-editar-direccion {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px; /* Bordes ligeramente más redondeados para forma rectangular */
-  font-size: 0.9rem;
-  padding: 0.6rem 1.5rem; /* Mayor padding horizontal para forma rectangular */
-  min-width: 100px; /* Ancho mínimo para forma rectangular */
-  text-align: center; /* Centrar el texto */
-  white-space: nowrap; /* Evitar que el texto se corte */
-  transition: background-color 0.2s ease;
-  font-weight: 500;
-  cursor: pointer;
+  background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+  border: 2px solid #ffc107 !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  color: #212529 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
 }
 
 .btn-editar-direccion:hover {
-  background-color: #5a6268;
+  background: linear-gradient(135deg, #e0a800, #d39e00) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4) !important;
+  border-color: #e0a800 !important;
+  color: #212529 !important;
 }
 
 .btn-borrar-direccion {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px; /* Bordes ligeramente más redondeados para forma rectangular */
-  font-size: 0.9rem;
-  padding: 0.6rem 1.5rem; /* Mayor padding horizontal para forma rectangular */
-  min-width: 100px; /* Ancho mínimo para forma rectangular */
-  text-align: center; /* Centrar el texto */
-  white-space: nowrap; /* Evitar que el texto se corte */
-  transition: background-color 0.2s ease;
-  font-weight: 500;
-  cursor: pointer;
+  background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  border: 2px solid #dc3545 !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3) !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
 }
 
 .btn-borrar-direccion:hover {
-  background-color: #c82333;
+  background: linear-gradient(135deg, #c82333, #bd2130) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4) !important;
+  border-color: #c82333 !important;
+  color: white !important;
 }
 
 /* Responsividad para direcciones */
@@ -424,38 +474,56 @@ h4 {
   border-top: 1px solid #e9ecef;
 }
 
-/* Botón secundario (Volver) */
+/* Botón secundario (Volver) - Estilo mejorado */
 .btn-secondary-custom {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
+  background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+  border: 2px solid #6c757d !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 140px !important;
 }
 
 .btn-secondary-custom:hover {
-  background-color: #5a6268;
+  background: linear-gradient(135deg, #5a6268, #495057) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(108, 117, 125, 0.4) !important;
+  border-color: #5a6268 !important;
+  color: white !important;
 }
 
-/* Botón de confirmar */
+/* Botón de confirmar - Estilo mejorado */
 .btn-confirmar {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: 2px solid #28a745 !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  min-width: 140px !important;
 }
 
 .btn-confirmar:hover {
-  background-color: #218838;
+  background: linear-gradient(135deg, #218838, #1a7f64) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.4) !important;
+  border-color: #218838 !important;
+  color: white !important;
 }
 
 /* Responsividad para formularios */
