@@ -56,14 +56,14 @@ function Navbar() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/blog">
-                  Blog
+                <NavLink className="nav-link" to="/productos">
+                  Ver todo
                 </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="https://www.instagram.com/crimewave.store/?hl=es" target="_blank" rel="noopener noreferrer">
-                  Sobre nosotros
-                </a>
+                <NavLink className="nav-link" to="/preguntas-frecuentes">
+                  FAQ
+                </NavLink>
               </li>
             </ul>
 

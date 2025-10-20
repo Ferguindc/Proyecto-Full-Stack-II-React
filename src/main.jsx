@@ -8,6 +8,7 @@ import AdminPage from "./pages/AdminPage.jsx";
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { BlogProvider } from './context/BlogContext';
+import { DireccionesProvider } from './context/DireccionesContext';
 
 
 // --- ¡¡LA PARTE MÁS IMPORTANTE!! ---
@@ -36,7 +37,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <CartProvider>
           <BlogProvider>
-            <App />
+            <DireccionesProvider>
+              <App />
+            </DireccionesProvider>
           </BlogProvider>
         </CartProvider>
       </AuthProvider>
