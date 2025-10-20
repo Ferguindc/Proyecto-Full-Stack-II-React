@@ -91,69 +91,92 @@
   transition: all 0.2s ease;
 }
 
+/* Estilos específicos para medidas de cuadros */
+.size-btn[data-cuadro="true"] {
+  width: auto;
+  min-width: 65px;
+  padding: 0.5rem 0.75rem;
+  font-size: 13px;
+}
+
 .size-btn:hover {
   border-color: #666;
   background-color: #e9ecef;
   color: #333;
 }
 
+.size-btn:active {
+  transform: scale(0.98);
+  border-color: #666;
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.size-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #007bff;
+}
+
 .size-btn.active {
-  border-color: #333;
-  background-color: #333;
+  border-color: #007bff;
+  background-color: #007bff;
+  color: white;
+}
+
+.size-btn.active:hover {
+  border-color: #0056b3;
+  background-color: #0056b3;
   color: white;
 }
 
 /* Controles de cantidad */
 .quantity-controls {
-  gap: 0;
-  display: inline-flex;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-  background-color: white;
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
   width: fit-content;
 }
 
 .quantity-btn {
-  width: 24px;
-  height: 24px;
-  border: none;
-  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
   color: #666;
-  font-weight: 400;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   cursor: pointer;
-  flex-shrink: 0;
+  border-radius: 6px;
 }
 
 .quantity-btn:hover {
-  background-color: #f8f9fa;
+  background-color: #e9ecef;
   color: #333;
+  border-color: #adb5bd;
 }
 
-.quantity-btn:first-child {
-  border-right: 1px solid #ddd;
-}
-
-.quantity-btn:last-child {
-  border-left: 1px solid #ddd;
+.quantity-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #007bff;
 }
 
 .quantity-display {
   background-color: white;
-  border: none;
-  padding: 2px 4px;
-  font-weight: 400;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  font-weight: 600;
   color: #333;
-  min-width: 16px;
-  width: 24px;
+  min-width: 60px;
   text-align: center;
-  font-size: 12px;
-  flex-shrink: 0;
+  font-size: 16px;
+  border-radius: 6px;
+  user-select: none;
 }
 
 /* Accordion personalizado */
@@ -239,17 +262,22 @@
     font-size: 13px;
   }
   
+  .size-btn[data-cuadro="true"] {
+    min-width: 55px;
+    padding: 0.4rem 0.6rem;
+    font-size: 12px;
+  }
+  
   .quantity-btn {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
   }
   
   .quantity-display {
-    padding: 2px 3px;
-    min-width: 14px;
-    width: 22px;
-    font-size: 11px;
+    padding: 6px 12px;
+    min-width: 50px;
+    font-size: 14px;
   }
   
   .btn-primary {

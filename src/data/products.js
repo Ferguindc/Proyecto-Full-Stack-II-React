@@ -116,6 +116,7 @@ export const allProducts = [
     precio: 19990,
     categoria: 'cuadros',
     descripcion: 'Cuadro decorativo de alta resolución del anime Given.',
+    medidas: ['30x39', '40x50', '50x70', '70x81'],
     images: [
       givenCuadro,
       givenCuadro,
@@ -128,6 +129,7 @@ export const allProducts = [
     precio: 22990,
     categoria: 'cuadros',
     descripcion: 'Cuadro con personajes de Jujutsu Kaisen en alta calidad.',
+    medidas: ['30x39', '40x50', '50x70', '70x81'],
     images: [
       givenCuadro,
       satoruSingle,
@@ -140,6 +142,7 @@ export const allProducts = [
     precio: 18990,
     categoria: 'cuadros',
     descripcion: 'Cuadro con diseños de anime clásico para decorar tu habitación.',
+    medidas: ['30x39', '40x50', '50x70', '70x81'],
     images: [
       givenCuadro,
       givenCuadro,
@@ -152,6 +155,7 @@ export const allProducts = [
     precio: 25990,
     categoria: 'cuadros',
     descripcion: 'Cuadro personalizable con tu anime favorito.',
+    medidas: ['30x39', '40x50', '50x70', '70x81'],
     images: [
       givenCuadro,
       givenCuadro,
