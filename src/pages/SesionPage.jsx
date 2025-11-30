@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import "../styles/style2.css";
 import powerImg from '../assets/img/power.png';
@@ -78,7 +79,7 @@ function SesionPage() {
           <input type="submit" value="Iniciar sesión" />
 
           <div className="registrarse">
-            ¿No tienes cuenta? Regístrate <Link to="/registro">aquí!</Link>
+            ¿No tienes cuenta? Regístrate <a href="/registro">aquí!</a>
           </div>
         </form>
       </div>
