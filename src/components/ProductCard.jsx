@@ -25,8 +25,8 @@ function ProductCard({ producto }) {
       id: producto.id,
       nombre: producto.nombre,
       precio: producto.precio,
-      imagen: producto.images[0], // Usamos la primera imagen
-      categoria: producto.categoria
+      imagen: producto.imagenUrl || producto.images?.[0] || '/placeholder.jpg', // Usar imagenUrl del backend
+      categoria: producto.categorias?.[0]?.nombre || 'general' // Usar primera categoría del backend
     };
     
     addToCart(cartProduct, 1, selectedSize);
@@ -50,7 +50,7 @@ function ProductCard({ producto }) {
         <Link to={`/producto/${producto.id}`} className="text-decoration-none">
           <div className="card-img-container">
             <img 
-              src={producto.images[0]} 
+              src={producto.imagenUrl || producto.images?.[0] || '/placeholder.jpg'} 
               className="card-img-top" 
               alt={producto.nombre}
             />
@@ -80,7 +80,7 @@ function ProductCard({ producto }) {
             <div className="size-selector-quick mb-2">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <small className="fw-bold">
-                  {producto.categoria === 'cuadros' ? 'Selecciona medida (cm):' : 'Selecciona talla:'}
+                  {producto.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'Selecciona medida (cm):' : 'Selecciona talla:'}
                 </small>
                 <button 
                   className="btn-close btn-sm"

@@ -2,37 +2,57 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { allProducts } from '../data/products.js'; // Importamos la data
-import { useCart } from '../context/CartContext'; // Importamos el contexto del carrito
-import '../styles/single-style.css'; // Importamos el CSS
+import { productoService } from '../services/productoService.js';
+import { useCart } from '../context/CartContext';
+import '../styles/single-style.css';
 
 
 function SingleProductPage() {
-  // 1. Obtenemos el ID de la URL (ej: /producto/1)
   const { id } = useParams();
   const { addToCart, toggleCart } = useCart();
 
-  // 2. Buscamos el producto en nuestra "base de datos"
-  // Usamos parseInt porque el ID de la URL es texto, y en nuestro array es número
-  const product = allProducts.find(p => p.id === parseInt(id));
-
-  // 3. Estados para la funcionalidad
+  // Estados
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [mainImage, setMainImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  // 4. Efecto para poner la primera imagen del producto como la principal y establecer talla/medida inicial
+  // Cargar producto desde la API
   useEffect(() => {
-    if (product) {
-      setMainImage(product.images[0]);
-      // Establecer talla/medida inicial según el tipo de producto
-      if (product.categoria === 'cuadros') {
-        setSelectedSize(product.medidas ? product.medidas[0] : '30x39');
+    cargarProducto();
+  }, [id]);
+
+  const cargarProducto = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      
+      const productoData = await productoService.obtenerPorId(parseInt(id));
+      setProduct(productoData);
+      
+      // Configurar imagen principal
+      setMainImage(productoData.imagenUrl || '/placeholder.jpg');
+      
+      // Establecer talla/medida inicial según las categorías del producto
+      const esCuadro = productoData.categorias?.some(cat => 
+        cat.nombre.toLowerCase().includes('cuadro')
+      );
+      
+      if (esCuadro) {
+        setSelectedSize('30x39');
       } else {
         setSelectedSize('M');
       }
+      
+    } catch (error) {
+      console.error('Error cargando producto:', error);
+      setError('Error al cargar el producto');
+    } finally {
+      setLoading(false);
     }
-  }, [product]); // Se ejecuta cada vez que el 'product' cambia
+  };
 
   // 5. Funciones para manejar interacciones
   const handleSizeSelect = (size) => {
@@ -50,31 +70,54 @@ function SingleProductPage() {
   };
 
   const handleAddToCart = () => {
-    // Crear el producto adaptado para el carrito
+    // Crear el producto adaptado para el carrito usando estructura del backend
     const cartProduct = {
       id: product.id,
       nombre: product.nombre,
       precio: product.precio,
-      imagen: product.images[0], // Usamos la primera imagen
-      categoria: product.categoria
+      imagen: product.imagenUrl || '/placeholder.jpg',
+      categoria: product.categorias?.[0]?.nombre || 'general'
     };
     
     addToCart(cartProduct, quantity, selectedSize);
-    
-    // Mostrar el carrito lateral después de agregar
     toggleCart();
     
     // Opcional: Mostrar una notificación
     alert(`¡${product.nombre} agregado al carrito!`);
   };
 
-  // 6. Si no se encuentra el producto, mostramos un mensaje
+  // Estados de carga y error
+  if (loading) {
+    return (
+      <div className="container text-center my-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+        <p className="mt-3">Cargando producto...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container text-center my-5">
+        <div className="alert alert-danger">
+          <h1>Error</h1>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={cargarProducto}>
+            Intentar de nuevo
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="container text-center my-5">
         <h1>Producto no encontrado</h1>
         <p>El producto que buscas no existe.</p>
-        <Link to="/poleras" className="btn btn-primary">Volver a la tienda</Link>
+        <Link to="/productos" className="btn btn-primary">Volver a la tienda</Link>
       </div>
     );
   }
@@ -95,20 +138,20 @@ function SingleProductPage() {
             />
           </div>
 
-          {/* Miniaturas (Thumbnails) */}
-          <div className="thumbnail-images d-flex justify-content-center gap-2">
-            {product.images.map((imgSrc, index) => (
-              <img 
-                key={index}
-                src={imgSrc} 
-                alt={`Thumbnail ${index + 1}`}
-                // Cambiamos la clase 'active' si es la imagen seleccionada
-                className={`img-thumbnail ${mainImage === imgSrc ? 'active' : ''}`}
-                // Al hacer clic, cambiamos la imagen principal
-                onClick={() => setMainImage(imgSrc)}
-              />
-            ))}
-          </div>
+          {/* Miniaturas (Thumbnails) - Solo mostrar si hay múltiples imágenes */}
+          {product.images && product.images.length > 1 && (
+            <div className="thumbnail-images d-flex justify-content-center gap-2">
+              {product.images.map((imgSrc, index) => (
+                <img 
+                  key={index}
+                  src={imgSrc} 
+                  alt={`Thumbnail ${index + 1}`}
+                  className={`img-thumbnail ${mainImage === imgSrc ? 'active' : ''}`}
+                  onClick={() => setMainImage(imgSrc)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* --- Columna de Detalles --- */}
@@ -124,17 +167,17 @@ function SingleProductPage() {
             {/* Opciones de Talla/Medida */}
             <div className="mb-3">
               <label className="form-label fw-bold">
-                {product.categoria === 'cuadros' ? 'Medida (cm):' : 'Talla:'}
+                {product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'Medida (cm):' : 'Talla:'}
               </label>
               <div className="size-buttons d-flex gap-2 mt-2 flex-wrap">
-                {(product.categoria === 'cuadros' 
-                  ? (product.medidas || ['30x39', '40x50', '50x70', '70x81'])
+                {(product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro'))
+                  ? ['30x39', '40x50', '50x70', '70x81']
                   : ['S', 'M', 'L', 'XL']
                 ).map(size => (
                   <button 
                     key={size}
                     className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                    data-cuadro={product.categoria === 'cuadros' ? 'true' : 'false'}
+                    data-cuadro={product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'true' : 'false'}
                     onClick={() => handleSizeSelect(size)}
                   >
                     {size}

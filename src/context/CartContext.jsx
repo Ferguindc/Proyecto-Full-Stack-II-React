@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { pedidoService } from '../services/pedidoService.js';
+import { useAuth } from './AuthContext.jsx';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { currentUser } = useAuth(); // Usar currentUser en lugar de user
 
   // Cargar carrito del localStorage al iniciar
   useEffect(() => {
@@ -116,6 +119,47 @@ export function CartProvider({ children }) {
     setIsCartOpen(!isCartOpen);
   };
 
+  // Crear pedido en el backend
+  const crearPedido = async () => {
+    if (!currentUser) {
+      throw new Error('Debes iniciar sesión para realizar un pedido');
+    }
+
+    if (cartItems.length === 0) {
+      throw new Error('El carrito está vacío');
+    }
+
+    try {
+      // Preparar datos del pedido según el modelo de Spring Boot
+      const pedidoData = {
+        usuario: {
+          id: currentUser.id
+        },
+        detalles: cartItems.map(item => ({
+          producto: {
+            id: item.id
+          },
+          cantidad: item.quantity,
+          precioUnit: item.precio
+        }))
+      };
+
+      console.log('Creando pedido:', pedidoData);
+      
+      const pedidoCreado = await pedidoService.crear(pedidoData);
+      
+      // Limpiar carrito después de crear el pedido
+      clearCart();
+      setIsCartOpen(false);
+      
+      return pedidoCreado;
+      
+    } catch (error) {
+      console.error('Error al crear pedido:', error);
+      throw error;
+    }
+  };
+
   const value = {
     cartItems,
     isCartOpen,
@@ -129,7 +173,8 @@ export function CartProvider({ children }) {
     getShippingCost,
     getFinalTotal,
     toggleCart,
-    setIsCartOpen
+    setIsCartOpen,
+    crearPedido
   };
 
   return (

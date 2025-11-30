@@ -14,18 +14,19 @@ function CarritoPage() {
     getTotalPrice,
     getDiscount,
     getShippingCost,
-    getFinalTotal 
+    getFinalTotal,
+    crearPedido
   } = useCart();
   
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   
   const [step, setStep] = useState(1); // 1: Carrito, 2: Datos, 3: Confirmación, 4: Orden completada
   const [customerData, setCustomerData] = useState({
-    nombre: user?.nombre || '',
-    email: user?.email || '',
-    telefono: user?.telefono || '',
-    direccion: user?.direccion || '',
+    nombre: currentUser?.nombre || '',
+    email: currentUser?.email || '',
+    telefono: currentUser?.telefono || '',
+    direccion: currentUser?.direccion || '',
     ciudad: 'Santiago',
     comuna: '',
     codigoPostal: '',
@@ -120,53 +121,62 @@ function CarritoPage() {
     return `CW${timestamp.toString().slice(-6)}${random.toString().padStart(3, '0')}`;
   };
 
-  const processOrder = () => {
+  const processOrder = async () => {
     // Validar el pago antes de procesar
     if (!validatePayment()) {
       return;
     }
 
-    // Simular procesamiento de orden
-    const newOrderNumber = generateOrderNumber();
-    setOrderNumber(newOrderNumber);
-    
-    const paymentAmountNum = parseFloat(paymentAmount);
-    const totalAmount = getFinalTotal();
-    
-    // Determinar el estado del pedido basado en el pago
-    let status = 'rechazada';
-    if (paymentAmountNum >= totalAmount) {
-      status = 'confirmada';
+    try {
+      // Crear pedido usando el servicio de carrito
+      const pedidoCreado = await crearPedido();
+      
+      // Generar número de orden para referencia local
+      const newOrderNumber = generateOrderNumber();
+      setOrderNumber(newOrderNumber);
+      
+      const paymentAmountNum = parseFloat(paymentAmount);
+      const totalAmount = getFinalTotal();
+      
+      // Determinar el estado del pedido basado en el pago
+      let status = 'confirmada'; // Siempre confirmada si llegó hasta aquí
+      if (paymentAmountNum < totalAmount) {
+        status = 'pendiente'; // Pago parcial
+      }
+      
+      setOrderStatus(status);
+      
+      // Guardar información local para historial
+      const orderData = {
+        orderNumber: newOrderNumber,
+        pedidoId: pedidoCreado.id,
+        date: new Date().toISOString(),
+        customer: customerData,
+        items: cartItems,
+        payment: {
+          method: paymentMethod,
+          subtotal: getTotalPrice(),
+          discount: getDiscount(),
+          shipping: getShippingCost(),
+          total: totalAmount,
+          amountPaid: paymentAmountNum,
+          amountDue: Math.max(0, totalAmount - paymentAmountNum)
+        },
+        status: status
+      };
+      
+      // Guardar en historial local
+      const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      existingOrders.push(orderData);
+      localStorage.setItem('userOrders', JSON.stringify(existingOrders));
+      
+      console.log('Pedido creado exitosamente:', pedidoCreado);
+      setStep(4);
+      
+    } catch (error) {
+      console.error('Error procesando orden:', error);
+      setPaymentError(error.message || 'Error al procesar el pedido. Intenta de nuevo.');
     }
-    
-    setOrderStatus(status);
-    
-    // Guardar orden en localStorage (simulación)
-    const orderData = {
-      orderNumber: newOrderNumber,
-      date: new Date().toISOString(),
-      customer: customerData,
-      items: cartItems,
-      payment: {
-        method: paymentMethod,
-        subtotal: getTotalPrice(),
-        discount: getDiscount(),
-        shipping: getShippingCost(),
-        total: totalAmount,
-        amountPaid: paymentAmountNum,
-        amountDue: Math.max(0, totalAmount - paymentAmountNum)
-      },
-      status: status
-    };
-    
-    // Guardar en historial de órdenes
-    const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
-    existingOrders.push(orderData);
-    localStorage.setItem('userOrders', JSON.stringify(existingOrders));
-    
-    // Limpiar carrito
-    clearCart();
-    setStep(4);
   };
 
   if (cartItems.length === 0 && step === 1) {
@@ -176,31 +186,9 @@ function CarritoPage() {
           <h2>Tu carrito está vacío</h2>
           <p>¡Descubre nuestros increíbles productos!</p>
           <button 
-            className="btn btn-lg"
+            className="btn btn-primary btn-lg"
             onClick={() => navigate('/poleras')}
-            style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              border: 'none',
-              color: 'white',
-              fontWeight: '600',
-              padding: '15px 35px',
-              borderRadius: '15px',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
-              fontSize: '1.1rem'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-3px)';
-              e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
-              e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.3)';
-              e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-            }}
           >
-            <i className="bi bi-shop me-2"></i>
             Ir a Comprar
           </button>
         </div>
@@ -313,28 +301,9 @@ function CarritoPage() {
                   Continuar
                 </button>
                 <button 
-                  className="btn btn-gradient-secondary w-100 mt-2"
+                  className="btn btn-outline-secondary w-100 mt-2"
                   onClick={() => navigate('/poleras')}
-                  style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    border: 'none',
-                    color: 'white',
-                    fontWeight: '600',
-                    padding: '12px 24px',
-                    borderRadius: '10px',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
-                  }}
                 >
-                  <i className="bi bi-arrow-left me-2"></i>
                   Seguir Comprando
                 </button>
               </div>
@@ -695,34 +664,13 @@ function CarritoPage() {
 
             <div className="success-actions">
               <button 
-                className="btn btn-lg me-3"
+                className="btn btn-primary btn-lg me-3"
                 onClick={() => navigate('/cliente')}
-                style={{
-                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                  border: 'none',
-                  color: 'white',
-                  fontWeight: '600',
-                  padding: '12px 28px',
-                  borderRadius: '12px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.4)';
-                  e.target.style.background = 'linear-gradient(135deg, #20c997 0%, #28a745 100%)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.3)';
-                  e.target.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                }}
               >
-                <i className="bi bi-box-seam me-2"></i>
                 Ver Mis Pedidos
               </button>
               <button 
-                className="btn btn-lg"
+                className="btn btn-outline-primary btn-lg"
                 onClick={() => {
                   // Resetear estados para nueva compra
                   setStep(1);
@@ -731,28 +679,7 @@ function CarritoPage() {
                   setOrderStatus('');
                   navigate('/poleras');
                 }}
-                style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  border: 'none',
-                  color: 'white',
-                  fontWeight: '600',
-                  padding: '12px 28px',
-                  borderRadius: '12px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
-                  e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
-                  e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                }}
               >
-                <i className="bi bi-arrow-left me-2"></i>
                 {orderStatus === 'confirmada' ? 'Seguir Comprando' : 'Intentar de Nuevo'}
               </button>
             </div>

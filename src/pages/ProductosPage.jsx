@@ -1,45 +1,83 @@
 // src/pages/ProductosPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // <-- Importamos Link
+import { Link } from 'react-router-dom';
 import "../styles/style3.css";
 import ProductCard from '../components/ProductCard';
-
-// 1. IMPORTAMOS LA LISTA CENTRAL
-import { allProducts } from '../data/products.js';
-
-// 2. FILTRAMOS PARA TENER SOLO LA ROPA
-const todosLosProductos = allProducts.filter(p => p.categoria === 'ropa');
+import { productoService } from '../services/productoService.js';
+import { categoriaService } from '../services/categoriaService.js';
 
 
 function ProductosPage() {
   // Estados
-  const [productos, setProductos] = useState(todosLosProductos);
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [categoria, setCategoria] = useState('todos');
   const [precioMax, setPrecioMax] = useState(50000);
   const [busqueda, setBusqueda] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // useEffect (función de filtrado)
+  // Cargar productos y categorías al montar el componente
   useEffect(() => {
-    let productosFiltrados = todosLosProductos;
+    cargarDatos();
+  }, []);
 
-    if (categoria !== 'todos') {
-      productosFiltrados = productosFiltrados.filter(
-        (producto) => producto.categoria === categoria
-      );
+  const cargarDatos = async () => {
+    try {
+      setLoading(true);
+      const [productosResponse, categoriasResponse] = await Promise.all([
+        productoService.obtenerTodos(),
+        categoriaService.obtenerTodas()
+      ]);
+      
+      setProductos(productosResponse);
+      setCategorias(categoriasResponse);
+      setError('');
+    } catch (error) {
+      console.error('Error cargando datos:', error);
+      setError('Error al cargar los productos. Intenta de nuevo.');
+    } finally {
+      setLoading(false);
     }
+  };
 
-    productosFiltrados = productosFiltrados.filter(
-      (producto) => producto.precio <= precioMax
-    );
+  // Filtrar productos cuando cambien los filtros
+  useEffect(() => {
+    filtrarProductos();
+  }, [categoria, precioMax, busqueda]);
 
-    if (busqueda.length > 0) {
+  const filtrarProductos = async () => {
+    try {
+      let productosFiltrados = [];
+
+      // Si hay búsqueda por nombre, usar endpoint específico
+      if (busqueda.length > 0) {
+        productosFiltrados = await productoService.buscarPorNombre(busqueda);
+      } 
+      // Si hay categoría específica, usar endpoint de categoría
+      else if (categoria !== 'todos') {
+        const categoriaObj = categorias.find(cat => cat.nombre.toLowerCase() === categoria.toLowerCase());
+        if (categoriaObj) {
+          productosFiltrados = await productoService.obtenerPorCategoria(categoriaObj.id);
+        }
+      } 
+      // Si no hay filtros específicos, obtener todos
+      else {
+        productosFiltrados = await productoService.obtenerTodos();
+      }
+
+      // Aplicar filtro de precio localmente
       productosFiltrados = productosFiltrados.filter(
-        (producto) => producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        (producto) => producto.precio <= precioMax
       );
+
+      setProductos(productosFiltrados);
+    } catch (error) {
+      console.error('Error filtrando productos:', error);
+      setError('Error al filtrar productos.');
     }
-    setProductos(productosFiltrados);
-  }, [categoria, precioMax, busqueda]); 
+  }; 
 
 
   // Handlers (funciones de clic)
@@ -55,6 +93,33 @@ function ProductosPage() {
 
 
   // Renderizado
+  if (loading) {
+    return (
+      <div className="container mt-5 mb-5">
+        <div className="text-center p-5">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+          <p className="mt-3">Cargando productos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mt-5 mb-5">
+        <div className="alert alert-danger text-center">
+          <h4>Error</h4>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={cargarDatos}>
+            Intentar de nuevo
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mt-5 mb-5">
       <div className="row">
@@ -72,20 +137,16 @@ function ProductosPage() {
                 >
                   Todos los productos
                 </li>
-                <li 
-                  className={`text-decoration-none text-dark d-block mb-2 ${categoria === 'ropa' ? 'fw-bold' : ''}`}
-                  onClick={() => handleCategoriaChange('ropa')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Ropa
-                </li>
-                <li 
-                  className={`text-decoration-none text-dark d-block mb-2 ${categoria === 'cuadros' ? 'fw-bold' : ''}`}
-                  onClick={() => handleCategoriaChange('cuadros')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Cuadros
-                </li>
+                {categorias.map((cat) => (
+                  <li 
+                    key={cat.id}
+                    className={`text-decoration-none text-dark d-block mb-2 ${categoria === cat.nombre.toLowerCase() ? 'fw-bold' : ''}`}
+                    onClick={() => handleCategoriaChange(cat.nombre.toLowerCase())}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {cat.nombre}
+                  </li>
+                ))}
               </ul>
             </div>
             <hr />

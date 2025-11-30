@@ -23,9 +23,9 @@ function Navbar() {
         <div className="container-fluid d-flex justify-content-center">
           <div className="tamañoletra text-white mb-0">
                   <Ticker>
-                  <div className="ticker-item">¡Feliz Halloween!</div>
+                  <div className="ticker-item">¡Feliz Navidad!</div>
                   <div className="ticker-item">Envíos gratis sobre $50.000</div>
-                  <div className="ticker-item">¡Feliz Halloween!</div>
+                  <div className="ticker-item">¡Feliz Navidad!</div>
                 </Ticker>
           </div>
         </div>
