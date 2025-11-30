@@ -5,6 +5,7 @@ import logo from '../assets/img/LOGODEF (2).png';
 import './Navbar.css'; 
 import { useAuth } from '../context/AuthContext'; // 👈 1. Importa useAuth
 import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 import Ticker from '../components/Ticker.jsx';
 
 
@@ -13,19 +14,20 @@ function Navbar() {
   // 2. Obtenemos el usuario actual y la función logout del contexto
   const { currentUser, logout } = useAuth();
   const { getTotalItems, toggleCart } = useCart();
+  const navigate = useNavigate();
 
   return (
     <>
       {/* ----- Barra de envíos ----- */}
       <nav className="navbar bg-dark">
         <div className="container-fluid d-flex justify-content-center">
-          <p className="tamañoletra text-white mb-0">
+          <div className="tamañoletra text-white mb-0">
                   <Ticker>
                   <div className="ticker-item">¡Feliz Halloween!</div>
                   <div className="ticker-item">Envíos gratis sobre $50.000</div>
                   <div className="ticker-item">¡Feliz Halloween!</div>
                 </Ticker>
-          </p>
+          </div>
         </div>
       </nav>
 
@@ -163,7 +165,12 @@ function Navbar() {
                     <li><hr className="dropdown-divider" /></li>
                     <li>
                       {/* 4. Usamos la función logout del contexto */}
-                      <button className="dropdown-item" onClick={logout}>
+                      <button className="dropdown-item" onClick={() => {
+                        const result = logout();
+                        if (result.success) {
+                          navigate(result.redirect);
+                        }
+                      }}>
                         <i className="bi bi-box-arrow-right me-2"></i>
                         Cerrar sesión
                       </button>

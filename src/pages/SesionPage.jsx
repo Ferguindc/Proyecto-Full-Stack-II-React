@@ -4,6 +4,7 @@ import "../styles/style2.css";
 import powerImg from '../assets/img/power.png';
 import makimaImg from '../assets/img/makima.png';
 import { useAuth } from '../context/AuthContext'; // 👈 1. Importa el hook useAuth
+import { Link } from 'react-router-dom';
 
 function SesionPage() {
   const [usuario, setUsuario] = useState('');
@@ -12,17 +13,24 @@ function SesionPage() {
   const navigate = useNavigate(); 
   const { login } = useAuth(); // 👈 3. Obtén la función login del contexto
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); // Limpia errores
 
-    // 👈 4. Llama a la función login del contexto
-    const success = login(usuario, contrasena);
+    try {
+      // 👈 4. Llama a la función login del contexto (ahora es async)
+      const result = await login(usuario, contrasena);
 
-    if (!success) {
-      setError("Credenciales incorrectas."); // 👈 5. Muestra error si falla
+      if (result.success) {
+        // Si tiene éxito, redirigir a la página correspondiente
+        navigate(result.redirect);
+      } else {
+        setError(result.message || "Credenciales incorrectas."); // 👈 5. Muestra error si falla
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      setError("Error de conexión. Intenta de nuevo.");
     }
-    // Si tiene éxito, la función 'login' del contexto se encargará de redirigir
   };
 
   return (
@@ -70,7 +78,7 @@ function SesionPage() {
           <input type="submit" value="Iniciar sesión" />
 
           <div className="registrarse">
-            ¿No tienes cuenta? Regístrate <a href="/registro">aquí!</a>
+            ¿No tienes cuenta? Regístrate <Link to="/registro">aquí!</Link>
           </div>
         </form>
       </div>

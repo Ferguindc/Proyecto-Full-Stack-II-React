@@ -33,7 +33,10 @@ function PanelEmpleadoPage() {
   };
 
   const handleLogout = () => {
-    logout();
+    const result = logout();
+    if (result.success) {
+      navigate(result.redirect);
+    }
   };
 
   if (!currentUser || currentUser.role !== 'empleado') {

@@ -61,7 +61,8 @@ function App() {
           <Route path="/formulario-add" element={<FormularioAddProductoPage />} />
           <Route path="/formulario-editar/:id" element={<FormularioEditarProductoPage />} />
           <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-          {/* Más adelante agregaremos las otras rutas aquí */}
+          {/* Ruta catch-all - cualquier ruta no encontrada va al home */}
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </main>
       
