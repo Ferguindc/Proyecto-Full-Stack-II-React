@@ -4,11 +4,13 @@
 // CONFIGURACIÓN PRINCIPAL DE LA API
 // ===============================
 export const API_CONFIG = {
-  // URL base REAL de tu API Spring Boot
-  BASE_URL: 'http://18.224.96.229:8082/api',
+  // URL base - usa proxy de Netlify en producción, directo en desarrollo
+  BASE_URL: process.env.NODE_ENV === 'production' 
+    ? '/api'  // Proxy de Netlify
+    : 'http://18.224.96.229:8082/api',  // Directo en desarrollo
   
   // Modo de desarrollo sin servidor (cambiar a false cuando el servidor esté listo)
-  DEV_MODE: false,
+  DEV_MODE: false, // Desactivado - usando API real en AWS
 
   // ===============================
   // ENDPOINTS REALES SEGÚN TU BACKEND

@@ -7,6 +7,20 @@ const defaultOptions = {
   headers: API_CONFIG.DEFAULT_HEADERS,
 };
 
+// Verificar conectividad con la API
+const checkApiConnectivity = async () => {
+  try {
+    const response = await fetch(API_CONFIG.BASE_URL + '/health', {
+      ...defaultOptions,
+      method: 'GET',
+    });
+    return response.ok;
+  } catch (error) {
+    console.warn('API no disponible, usando modo local:', error.message);
+    return false;
+  }
+};
+
 // Función helper para manejar respuestas
 const handleResponse = async (response) => {
   if (!response.ok) {

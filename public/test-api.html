@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Connection</title>
+</head>
+<body>
+    <h1>Probando conexión a API</h1>
+    <button onclick="testAPI()">Probar API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Probando proxy de Netlify...';
+            
+            try {
+                // Test usando el proxy de Netlify
+                const response = await fetch('/api/usuarios', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `✅ API funcionando a través del proxy! Datos: ${JSON.stringify(data)}`;
+                } else {
+                    resultDiv.innerHTML = `❌ Error ${response.status}: ${response.statusText}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error de conexión: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,6 +2,14 @@
   publish = "dist"
   command = "npm run build"
 
+# Proxy para la API
+[[redirects]]
+  from = "/api/*"
+  to = "http://18.224.96.229:8082/api/:splat"
+  status = 200
+  force = true
+
+# React Router
 [[redirects]]
   from = "/*"
   to = "/index.html"
