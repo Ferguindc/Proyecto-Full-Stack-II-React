@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Proyecto-Full-Stack-II-React/',
+  // base: '/Proyecto-Full-Stack-II-React/', // Comentado para Netlify
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
