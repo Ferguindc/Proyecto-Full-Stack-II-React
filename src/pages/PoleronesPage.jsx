@@ -4,32 +4,96 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/style3.css";
 import ProductCard from '../components/ProductCard';
-import { allProducts } from '../data/products.js';
-
-// Filtramos para tener solo los polerones
-const todosLosPolerones = allProducts.filter(p => p.categoria === 'polerones');
+import { productoService } from '../services/productoService';
+import { categoriaService } from '../services/categoriaService';
 
 function PoleronesPage() {
   // Estados
-  const [productos, setProductos] = useState(todosLosPolerones);
+  const [productos, setProductos] = useState([]);
+  const [todosLosProductos, setTodosLosProductos] = useState([]);
   const [precioMax, setPrecioMax] = useState(50000);
   const [busqueda, setBusqueda] = useState('');
+  const [ordenamiento, setOrdenamiento] = useState('default');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // useEffect (función de filtrado)
+  // Cargar productos al iniciar
   useEffect(() => {
-    let productosFiltrados = todosLosPolerones;
+    cargarProductos();
+  }, []);
 
+  const cargarProductos = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      
+      // Obtener todos los productos
+      const todosProductos = await productoService.obtenerTodos();
+      
+      // Filtrar polerones - buscar categorías relacionadas con polerones
+      let polerones = todosProductos.filter(producto => {
+        if (producto.categorias && producto.categorias.length > 0) {
+          return producto.categorias.some(categoria => {
+            const nombreCategoria = categoria.nombre.toLowerCase();
+            return nombreCategoria.includes('poleron') || 
+                   nombreCategoria.includes('hoodie') ||
+                   nombreCategoria.includes('sudadera') ||
+                   nombreCategoria === 'ropa';
+          });
+        }
+        // Si no tiene categorías, filtrar por nombre del producto
+        const nombreProducto = producto.nombre.toLowerCase();
+        return nombreProducto.includes('poleron') || 
+               nombreProducto.includes('hoodie') ||
+               nombreProducto.includes('sudadera');
+      });
+      
+      // Si no hay polerones específicos, mostrar algunos productos
+      if (polerones.length === 0 && todosProductos.length > 0) {
+        console.log('🧥 No hay polerones, mostrando productos generales');
+        const tercio = Math.ceil(todosProductos.length / 3);
+        polerones = todosProductos.slice(tercio, tercio * 2);
+      }
+      
+      console.log('🧥 DEBUG Polerones - Total productos:', todosProductos.length);
+      console.log('🧥 DEBUG Polerones - Productos filtrados:', polerones.length);
+      
+      setTodosLosProductos(polerones);
+      setProductos(polerones);
+      
+    } catch (error) {
+      console.error('Error cargando productos:', error);
+      setError('Error al cargar productos. Intenta recargar la página.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect (función de filtrado y ordenamiento)
+  useEffect(() => {
+    let productosFiltrados = [...todosLosProductos];
+
+    // Filtrar por precio
     productosFiltrados = productosFiltrados.filter(
       (producto) => producto.precio <= precioMax
     );
 
+    // Filtrar por búsqueda
     if (busqueda.length > 0) {
       productosFiltrados = productosFiltrados.filter(
         (producto) => producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
       );
     }
+
+    // Ordenar productos
+    if (ordenamiento === 'price-asc') {
+      productosFiltrados.sort((a, b) => a.precio - b.precio);
+    } else if (ordenamiento === 'price-desc') {
+      productosFiltrados.sort((a, b) => b.precio - a.precio);
+    }
+
     setProductos(productosFiltrados);
-  }, [precioMax, busqueda]); 
+  }, [precioMax, busqueda, ordenamiento, todosLosProductos]); 
 
   // Handlers (funciones de clic)
   const handlePrecioChange = (evento) => {
@@ -37,6 +101,10 @@ function PoleronesPage() {
   };
   const handleBusquedaChange = (evento) => {
     setBusqueda(evento.target.value);
+  };
+
+  const handleOrdenamientoChange = (evento) => {
+    setOrdenamiento(evento.target.value);
   };
 
   return (
@@ -84,7 +152,13 @@ function PoleronesPage() {
                   onChange={handleBusquedaChange}
                 />
               </div>
-              <select className="form-select ms-3" id="sortBy" style={{ maxWidth: '200px' }}>
+              <select 
+                className="form-select ms-3" 
+                id="sortBy" 
+                style={{ maxWidth: '200px' }}
+                value={ordenamiento}
+                onChange={handleOrdenamientoChange}
+              >
                 <option value="default">Ordenar por</option>
                 <option value="price-asc">Precio: de menor a mayor</option>
                 <option value="price-desc">Precio: de mayor a menor</option>
@@ -94,14 +168,41 @@ function PoleronesPage() {
           
           {/* --- GRILLA DE PRODUCTOS --- */}
           <div id="product-grid" className="row">
-            {productos.length > 0 ? (
+            {loading ? (
+              <div className="text-center p-5 col-12">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+                <p className="mt-3">Cargando polerones...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center p-5 col-12">
+                <div className="alert alert-danger">
+                  <i className="bi bi-exclamation-triangle me-2"></i>
+                  {error}
+                  <br />
+                  <button 
+                    className="btn btn-outline-danger mt-2"
+                    onClick={cargarProductos}
+                  >
+                    Reintentar
+                  </button>
+                </div>
+              </div>
+            ) : productos.length > 0 ? (
               productos.map((producto) => (
                 <ProductCard key={producto.id} producto={producto} />
               ))
             ) : (
               <div id="no-results" className="text-center p-5 col-12">
+                <i className="bi bi-search display-1 text-muted"></i>
                 <h3>No se encontraron polerones</h3>
-                <p>Intenta ajustar tus filtros de búsqueda.</p>
+                <p>Intenta ajustar tus filtros de búsqueda o agrega productos en el panel de administración.</p>
+                {todosLosProductos.length === 0 && (
+                  <Link to="/admin" className="btn btn-primary">
+                    Ir al Panel de Administración
+                  </Link>
+                )}
               </div>
             )}
           </div>

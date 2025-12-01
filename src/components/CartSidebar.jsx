@@ -82,7 +82,10 @@ function CartSidebar() {
                     </div>
                     <div className="cart-item-details">
                       <h6>{item.nombre}</h6>
-                      <p className="cart-item-size">Talla: {item.selectedSize}</p>
+                      <p className="cart-item-size">
+                        {(item.categoria?.toLowerCase().includes('cuadro') || 
+                          item.nombre?.toLowerCase().includes('cuadro')) ? 'Medida' : 'Talla'}: {item.selectedSize}
+                      </p>
                       <p className="cart-item-price">{formatPrice(item.precio)}</p>
                     </div>
                     <div className="cart-item-controls">

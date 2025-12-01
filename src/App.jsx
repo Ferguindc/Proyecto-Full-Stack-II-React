@@ -27,6 +27,15 @@ import PanelEmpleadoPage from './pages/PanelEmpleadoPage.jsx';
 import GestionEmpleadosPage from './pages/GestionEmpleadosPage.jsx';
 import FormularioAddProductoPage from './pages/FormularioAddProductoPage.jsx';
 import FormularioEditarProductoPage from './pages/FormularioEditarProductoPage.jsx';
+import UtilidadesAdminPage from './pages/UtilidadesAdminPage.jsx';
+import DebugProductosPage from './pages/DebugProductosPage.jsx';
+import AsignarCategoriasPage from './pages/AsignarCategoriasPage.jsx';
+import LimpiarCategoriasPage from './pages/LimpiarCategoriasPage.jsx';
+import FixCategoriasPage from './pages/FixCategoriasPage.jsx';
+import ProductoTestPage from './pages/ProductoTestPage.jsx';
+import FormularioSimplePage from './pages/FormularioSimplePage.jsx';
+import FormularioAddProductoMinimal from './pages/FormularioAddProductoMinimal.jsx';
+import DebugCarritoPage from './pages/DebugCarritoPage.jsx';
 import PreguntasFrecuentesPage from './pages/PreguntasFrecuentesPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import BlogPostPage from './pages/BlogPostPage.jsx';
@@ -59,7 +68,17 @@ function App() {
           <Route path="/panel-empleado" element={<PanelEmpleadoPage />} />
           <Route path="/gestion-empleados" element={<GestionEmpleadosPage />} />
           <Route path="/formulario-add" element={<FormularioAddProductoPage />} />
+          <Route path="/admin/agregar-producto" element={<FormularioAddProductoPage />} />
           <Route path="/formulario-editar/:id" element={<FormularioEditarProductoPage />} />
+          <Route path="/admin/productos/editar/:id" element={<FormularioEditarProductoPage />} />
+          <Route path="/admin/utilidades" element={<UtilidadesAdminPage />} />
+          <Route path="/test-producto" element={<ProductoTestPage />} />
+          <Route path="/debug-form" element={<FormularioSimplePage />} />
+          <Route path="/debug-carrito" element={<DebugCarritoPage />} />
+          <Route path="/debug-productos" element={<DebugProductosPage />} />
+          <Route path="/asignar-categorias" element={<AsignarCategoriasPage />} />
+          <Route path="/limpiar-categorias" element={<LimpiarCategoriasPage />} />
+          <Route path="/fix-categorias" element={<FixCategoriasPage />} />
           <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           {/* Ruta catch-all - cualquier ruta no encontrada va al home */}
           <Route path="*" element={<HomePage />} />

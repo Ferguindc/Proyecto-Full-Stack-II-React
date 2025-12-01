@@ -157,7 +157,10 @@ function HistorialPedidos() {
                           />
                           <div className="flex-grow-1">
                             <small className="d-block fw-bold">{item.nombre}</small>
-                            <small className="text-muted">Talla: {item.selectedSize} | Cant: {item.quantity}</small>
+                            <small className="text-muted">
+                              {(item.categoria?.toLowerCase().includes('cuadro') || 
+                                item.nombre?.toLowerCase().includes('cuadro')) ? 'Medida' : 'Talla'}: {item.selectedSize} | Cant: {item.quantity}
+                            </small>
                           </div>
                         </div>
                       ))}

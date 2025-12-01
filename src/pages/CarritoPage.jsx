@@ -233,7 +233,10 @@ function CarritoPage() {
                       </div>
                       <div className="item-details">
                         <h5>{item.nombre}</h5>
-                        <p className="item-size">Talla: {item.selectedSize}</p>
+                        <p className="item-size">
+                          {(item.categoria?.toLowerCase().includes('cuadro') || 
+                            item.nombre?.toLowerCase().includes('cuadro')) ? 'Medida' : 'Talla'}: {item.selectedSize}
+                        </p>
                         <p className="item-price">{formatPrice(item.precio)}</p>
                       </div>
                       <div className="item-quantity">
@@ -508,7 +511,10 @@ function CarritoPage() {
                       <img src={item.imagen} alt={item.nombre} width="50" />
                       <div className="item-info">
                         <strong>{item.nombre}</strong>
-                        <span>Talla: {item.selectedSize} | Cantidad: {item.quantity}</span>
+                        <span>
+                          {(item.categoria?.toLowerCase().includes('cuadro') || 
+                            item.nombre?.toLowerCase().includes('cuadro')) ? 'Medida' : 'Talla'}: {item.selectedSize} | Cantidad: {item.quantity}
+                        </span>
                       </div>
                       <div className="item-price">
                         {formatPrice(item.precio * item.quantity)}

@@ -54,17 +54,30 @@ function ProductosPage() {
       // Si hay búsqueda por nombre, usar endpoint específico
       if (busqueda.length > 0) {
         productosFiltrados = await productoService.buscarPorNombre(busqueda);
+        console.log('Productos encontrados por búsqueda:', productosFiltrados);
       } 
       // Si hay categoría específica, usar endpoint de categoría
       else if (categoria !== 'todos') {
-        const categoriaObj = categorias.find(cat => cat.nombre.toLowerCase() === categoria.toLowerCase());
-        if (categoriaObj) {
-          productosFiltrados = await productoService.obtenerPorCategoria(categoriaObj.id);
+        if (categoria === 'sin-categoria') {
+          // Obtener todos los productos y filtrar los que no tienen categorías
+          const todosProductos = await productoService.obtenerTodos();
+          productosFiltrados = todosProductos.filter(p => !p.categorias || p.categorias.length === 0);
+          console.log('Productos sin categoría:', productosFiltrados);
+        } else {
+          const categoriaObj = categorias.find(cat => cat.nombre.toLowerCase() === categoria.toLowerCase());
+          if (categoriaObj) {
+            productosFiltrados = await productoService.obtenerPorCategoria(categoriaObj.id);
+            console.log('Productos por categoría:', productosFiltrados);
+          } else {
+            console.log('Categoría no encontrada:', categoria);
+            productosFiltrados = [];
+          }
         }
       } 
       // Si no hay filtros específicos, obtener todos
       else {
         productosFiltrados = await productoService.obtenerTodos();
+        console.log('Todos los productos:', productosFiltrados);
       }
 
       // Aplicar filtro de precio localmente
@@ -72,6 +85,7 @@ function ProductosPage() {
         (producto) => producto.precio <= precioMax
       );
 
+      console.log('Productos después del filtro de precio:', productosFiltrados);
       setProductos(productosFiltrados);
     } catch (error) {
       console.error('Error filtrando productos:', error);
@@ -147,6 +161,13 @@ function ProductosPage() {
                     {cat.nombre}
                   </li>
                 ))}
+                <li 
+                  className={`text-decoration-none text-dark d-block mb-2 ${categoria === 'sin-categoria' ? 'fw-bold' : ''}`}
+                  onClick={() => handleCategoriaChange('sin-categoria')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Sin categoría
+                </li>
               </ul>
             </div>
             <hr />

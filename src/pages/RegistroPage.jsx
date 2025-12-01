@@ -1,13 +1,14 @@
 // src/pages/RegistroPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registrarUsuario } from "../services/usuarioService";
+import { useAuth } from '../context/AuthContext';
 import "../styles/style2.css";
 
 import powerImg from '../assets/img/power.png';
 import makimaImg from '../assets/img/makima.png';
 
 function RegistroPage() {
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -52,24 +53,26 @@ function RegistroPage() {
         return;
       }
 
-      // Crear objeto con datos del usuario para la API
-      // Estructura exacta según tu modelo Usuario de Spring Boot
+      // Crear objeto con datos del usuario
       const userData = {
         nombre: formData.nombre.trim(),
         email: formData.email.trim().toLowerCase(),
-        passwordHash: formData.password, // Tu backend debe hashear esto
-        rol: "cliente" // Usar "rol" no "role"
+        passwordHash: formData.password,
+        telefono: formData.telefono || '',
+        rol: "cliente"
       };
       
-      // Nota: el ID es autoincremental, no lo enviamos
-
-      console.log('Enviando datos:', userData);
+      console.log('🆕 Registrando usuario:', userData);
       
-      const data = await registrarUsuario(userData);
-      console.log("Usuario registrado:", data);
-
-      alert('¡Registro exitoso! Serás redirigido al inicio de sesión.');
-      navigate("/sesion");
+      const resultado = await register(userData);
+      
+      if (resultado.success) {
+        console.log("✅ Usuario registrado exitosamente:", resultado.user);
+        alert('¡Registro exitoso! Serás redirigido al inicio de sesión.');
+        navigate("/sesion");
+      } else {
+        throw new Error(resultado.message || 'Error en el registro');
+      }
     } catch (error) {
       console.error("Error completo:", error);
       

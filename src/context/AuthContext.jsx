@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { loginUsuario, registrarUsuario, obtenerUsuarios } from '../services/usuarioService';
+import usuarioService from '../services/usuarioService';
 
 // 1. Crear el Contexto
 const AuthContext = createContext();
@@ -18,24 +19,35 @@ export function AuthProvider({ children }) {
         const storedUser = localStorage.getItem("currentUser");
         
         if (storedToken && storedUser) {
-          // Verificar si el token sigue siendo válido (simulado)
           try {
-            // Decodificar el token para verificar su validez
-            const decoded = JSON.parse(atob(storedToken));
-            const now = Date.now();
-            const tokenAge = now - (decoded.timestamp || 0);
-            
-            // Token válido por 24 horas (86400000 ms)
-            if (tokenAge < 86400000) {
+            // Para tokens de desarrollo (admin-token, empleado-token), no validar timestamp
+            if (storedToken === 'admin-token' || storedToken === 'empleado-token') {
               setToken(storedToken);
               setCurrentUser(JSON.parse(storedUser));
             } else {
-              // Token expirado, limpiar localStorage
-              localStorage.removeItem("authToken");
-              localStorage.removeItem("currentUser");
+              // Para tokens JWT reales, verificar validez
+              try {
+                const decoded = JSON.parse(atob(storedToken));
+                const now = Date.now();
+                const tokenAge = now - (decoded.timestamp || 0);
+                
+                // Token válido por 24 horas (86400000 ms)
+                if (tokenAge < 86400000) {
+                  setToken(storedToken);
+                  setCurrentUser(JSON.parse(storedUser));
+                } else {
+                  // Token expirado, limpiar localStorage
+                  localStorage.removeItem("authToken");
+                  localStorage.removeItem("currentUser");
+                }
+              } catch (decodeError) {
+                // Token no válido, limpiar localStorage
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("currentUser");
+              }
             }
           } catch (error) {
-            console.error("Token inválido:", error);
+            console.error("Error procesando token:", error);
             localStorage.removeItem("authToken");
             localStorage.removeItem("currentUser");
           }
@@ -55,11 +67,11 @@ export function AuthProvider({ children }) {
   // 4. Función de Login usando API
   const login = async (email, password) => {
     try {
-      // Caso especial Admin (mantenemos este caso local por ahora)
+      // Casos especiales para desarrollo
       if (email === "admin" && password === "admin") {
         const adminUser = { 
           email: "admin", 
-          role: "admin", 
+          rol: "admin", 
           nombre: "Administrador",
           id: "admin" 
         };
@@ -68,6 +80,20 @@ export function AuthProvider({ children }) {
         setCurrentUser(adminUser);
         setToken("admin-token");
         return { success: true, redirect: "/admin" };
+      }
+
+      if (email === "empleado" && password === "empleado") {
+        const empleadoUser = { 
+          email: "empleado", 
+          rol: "empleado", 
+          nombre: "Empleado de Prueba",
+          id: "empleado" 
+        };
+        localStorage.setItem("currentUser", JSON.stringify(empleadoUser));
+        localStorage.setItem("authToken", "empleado-token");
+        setCurrentUser(empleadoUser);
+        setToken("empleado-token");
+        return { success: true, redirect: "/panel-empleado" };
       }
 
       // Intentar login con la API
@@ -112,11 +138,16 @@ export function AuthProvider({ children }) {
   // 5. Función de Registro usando API
   const register = async (userData) => {
     try {
-      const response = await registrarUsuario(userData);
+      console.log('🆕 AuthContext - Registrando usuario:', userData);
       
-      if (response && response.success) {
+      const usuario = await registrarUsuario(userData);
+      console.log('✅ Usuario registrado en servicio:', usuario);
+      
+      // registrarUsuario devuelve directamente el usuario, no un objeto con success
+      if (usuario && usuario.id) {
         return { 
           success: true, 
+          user: usuario,
           message: "Usuario registrado exitosamente. Puedes iniciar sesión.",
           redirect: "/sesion"
         };
@@ -124,10 +155,10 @@ export function AuthProvider({ children }) {
 
       return { 
         success: false, 
-        message: response.message || "Error al registrar usuario" 
+        message: "Error al registrar usuario - respuesta inválida" 
       };
     } catch (error) {
-      console.error("Error en registro:", error);
+      console.error("❌ Error en registro:", error);
       return { 
         success: false, 
         message: error.message || "Error de conexión con el servidor" 
@@ -137,17 +168,28 @@ export function AuthProvider({ children }) {
 
   // 6. Funciones para gestión de empleados usando API
   const crearEmpleado = async (datosEmpleado) => {
-    if (!token) {
-      return { success: false, message: "No autorizado" };
-    }
-
     try {
-      // Crear usuario con rol empleado
-      const empleadoData = { ...datosEmpleado, role: 'empleado' };
-      const response = await usuarioService.register(empleadoData);
-      return { success: true, empleado: response };
+      // Crear usuario con rol empleado directamente con la API
+      const empleadoData = { 
+        nombre: datosEmpleado.nombre,
+        apellido: datosEmpleado.apellido || '',
+        email: datosEmpleado.email,
+        passwordHash: datosEmpleado.contrasena || datosEmpleado.passwordHash,
+        telefono: datosEmpleado.telefono || '',
+        cargo: datosEmpleado.cargo || '',
+        departamento: datosEmpleado.departamento || '',
+        rol: 'empleado'
+      };
+      
+      console.log('🆕 Creando empleado con datos:', empleadoData);
+      
+      // Usar registrarUsuario directamente para crear en la base de datos
+      const nuevoEmpleado = await registrarUsuario(empleadoData);
+      console.log('✅ Empleado creado en base de datos:', nuevoEmpleado);
+      
+      return { success: true, empleado: nuevoEmpleado };
     } catch (error) {
-      console.error("Error creando empleado:", error);
+      console.error("❌ Error creando empleado:", error);
       return { 
         success: false, 
         message: error.message || "Error al crear empleado" 
@@ -181,19 +223,75 @@ export function AuthProvider({ children }) {
 
   // Obtener empleados usando API
   const obtenerEmpleados = async () => {
-    if (!token) {
-      // Fallback a localStorage si no hay token
-      return JSON.parse(localStorage.getItem("empleados")) || [];
-    }
-
     try {
-      // Obtener usuarios con rol empleado desde la API
+      console.log('🔍 OBTENER EMPLEADOS - Iniciando con API real...');
+      
+      // Obtener todos los usuarios desde el servicio (API real)
       const usuarios = await obtenerUsuarios();
-      return usuarios.filter(user => user.rol === 'empleado');
+      console.log('👥 Usuarios desde API:', usuarios);
+      console.log('📊 Cantidad de usuarios desde API:', usuarios?.length || 0);
+      
+      if (usuarios && usuarios.length > 0) {
+        // Filtrar empleados y admins de la API
+        const empleadosAPI = usuarios.filter(user => 
+          user.rol === 'empleado' || user.rol === 'admin'
+        );
+        console.log('👤 Empleados desde API:', empleadosAPI);
+        
+        // Si encontramos empleados en la API, los usamos
+        if (empleadosAPI.length > 0) {
+          return empleadosAPI;
+        }
+      }
+      
+      console.log('⚠️ No hay empleados en la API, usando fallback...');
+      
+      // Fallback: crear empleados por defecto si no hay ninguno
+      const empleadosPorDefecto = [
+        {
+          id: 1,
+          nombre: 'Admin',
+          apellido: 'Sistema',
+          email: 'admin@crimewave.com',
+          rol: 'admin',
+          telefono: '+56912345678',
+          cargo: 'Administrador',
+          departamento: 'TI',
+          activo: true
+        }
+      ];
+      
+      // Intentar obtener empleados de localStorage como backup
+      const usuariosDev = JSON.parse(localStorage.getItem("usuarios_dev") || '[]');
+      const empleadosLegacy = JSON.parse(localStorage.getItem("empleados") || '[]');
+      
+      const empleadosLocal = [...usuariosDev, ...empleadosLegacy].filter(user => 
+        user.rol === 'empleado' || user.rol === 'admin'
+      );
+      
+      // Combinar empleados por defecto con los locales
+      const todosEmpleados = [...empleadosPorDefecto, ...empleadosLocal];
+      
+      console.log('🔄 Empleados combinados (API + localStorage):', todosEmpleados);
+      return todosEmpleados;
+      
     } catch (error) {
-      console.error("Error obteniendo empleados:", error);
-      // Fallback a localStorage si falla la API
-      return JSON.parse(localStorage.getItem("empleados")) || [];
+      console.error("❌ Error obteniendo empleados:", error);
+      
+      // Fallback de emergencia
+      return [
+        {
+          id: 1,
+          nombre: 'Admin',
+          apellido: 'Sistema', 
+          email: 'admin@crimewave.com',
+          rol: 'admin',
+          telefono: '+56912345678',
+          cargo: 'Administrador',
+          departamento: 'TI',
+          activo: true
+        }
+      ];
     }
   };
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { productoService } from '../services/productoService.js';
+import { categoriaService } from '../services/categoriaService.js';
 
 function FormularioEditarProductoPage() {
   const navigate = useNavigate();
@@ -10,20 +12,34 @@ function FormularioEditarProductoPage() {
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
-    categoria: 'Poleras',
+    categoria: 'POLERA',
     descripcion: '',
-    stock: ''
+    stock: '',
+    imagenUrl: ''
   });
+  const [tipoProducto, setTipoProducto] = useState('ropa'); // 'ropa' o 'cuadro'
   const [tallas, setTallas] = useState([{ talla: 'S', cantidad: 1 }]);
+  const [medidas, setMedidas] = useState([{ medida: '30x40 cm', cantidad: 1 }]);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
   const [producto, setProducto] = useState(null);
 
+  // Función helper para obtener información del creador/editor desde localStorage
+  const obtenerInfoCreadorEditor = (productoId) => {
+    try {
+      const info = localStorage.getItem(`producto_${productoId}_creador`);
+      return info ? JSON.parse(info) : {};
+    } catch (error) {
+      console.error('Error al obtener info del creador:', error);
+      return {};
+    }
+  };
+
   // Verificar permisos
   useEffect(() => {
-    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'empleado')) {
+    if (!currentUser || (currentUser.rol !== 'admin' && currentUser.rol !== 'empleado')) {
       navigate('/sesion');
       return;
     }
@@ -31,39 +47,83 @@ function FormularioEditarProductoPage() {
 
   // Cargar datos del producto
   useEffect(() => {
-    const cargarProducto = () => {
+    const cargarProducto = async () => {
+      if (!id) {
+        setMensaje({ tipo: 'error', texto: 'ID de producto no válido' });
+        setLoadingData(false);
+        return;
+      }
+
       try {
-        const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
-        const productoEncontrado = productosGuardados.find(p => p.id === parseInt(id));
+        setLoadingData(true);
+        console.log('📋 Cargando producto ID:', id);
+        
+        const productoEncontrado = await productoService.obtenerPorId(id);
+        console.log('📋 Producto cargado:', productoEncontrado);
         
         if (productoEncontrado) {
-          setProducto(productoEncontrado);
+          // Combinar datos de la API con información del creador/editor desde localStorage
+          const infoCreadorEditor = obtenerInfoCreadorEditor(id);
+          const productoCompleto = { ...productoEncontrado, ...infoCreadorEditor };
+          
+          console.log('📋 Info del creador/editor:', infoCreadorEditor);
+          setProducto(productoCompleto);
+          
+          // Mapear categoría de la API a los valores del formulario y determinar tipo
+          let categoriaFormulario = 'POLERA';
+          let tipoProductoDetectado = 'ropa';
+          
+          if (productoEncontrado.categorias && productoEncontrado.categorias.length > 0) {
+            const nombreCategoria = productoEncontrado.categorias[0].nombre.toLowerCase();
+            if (nombreCategoria.includes('poleron') || nombreCategoria.includes('hoodie')) {
+              categoriaFormulario = 'POLERON';
+              tipoProductoDetectado = 'ropa';
+            } else if (nombreCategoria.includes('cuadro')) {
+              categoriaFormulario = 'CUADRO';
+              tipoProductoDetectado = 'cuadro';
+            } else {
+              categoriaFormulario = 'POLERA';
+              tipoProductoDetectado = 'ropa';
+            }
+          }
+          
+          setTipoProducto(tipoProductoDetectado);
+          
           setFormData({
             nombre: productoEncontrado.nombre || '',
             precio: productoEncontrado.precio || '',
-            categoria: productoEncontrado.categoria || 'Poleras',
+            categoria: categoriaFormulario,
             descripcion: productoEncontrado.descripcion || '',
-            stock: productoEncontrado.stock || ''
+            stock: productoEncontrado.stock || '',
+            imagenUrl: productoEncontrado.imagenUrl || ''
           });
           
-          if (productoEncontrado.tallas && productoEncontrado.tallas.length > 0) {
+          // Cargar tallas o medidas según el tipo
+          if (tipoProductoDetectado === 'ropa' && productoEncontrado.tallas && productoEncontrado.tallas.length > 0) {
             setTallas(productoEncontrado.tallas);
+          } else if (tipoProductoDetectado === 'cuadro' && productoEncontrado.medidas && productoEncontrado.medidas.length > 0) {
+            setMedidas(productoEncontrado.medidas);
           }
+          
+          setMensaje({ tipo: 'success', texto: 'Producto cargado correctamente' });
         } else {
           setMensaje({ tipo: 'error', texto: 'Producto no encontrado' });
           setTimeout(() => {
-            navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/admin');
+            navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin');
           }, 2000);
         }
       } catch (error) {
-        console.error('Error cargando producto:', error);
-        setMensaje({ tipo: 'error', texto: 'Error al cargar el producto' });
+        console.error('❌ Error cargando producto:', error);
+        setMensaje({ tipo: 'error', texto: `Error al cargar el producto: ${error.message}` });
+        setTimeout(() => {
+          navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin');
+        }, 3000);
       } finally {
         setLoadingData(false);
       }
     };
 
-    if (id) {
+    if (id && currentUser) {
       cargarProducto();
     }
   }, [id, navigate, currentUser]);
@@ -89,6 +149,36 @@ function FormularioEditarProductoPage() {
   const eliminarTalla = (index) => {
     if (tallas.length > 1) {
       setTallas(tallas.filter((_, i) => i !== index));
+    }
+  };
+
+  // Manejar cambios en medidas
+  const handleMedidaChange = (index, field, value) => {
+    const nuevasMedidas = [...medidas];
+    nuevasMedidas[index][field] = value;
+    setMedidas(nuevasMedidas);
+  };
+
+  const agregarMedida = () => {
+    setMedidas([...medidas, { medida: '30x40 cm', cantidad: 1 }]);
+  };
+
+  const eliminarMedida = (index) => {
+    if (medidas.length > 1) {
+      setMedidas(medidas.filter((_, i) => i !== index));
+    }
+  };
+
+  // Manejar cambio de tipo de producto
+  const handleTipoProductoChange = (tipo) => {
+    setTipoProducto(tipo);
+    
+    // Actualizar categoria automáticamente
+    if (tipo === 'cuadro') {
+      setFormData(prev => ({ ...prev, categoria: 'CUADRO' }));
+    } else {
+      // Para ropa, usar POLERA por defecto
+      setFormData(prev => ({ ...prev, categoria: 'POLERA' }));
     }
   };
 
@@ -144,36 +234,57 @@ function FormularioEditarProductoPage() {
         }
       }
 
+      console.log('📝 Actualizando producto ID:', id);
+
       const datosActualizados = {
         nombre: formData.nombre,
         precio: parseFloat(formData.precio),
-        categoria: formData.categoria,
         descripcion: formData.descripcion,
         stock: formData.stock ? parseInt(formData.stock) : 0,
-        tallas: tallas
+        imagenUrl: formData.imagenUrl || null
+        // Nota: Los campos del creador/editor se manejan en localStorage
       };
 
-      // Si hay nueva imagen, procesarla
-      if (imagenArchivo) {
-        const lector = new FileReader();
-        lector.onload = (e) => {
-          datosActualizados.imagen = e.target.result;
-          const resultado = editarProducto(id, datosActualizados);
-          if (resultado) {
-            completarEdicion();
-          } else {
-            throw new Error('Error al actualizar el producto');
-          }
-        };
-        lector.readAsDataURL(imagenArchivo);
-      } else {
-        const resultado = editarProducto(id, datosActualizados);
-        if (resultado) {
-          completarEdicion();
-        } else {
-          throw new Error('Error al actualizar el producto');
+      console.log('📝 Datos a actualizar:', datosActualizados);
+      console.log('📝 Usuario actual:', currentUser);
+      console.log('📝 Datos del editor:', {
+        editadoPor: datosActualizados.editadoPor,
+        editorNombre: datosActualizados.editorNombre
+      });
+
+      // Actualizar el producto usando la API
+      const productoActualizado = await productoService.actualizar(id, datosActualizados);
+      console.log('✅ Producto actualizado:', productoActualizado);
+      
+      // Actualizar información del editor en localStorage
+      const editorInfo = {
+        editadoPor: currentUser?.email || currentUser?.usuario || 'Admin',
+        editorNombre: currentUser?.nombre || currentUser?.email || currentUser?.usuario || 'Admin',
+        fechaEdicion: new Date().toISOString()
+      };
+      
+      // Obtener info existente del creador y combinar con editor
+      let infoProducto = {};
+      try {
+        const infoExistente = localStorage.getItem(`producto_${id}_creador`);
+        if (infoExistente) {
+          infoProducto = JSON.parse(infoExistente);
         }
+      } catch (error) {
+        console.log('No hay info previa del creador');
       }
+      
+      // Combinar info del creador con la del editor
+      const infoCompleta = { ...infoProducto, ...editorInfo };
+      localStorage.setItem(`producto_${id}_creador`, JSON.stringify(infoCompleta));
+      console.log('✅ Información del editor actualizada en localStorage');
+
+      setMensaje({ tipo: 'success', texto: 'Producto actualizado exitosamente' });
+      
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin');
+      }, 2000);
 
     } catch (error) {
       setMensaje({ tipo: 'error', texto: error.message });
@@ -200,9 +311,11 @@ function FormularioEditarProductoPage() {
     }, 2000);
   };
 
-  if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'empleado')) {
+  if (!currentUser || (currentUser.rol !== 'admin' && currentUser.rol !== 'empleado')) {
     return null;
   }
+
+  console.log('🔍 Estado actual:', { loadingData, producto, currentUser, id });
 
   if (loadingData) {
     return (
@@ -218,6 +331,7 @@ function FormularioEditarProductoPage() {
   }
 
   if (!producto) {
+    console.log('❌ Producto no encontrado, mostrando error');
     return (
       <div className="container py-4">
         <div className="alert alert-danger">
@@ -245,7 +359,7 @@ function FormularioEditarProductoPage() {
             </div>
             <button 
               className="btn btn-outline-dark"
-              onClick={() => navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/admin')}
+              onClick={() => navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin')}
             >
               <i className="bi bi-arrow-left me-2"></i>
               Volver
@@ -260,13 +374,20 @@ function FormularioEditarProductoPage() {
           <div className="alert alert-info border-0 shadow-sm">
             <i className="bi bi-info-circle me-2"></i>
             <strong>Editando como:</strong> {currentUser?.nombre || currentUser?.email} 
-            ({currentUser?.role === 'admin' ? 'Administrador' : 'Empleado'})
+            ({currentUser?.rol === 'admin' ? 'Administrador' : 'Empleado'})
           </div>
         </div>
         <div className="col-md-6">
           <div className="alert alert-secondary border-0 shadow-sm">
             <i className="bi bi-person me-2"></i>
             <strong>Creado por:</strong> {producto?.creadorNombre || producto?.creadoPor || 'N/A'}
+            {(producto?.editorNombre || producto?.editadoPor) && (
+              <>
+                <br />
+                <i className="bi bi-pencil me-2"></i>
+                <strong>Última edición:</strong> {producto?.editorNombre || producto?.editadoPor}
+              </>
+            )}
             <br />
             <small className="text-muted">
               {producto?.fechaCreacion ? new Date(producto.fechaCreacion).toLocaleDateString('es-ES') : 'N/A'}
@@ -297,13 +418,20 @@ function FormularioEditarProductoPage() {
                   <div className="alert alert-info border-0 shadow-sm">
                     <i className="bi bi-info-circle me-2"></i>
                     <strong>Editando como:</strong> {currentUser?.nombre || currentUser?.email} 
-                    ({currentUser?.role === 'admin' ? 'Administrador' : 'Empleado'})
+                    ({currentUser?.rol === 'admin' ? 'Administrador' : 'Empleado'})
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="alert alert-secondary border-0 shadow-sm">
                     <i className="bi bi-person me-2"></i>
                     <strong>Creado por:</strong> {producto?.creadorNombre || producto?.creadoPor || 'N/A'}
+                    {(producto?.editorNombre || producto?.editadoPor) && (
+                      <>
+                        <br />
+                        <i className="bi bi-pencil me-2"></i>
+                        <strong>Última edición:</strong> {producto?.editorNombre || producto?.editadoPor}
+                      </>
+                    )}
                     <br />
                     <small className="text-muted">
                       {producto?.fechaCreacion ? new Date(producto.fechaCreacion).toLocaleDateString('es-ES') : 'N/A'}
@@ -321,6 +449,47 @@ function FormularioEditarProductoPage() {
               )}
 
               <form onSubmit={handleSubmit}>
+                {/* Selector de tipo de producto */}
+                <div className="row mb-4">
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label fw-semibold">
+                        <i className="bi bi-grid-3x3-gap me-2 text-info"></i>
+                        Tipo de Producto *
+                      </label>
+                      <div className="btn-group w-100" role="group">
+                        <input 
+                          type="radio" 
+                          className="btn-check" 
+                          name="tipoProducto" 
+                          id="tipoRopa" 
+                          value="ropa" 
+                          checked={tipoProducto === 'ropa'}
+                          onChange={(e) => handleTipoProductoChange(e.target.value)}
+                        />
+                        <label className="btn btn-outline-primary" htmlFor="tipoRopa">
+                          <i className="bi bi-person me-2"></i>
+                          Ropa (Poleras, Polerones)
+                        </label>
+
+                        <input 
+                          type="radio" 
+                          className="btn-check" 
+                          name="tipoProducto" 
+                          id="tipoCuadro" 
+                          value="cuadro" 
+                          checked={tipoProducto === 'cuadro'}
+                          onChange={(e) => handleTipoProductoChange(e.target.value)}
+                        />
+                        <label className="btn btn-outline-secondary" htmlFor="tipoCuadro">
+                          <i className="bi bi-image me-2"></i>
+                          Cuadros y Arte
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="mb-3">
@@ -375,12 +544,9 @@ function FormularioEditarProductoPage() {
                         onChange={handleInputChange}
                         required
                       >
-                        <option value="Poleras">Poleras</option>
-                        <option value="Hoodies">Hoodies</option>
-                        <option value="Polerones">Polerones</option>
-                        <option value="AnimeBags">Bolsas Anime</option>
-                        <option value="Cuadros">Cuadros</option>
-                        <option value="Accesorios">Accesorios</option>
+                        <option value="POLERA">Poleras</option>
+                        <option value="POLERON">Polerones</option>
+                        <option value="CUADRO">Cuadros</option>
                       </select>
                     </div>
                   </div>
@@ -423,67 +589,160 @@ function FormularioEditarProductoPage() {
 
                 <div className="mb-4">
                   <label className="form-label fw-semibold">
-                    <i className="bi bi-rulers me-2 text-danger"></i>
-                    Tallas y Cantidades
+                    <i className="bi bi-image me-2 text-primary"></i>
+                    URL de la Imagen
                   </label>
-                  <div className="border rounded p-3 bg-light">
-                    {tallas.map((talla, index) => (
-                      <div key={index} className="row align-items-center mb-3">
-                        <div className="col-md-4">
-                          <label className="form-label small">Talla</label>
-                          <select
-                            className="form-select"
-                            value={talla.talla}
-                            onChange={(e) => handleTallaChange(index, 'talla', e.target.value)}
-                          >
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="XXXL">XXXL</option>
-                            <option value="Único">Talla Única</option>
-                          </select>
-                        </div>
-                        <div className="col-md-4">
-                          <label className="form-label small">Cantidad</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Cantidad"
-                            min="1"
-                            value={talla.cantidad}
-                            onChange={(e) => handleTallaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
-                          />
-                        </div>
-                        <div className="col-md-4">
-                          <label className="form-label small">Acciones</label>
-                          <div className="btn-group w-100">
-                            {index === tallas.length - 1 && (
-                              <button
-                                type="button"
-                                className="btn btn-outline-success btn-sm"
-                                onClick={agregarTalla}
-                              >
-                                <i className="bi bi-plus"></i> Agregar
-                              </button>
-                            )}
-                            {tallas.length > 1 && (
-                              <button
-                                type="button"
-                                className="btn btn-outline-danger btn-sm"
-                                onClick={() => eliminarTalla(index)}
-                              >
-                                <i className="bi bi-trash"></i> Eliminar
-                              </button>
-                            )}
+                  <input
+                    type="url"
+                    className="form-control form-control-lg"
+                    name="imagenUrl"
+                    value={formData.imagenUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                  />
+                  <div className="form-text">
+                    URL de la imagen del producto. Si está vacía, se usará la imagen por defecto.
+                  </div>
+                  {formData.imagenUrl && (
+                    <div className="mt-2">
+                      <small className="text-muted">Vista previa:</small>
+                      <br />
+                      <img 
+                        src={formData.imagenUrl} 
+                        alt="Vista previa"
+                        className="img-thumbnail mt-1"
+                        style={{maxWidth: '150px', maxHeight: '150px'}}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Tallas o Medidas según el tipo de producto */}
+                {tipoProducto === 'ropa' ? (
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">
+                      <i className="bi bi-rulers me-2 text-warning"></i>
+                      Tallas y Cantidades
+                    </label>
+                    <div className="border rounded p-3 bg-light">
+                      {tallas.map((talla, index) => (
+                        <div key={index} className="row align-items-center mb-3">
+                          <div className="col-md-4">
+                            <label className="form-label small">Talla</label>
+                            <select
+                              className="form-select"
+                              value={talla.talla}
+                              onChange={(e) => handleTallaChange(index, 'talla', e.target.value)}
+                            >
+                              <option value="XS">XS</option>
+                              <option value="S">S</option>
+                              <option value="M">M</option>
+                              <option value="L">L</option>
+                              <option value="XL">XL</option>
+                              <option value="XXL">XXL</option>
+                              <option value="XXXL">XXXL</option>
+                              <option value="Único">Talla Única</option>
+                            </select>
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Cantidad</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="Cantidad"
+                              min="1"
+                              value={talla.cantidad}
+                              onChange={(e) => handleTallaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Acciones</label>
+                            <div className="btn-group w-100">
+                              {index === tallas.length - 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-success btn-sm"
+                                  onClick={agregarTalla}
+                                >
+                                  <i className="bi bi-plus"></i> Agregar
+                                </button>
+                              )}
+                              {tallas.length > 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => eliminarTalla(index)}
+                                >
+                                  <i className="bi bi-trash"></i> Eliminar
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">
+                      <i className="bi bi-aspect-ratio me-2 text-info"></i>
+                      Medidas y Cantidades
+                    </label>
+                    <div className="border rounded p-3 bg-light">
+                      {medidas.map((medida, index) => (
+                        <div key={index} className="row align-items-center mb-3">
+                          <div className="col-md-4">
+                            <label className="form-label small">Medida</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Ej: 30x40 cm"
+                              value={medida.medida}
+                              onChange={(e) => handleMedidaChange(index, 'medida', e.target.value)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Cantidad</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="Cantidad"
+                              min="1"
+                              value={medida.cantidad}
+                              onChange={(e) => handleMedidaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Acciones</label>
+                            <div className="btn-group w-100">
+                              {index === medidas.length - 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-success btn-sm"
+                                  onClick={agregarMedida}
+                                >
+                                  <i className="bi bi-plus"></i> Agregar
+                                </button>
+                              )}
+                              {medidas.length > 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => eliminarMedida(index)}
+                                >
+                                  <i className="bi bi-trash"></i> Eliminar
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mb-4">
                   <label className="form-label">
@@ -519,7 +778,7 @@ function FormularioEditarProductoPage() {
                   <button
                     type="button"
                     className="btn btn-outline-secondary btn-lg px-4"
-                    onClick={() => navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/admin')}
+                    onClick={() => navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin')}
                   >
                     <i className="bi bi-x-circle me-2"></i>
                     Cancelar

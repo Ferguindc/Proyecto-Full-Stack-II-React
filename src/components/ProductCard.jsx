@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { obtenerUrlImagen } from '../data/imagenes';
 import './ProductCard.css';
 
 function ProductCard({ producto }) {
   const { addToCart, toggleCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState(producto.categoria === 'cuadros' ? '30x39' : 'M');
+  // Detectar si es cuadro
+  const esCuadro = producto.categorias?.some(cat => 
+    cat.nombre && (
+      cat.nombre.toLowerCase().includes('cuadro') || 
+      cat.nombre.toUpperCase() === 'CUADRO'
+    )
+  ) || producto.nombre?.toLowerCase().includes('cuadro');
+  
+  const [selectedSize, setSelectedSize] = useState(esCuadro ? '30x40 cm' : 'M');
   const [showSizeSelector, setShowSizeSelector] = useState(false);
+
+  // Función para construir la URL de la imagen
+  const getImageUrl = () => {
+    return obtenerUrlImagen(producto.imagenUrl);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
       currency: 'CLP',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(price);
   };
 
@@ -25,8 +40,8 @@ function ProductCard({ producto }) {
       id: producto.id,
       nombre: producto.nombre,
       precio: producto.precio,
-      imagen: producto.imagenUrl || producto.images?.[0] || '/placeholder.jpg', // Usar imagenUrl del backend
-      categoria: producto.categorias?.[0]?.nombre || 'general' // Usar primera categoría del backend
+      imagen: getImageUrl(),
+      categoria: producto.categorias?.[0]?.nombre || 'general'
     };
     
     addToCart(cartProduct, 1, selectedSize);
@@ -50,9 +65,12 @@ function ProductCard({ producto }) {
         <Link to={`/producto/${producto.id}`} className="text-decoration-none">
           <div className="card-img-container">
             <img 
-              src={producto.imagenUrl || producto.images?.[0] || '/placeholder.jpg'} 
+              src={getImageUrl()} 
               className="card-img-top" 
               alt={producto.nombre}
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/300?text=Error';
+              }}
             />
             <div className="card-overlay">
               <button 
@@ -80,7 +98,7 @@ function ProductCard({ producto }) {
             <div className="size-selector-quick mb-2">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <small className="fw-bold">
-                  {producto.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'Selecciona medida (cm):' : 'Selecciona talla:'}
+                  {esCuadro ? 'Selecciona medida:' : 'Selecciona talla:'}
                 </small>
                 <button 
                   className="btn-close btn-sm"
@@ -88,10 +106,11 @@ function ProductCard({ producto }) {
                 ></button>
               </div>
               <div className="size-buttons-quick d-flex gap-1 mb-2 flex-wrap">
-                {(producto.categoria === 'cuadros' ? producto.medidas || ['30x39', '40x50', '50x70', '70x81'] : ['S', 'M', 'L', 'XL']).map(size => (
+                {(esCuadro ? ['30x40 cm', '40x50 cm', '50x70 cm', '70x100 cm'] : ['S', 'M', 'L', 'XL']).map(size => (
                   <button
                     key={size}
                     className={`btn btn-sm ${selectedSize === size ? 'btn-primary' : 'btn-outline-primary'}`}
+                    data-cuadro={esCuadro ? 'true' : 'false'}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

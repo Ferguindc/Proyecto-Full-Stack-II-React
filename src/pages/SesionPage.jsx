@@ -43,6 +43,33 @@ function SesionPage() {
 
       <div className="formulario">
         <h1>Inicio de Sesión SIGMA</h1>
+        
+        {/* Usuarios de prueba */}
+        <div className="mb-3 p-3 bg-light rounded">
+          <h6>👤 Usuarios de Prueba:</h6>
+          <div className="row">
+            <div className="col-6">
+              <button 
+                type="button" 
+                className="btn btn-outline-primary btn-sm w-100 mb-1"
+                onClick={() => {setUsuario('admin'); setContrasena('admin');}}
+              >
+                🔧 Admin
+              </button>
+            </div>
+            <div className="col-6">
+              <button 
+                type="button" 
+                className="btn btn-outline-success btn-sm w-100 mb-1"
+                onClick={() => {setUsuario('empleado'); setContrasena('empleado');}}
+              >
+                👤 Empleado
+              </button>
+            </div>
+          </div>
+          <small className="text-muted">Haz clic para autocompletar credenciales</small>
+        </div>
+        
         <form id="loginForm" onSubmit={handleLogin}>
           
           <div className="username">

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { productoService } from '../services/productoService.js';
 import { useCart } from '../context/CartContext';
+import { obtenerUrlImagen } from '../data/imagenes';
 import '../styles/single-style.css';
 
 
@@ -24,24 +25,45 @@ function SingleProductPage() {
     cargarProducto();
   }, [id]);
 
+  // Función para construir la URL de la imagen
+  const getImageUrl = (imagenUrl) => {
+    return obtenerUrlImagen(imagenUrl);
+  };
+
   const cargarProducto = async () => {
     try {
       setLoading(true);
       setError('');
       
       const productoData = await productoService.obtenerPorId(parseInt(id));
+      console.log('🔍 Producto cargado:', productoData);
+      console.log('🔍 Categorías:', productoData.categorias);
       setProduct(productoData);
       
       // Configurar imagen principal
-      setMainImage(productoData.imagenUrl || '/placeholder.jpg');
+      setMainImage(getImageUrl(productoData.imagenUrl));
       
-      // Establecer talla/medida inicial según las categorías del producto
-      const esCuadro = productoData.categorias?.some(cat => 
-        cat.nombre.toLowerCase().includes('cuadro')
-      );
+      // Establecer talla/medida inicial según las categorías del producto o nombre
+      const esCuadroPorCategoria = productoData.categorias?.some(cat => {
+        return cat.nombre && (
+          cat.nombre.toLowerCase().includes('cuadro') || 
+          cat.nombre.toUpperCase() === 'CUADRO'
+        );
+      });
+      
+      const esCuadroPorNombre = productoData.nombre?.toLowerCase().includes('cuadro');
+      const esCuadro = esCuadroPorCategoria || esCuadroPorNombre;
+      
+      console.log('🔍 Detección de cuadro:', {
+        nombre: productoData.nombre,
+        categorias: productoData.categorias,
+        esCuadroPorCategoria,
+        esCuadroPorNombre,
+        esCuadro
+      });
       
       if (esCuadro) {
-        setSelectedSize('30x39');
+        setSelectedSize('30x40 cm');
       } else {
         setSelectedSize('M');
       }
@@ -75,7 +97,7 @@ function SingleProductPage() {
       id: product.id,
       nombre: product.nombre,
       precio: product.precio,
-      imagen: product.imagenUrl || '/placeholder.jpg',
+      imagen: getImageUrl(product.imagenUrl),
       categoria: product.categorias?.[0]?.nombre || 'general'
     };
     
@@ -134,7 +156,10 @@ function SingleProductPage() {
             <img 
               src={mainImage} 
               alt={product.nombre} 
-              className="main-image img-fluid" 
+              className="main-image img-fluid"
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/600?text=Error+al+cargar+imagen';
+              }}
             />
           </div>
 
@@ -167,17 +192,32 @@ function SingleProductPage() {
             {/* Opciones de Talla/Medida */}
             <div className="mb-3">
               <label className="form-label fw-bold">
-                {product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'Medida (cm):' : 'Talla:'}
+                {(product.categorias?.some(cat => 
+                  cat.nombre && (
+                    cat.nombre.toLowerCase().includes('cuadro') || 
+                    cat.nombre.toUpperCase() === 'CUADRO'
+                  )
+                ) || product.nombre?.toLowerCase().includes('cuadro')) ? 'Medida:' : 'Talla:'}
               </label>
               <div className="size-buttons d-flex gap-2 mt-2 flex-wrap">
-                {(product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro'))
-                  ? ['30x39', '40x50', '50x70', '70x81']
-                  : ['S', 'M', 'L', 'XL']
+                {((product.categorias?.some(cat => 
+                  cat.nombre && (
+                    cat.nombre.toLowerCase().includes('cuadro') || 
+                    cat.nombre.toUpperCase() === 'CUADRO'
+                  )
+                ) || product.nombre?.toLowerCase().includes('cuadro')) ? 
+                  ['30x40 cm', '40x50 cm', '50x70 cm', '70x100 cm'] : 
+                  ['S', 'M', 'L', 'XL']
                 ).map(size => (
                   <button 
                     key={size}
                     className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                    data-cuadro={product.categorias?.some(cat => cat.nombre.toLowerCase().includes('cuadro')) ? 'true' : 'false'}
+                    data-cuadro={(product.categorias?.some(cat => 
+                      cat.nombre && (
+                        cat.nombre.toLowerCase().includes('cuadro') || 
+                        cat.nombre.toUpperCase() === 'CUADRO'
+                      )
+                    ) || product.nombre?.toLowerCase().includes('cuadro')) ? 'true' : 'false'}
                     onClick={() => handleSizeSelect(size)}
                   >
                     {size}
@@ -220,7 +260,16 @@ function SingleProductPage() {
               <div id="collapseDescription" className="accordion-collapse collapse show" aria-labelledby="headingDescription" data-bs-parent="#productAccordion">
                 <div className="accordion-body">
                   <p>{product.descripcion}</p>
-                  <p>Esta camiseta ha sido diseñada pensando en la comodidad y la durabilidad. El corte es moderno y se ajusta perfectamente al cuerpo sin ser demasiado apretado. El estampado utiliza una técnica de serigrafía de alta calidad para garantizar que los colores se mantengan vivos lavado tras lavado.</p>
+                  {(product.categorias?.some(cat => 
+                    cat.nombre && (
+                      cat.nombre.toLowerCase().includes('cuadro') || 
+                      cat.nombre.toUpperCase() === 'CUADRO'
+                    )
+                  ) || product.nombre?.toLowerCase().includes('cuadro')) ? (
+                    <p>Este cuadro ha sido cuidadosamente elaborado con materiales de alta calidad. Perfecto para decorar cualquier espacio, ya sea tu hogar, oficina o estudio. Los colores son vibrantes y duraderos, y el acabado profesional garantiza una presentación impecable que realzará cualquier ambiente.</p>
+                  ) : (
+                    <p>Esta camiseta ha sido diseñada pensando en la comodidad y la durabilidad. El corte es moderno y se ajusta perfectamente al cuerpo sin ser demasiado apretado. El estampado utiliza una técnica de serigrafía de alta calidad para garantizar que los colores se mantengan vivos lavado tras lavado.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -234,8 +283,23 @@ function SingleProductPage() {
               </h2>
               <div id="collapseMaterial" className="accordion-collapse collapse" aria-labelledby="headingMaterial" data-bs-parent="#productAccordion">
                 <div className="accordion-body">
-                  <p><strong>Material:</strong> 100% Algodón Orgánico Peinado.</p>
-                  <p><strong>Cuidado:</strong> Lavar a máquina con agua fría, del revés. No usar blanqueador. Secar a baja temperatura o colgar.</p>
+                  {(product.categorias?.some(cat => 
+                    cat.nombre && (
+                      cat.nombre.toLowerCase().includes('cuadro') || 
+                      cat.nombre.toUpperCase() === 'CUADRO'
+                    )
+                  ) || product.nombre?.toLowerCase().includes('cuadro')) ? (
+                    <>
+                      <p><strong>Material:</strong> Lienzo de alta calidad con tintas resistentes al desvanecimiento.</p>
+                      <p><strong>Marco:</strong> Madera tratada con acabado profesional.</p>
+                      <p><strong>Cuidado:</strong> Limpiar con paño seco. Evitar la exposición directa al sol prolongada. Mantener en ambiente seco para preservar los colores.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><strong>Material:</strong> 100% Algodón Orgánico Peinado.</p>
+                      <p><strong>Cuidado:</strong> Lavar a máquina con agua fría, del revés. No usar blanqueador. Secar a baja temperatura o colgar.</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

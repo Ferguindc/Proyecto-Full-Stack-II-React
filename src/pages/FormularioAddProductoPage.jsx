@@ -1,59 +1,148 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { adminProductos } from '../data/adminProductos';
+import { productoService } from '../services/productoService.js';
+import { categoriaService } from '../services/categoriaService.js';
+
 
 function FormularioAddProductoPage() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { agregarProducto } = adminProductos();
 
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
-    categoria: 'Poleras',
     descripcion: '',
-    stock: ''
+    stock: 0,
+    imagenUrl: ''
   });
-  const [tallas, setTallas] = useState([{ talla: 'S', cantidad: 1 }]);
-  const [imagenArchivo, setImagenArchivo] = useState(null);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [tipoProducto, setTipoProducto] = useState('ropa'); // 'ropa' o 'cuadro'
+  const [tallas, setTallas] = useState([{ talla: 'M', cantidad: 1 }]);
+  const [medidas, setMedidas] = useState([{ medida: '30x40 cm', cantidad: 1 }]);
   const [loading, setLoading] = useState(false);
+  const [categoriasLoading, setCategoriasLoading] = useState(true);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
 
-  // Verificar permisos
-  React.useEffect(() => {
-    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'empleado')) {
-      navigate('/sesion');
-      return;
+  // Cargar categorías al iniciar
+  useEffect(() => {
+    cargarCategorias();
+  }, []);
+
+  // Este useEffect se removió porque manejamos la autenticación más abajo con return statements
+
+  const cargarCategorias = async () => {
+    try {
+      setCategoriasLoading(true);
+      
+      // USAR SIEMPRE LAS CATEGORÍAS CORRECTAS
+      const categoriasCorrectas = [
+        { id: 1, nombre: 'POLERA', descripcion: 'Camisetas y poleras' },
+        { id: 2, nombre: 'POLERON', descripcion: 'Sudaderas y hoodies' },
+        { id: 3, nombre: 'CUADRO', descripcion: 'Arte y decoración' }
+      ];
+      
+      setCategorias(categoriasCorrectas);
+      console.log('✅ Categorías fijas configuradas:', categoriasCorrectas);
+      
+    } catch (error) {
+      console.error('Error cargando categorías:', error);
+      // Usar categorías por defecto
+      setCategorias([
+        { id: 1, nombre: 'POLERA', descripcion: 'Camisetas y poleras' },
+        { id: 2, nombre: 'POLERON', descripcion: 'Sudaderas y hoodies' },
+        { id: 3, nombre: 'CUADRO', descripcion: 'Arte y decoración' }
+      ]);
+    } finally {
+      setCategoriasLoading(false);
     }
-  }, [currentUser, navigate]);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'precio' || name === 'stock' ? parseFloat(value) : value
     }));
   };
 
+  // Manejar URL de imagen
+  const handleImageUrlChange = (e) => {
+    const url = e.target.value;
+    setFormData(prev => ({ ...prev, imagenUrl: url }));
+    setPreviewUrl(url);
+  };
+
+  // Manejar selección de categorías
+  const handleCategoriaChange = (categoriaId) => {
+    setCategoriasSeleccionadas(prev => {
+      const isSelected = prev.includes(categoriaId);
+      if (isSelected) {
+        return prev.filter(id => id !== categoriaId);
+      } else {
+        return [...prev, categoriaId];
+      }
+    });
+  };
+
+  // Manejar cambios en las tallas
   const handleTallaChange = (index, field, value) => {
-    const nuevasTallas = [...tallas];
-    nuevasTallas[index][field] = value;
-    setTallas(nuevasTallas);
+    setTallas(prev => 
+      prev.map((talla, i) => 
+        i === index ? { ...talla, [field]: value } : talla
+      )
+    );
   };
 
+  // Agregar nueva talla
   const agregarTalla = () => {
-    setTallas([...tallas, { talla: 'M', cantidad: 1 }]);
+    setTallas(prev => [...prev, { talla: 'M', cantidad: 1 }]);
   };
 
+  // Eliminar talla
   const eliminarTalla = (index) => {
     if (tallas.length > 1) {
-      setTallas(tallas.filter((_, i) => i !== index));
+      setTallas(prev => prev.filter((_, i) => i !== index));
     }
   };
 
-  const handleImagenChange = (e) => {
-    setImagenArchivo(e.target.files[0]);
+  // Manejar cambios en medidas
+  const handleMedidaChange = (index, field, value) => {
+    setMedidas(prev => 
+      prev.map((medida, i) => 
+        i === index ? { ...medida, [field]: value } : medida
+      )
+    );
+  };
+
+  // Agregar medida
+  const agregarMedida = () => {
+    setMedidas(prev => [...prev, { medida: '30x40 cm', cantidad: 1 }]);
+  };
+
+  // Eliminar medida
+  const eliminarMedida = (index) => {
+    if (medidas.length > 1) {
+      setMedidas(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  // Manejar cambio de tipo de producto
+  const handleTipoProductoChange = (tipo) => {
+    setTipoProducto(tipo);
+    
+    // Actualizar categorías seleccionadas automáticamente
+    if (tipo === 'cuadro') {
+      const cuadroCategoria = categorias.find(cat => cat.nombre === 'CUADRO');
+      if (cuadroCategoria) {
+        setCategoriasSeleccionadas([cuadroCategoria.id]);
+      }
+    } else {
+      // Para ropa, limpiar selección para que el usuario elija
+      setCategoriasSeleccionadas([]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -70,43 +159,107 @@ function FormularioAddProductoPage() {
         throw new Error('El precio debe ser mayor a 0');
       }
 
-      if (formData.stock && parseInt(formData.stock) < 0) {
+      if (formData.stock < 0) {
         throw new Error('El stock no puede ser negativo');
       }
 
-      for (const talla of tallas) {
-        if (talla.cantidad < 1) {
-          throw new Error('La cantidad de cada talla debe ser al menos 1');
-        }
+      if (categoriasSeleccionadas.length === 0) {
+        throw new Error('Selecciona al menos una categoría');
       }
 
+      // Preparar datos del producto
+      let imagenUrl = formData.imagenUrl;
+      
       const producto = {
         nombre: formData.nombre,
         precio: parseFloat(formData.precio),
-        categoria: formData.categoria,
         descripcion: formData.descripcion,
-        stock: formData.stock ? parseInt(formData.stock) : 0,
-        tallas: tallas
+        stock: parseInt(formData.stock) || 0,
+        imagenUrl: imagenUrl || null
+        // Nota: Los campos del creador se manejan en localStorage después de la creación
       };
 
-      await agregarProducto(producto, imagenArchivo, currentUser);
+      console.log('Creando producto:', producto);
+      console.log('Usuario actual:', currentUser);
+      console.log('Datos del creador:', {
+        creadoPor: producto.creadoPor,
+        creadorNombre: producto.creadorNombre
+      });
+
+      // 1. Crear el producto primero
+      const productoCreado = await productoService.crear(producto);
       
-      setMensaje({ tipo: 'success', texto: 'Producto agregado correctamente' });
+      console.log('Producto creado:', productoCreado);
+      
+      // Guardar información del creador en localStorage (temporal hasta actualización del backend)
+      const creadorInfo = {
+        creadoPor: currentUser?.email || currentUser?.usuario || 'Admin',
+        creadorNombre: currentUser?.nombre || currentUser?.email || currentUser?.usuario || 'Admin',
+        fechaCreacion: new Date().toISOString()
+      };
+      
+      // Usar el ID del producto creado para almacenar la info del creador
+      if (productoCreado?.id) {
+        localStorage.setItem(`producto_${productoCreado.id}_creador`, JSON.stringify(creadorInfo));
+        console.log('✅ Información del creador guardada en localStorage');
+      }
+
+      // 2. Asignar categorías al producto
+      if (categoriasSeleccionadas.length > 0) {
+        try {
+          // Primero obtener las categorías reales de la base de datos
+          const categoriasReales = await categoriaService.obtenerTodas();
+          console.log('Categorías reales en BD:', categoriasReales);
+          
+          // Mapear los IDs seleccionados a los nombres y luego a los IDs reales
+          const idsReales = [];
+          for (const idSeleccionado of categoriasSeleccionadas) {
+            // Encontrar el nombre de la categoría seleccionada
+            const categoriaSeleccionada = categorias.find(c => c.id === idSeleccionado);
+            if (categoriaSeleccionada) {
+              // Buscar la categoría real por nombre
+              const categoriaReal = categoriasReales.find(cr => 
+                cr.nombre === categoriaSeleccionada.nombre ||
+                cr.nombre.toLowerCase() === categoriaSeleccionada.nombre.toLowerCase()
+              );
+              if (categoriaReal) {
+                idsReales.push(categoriaReal.id);
+              }
+            }
+          }
+          
+          console.log('IDs reales a asignar:', idsReales);
+          
+          if (idsReales.length > 0) {
+            await productoService.agregarCategorias(productoCreado.id, idsReales);
+            console.log('Categorías asignadas correctamente');
+          }
+        } catch (error) {
+          console.error('Error asignando categorías:', error);
+        }
+      }
+
+
+      
+      setMensaje({ tipo: 'success', texto: 'Producto creado exitosamente con imagen y categorías' });
       
       // Limpiar formulario
       setFormData({
         nombre: '',
         precio: '',
-        categoria: 'Poleras',
         descripcion: '',
-        stock: ''
+        stock: 0,
+        imagenUrl: ''
       });
-      setTallas([{ talla: 'S', cantidad: 1 }]);
-      setImagenArchivo(null);
+      setCategoriasSeleccionadas([]);
+      setPreviewUrl(null);
+      setTipoProducto('ropa');
+      setTallas([{ talla: 'M', cantidad: 1 }]);
+      setMedidas([{ medida: '30x40 cm', cantidad: 1 }]);
       
       // Redirigir después de 2 segundos
       setTimeout(() => {
-        if (currentUser.role === 'empleado') {
+        if (currentUser.rol === 'empleado') {
           navigate('/panel-empleado');
         } else {
           navigate('/admin');
@@ -114,7 +267,8 @@ function FormularioAddProductoPage() {
       }, 2000);
 
     } catch (error) {
-      setMensaje({ tipo: 'error', texto: error.message });
+      console.error('Error creando producto:', error);
+      setMensaje({ tipo: 'error', texto: error.message || 'Error al crear el producto' });
     } finally {
       setLoading(false);
       
@@ -125,12 +279,71 @@ function FormularioAddProductoPage() {
     }
   };
 
-  if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'empleado')) {
-    return null;
+  if (!currentUser) {
+    return (
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-6 mx-auto">
+            <div className="card">
+              <div className="card-body text-center">
+                <i className="bi bi-exclamation-triangle display-1 text-warning"></i>
+                <h3 className="mt-3">Acceso Requerido</h3>
+                <p className="text-muted">
+                  Debes iniciar sesión como administrador o empleado para agregar productos.
+                </p>
+                <div className="alert alert-info">
+                  <strong>Usuarios de prueba:</strong><br/>
+                  👤 admin / admin<br/>
+                  👤 empleado / empleado
+                </div>
+                <button 
+                  className="btn btn-primary me-2"
+                  onClick={() => navigate('/sesion')}
+                >
+                  Iniciar Sesión
+                </button>
+                <button 
+                  className="btn btn-outline-secondary"
+                  onClick={() => navigate('/test-producto')}
+                >
+                  Página de Prueba
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentUser.rol !== 'admin' && currentUser.rol !== 'empleado') {
+    return (
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-6 mx-auto">
+            <div className="card">
+              <div className="card-body text-center">
+                <i className="bi bi-shield-exclamation display-1 text-danger"></i>
+                <h3 className="mt-3">Sin Permisos</h3>
+                <p className="text-muted">
+                  No tienes permisos para agregar productos. Solo administradores y empleados pueden hacerlo.
+                </p>
+                <button 
+                  className="btn btn-secondary"
+                  onClick={() => navigate('/')}
+                >
+                  Ir al Inicio
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container-fluid py-5" style={{backgroundColor: '#f8f9fa', minHeight: '100vh'}}>
+    <div className="container-fluid py-5" style={{backgroundColor: '#f8f9fa', minHeight: '100vh', paddingBottom: '120px'}}>
       {/* Header fijo */}
       <div className="row mb-4">
         <div className="col-12">
@@ -146,7 +359,7 @@ function FormularioAddProductoPage() {
             </div>
             <button 
               className="btn btn-outline-light"
-              onClick={() => navigate(currentUser?.role === 'empleado' ? '/panel-empleado' : '/clienete')}
+              onClick={() => navigate(currentUser?.rol === 'empleado' ? '/panel-empleado' : '/admin')}
             >
               <i className="bi bi-arrow-left me-2"></i>
               Volver
@@ -161,7 +374,7 @@ function FormularioAddProductoPage() {
           <div className="alert alert-info border-0 shadow-sm">
             <i className="bi bi-info-circle me-2"></i>
             <strong>Agregando como:</strong> {currentUser?.nombre || currentUser?.email} 
-            ({currentUser?.role === 'admin' ? 'Administrador' : 'Empleado'})
+            ({currentUser?.rol === 'admin' ? 'Administrador' : 'Empleado'})
           </div>
         </div>
       </div>
@@ -183,6 +396,47 @@ function FormularioAddProductoPage() {
         <div className="col-12">
           <div className="bg-white rounded shadow p-5">
             <form onSubmit={handleSubmit}>
+                {/* Selector de tipo de producto */}
+                <div className="row mb-4">
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label fw-semibold">
+                        <i className="bi bi-grid-3x3-gap me-2 text-info"></i>
+                        Tipo de Producto *
+                      </label>
+                      <div className="btn-group w-100" role="group">
+                        <input 
+                          type="radio" 
+                          className="btn-check" 
+                          name="tipoProducto" 
+                          id="tipoRopa" 
+                          value="ropa" 
+                          checked={tipoProducto === 'ropa'}
+                          onChange={(e) => handleTipoProductoChange(e.target.value)}
+                        />
+                        <label className="btn btn-outline-primary" htmlFor="tipoRopa">
+                          <i className="bi bi-person me-2"></i>
+                          Ropa (Poleras, Polerones)
+                        </label>
+
+                        <input 
+                          type="radio" 
+                          className="btn-check" 
+                          name="tipoProducto" 
+                          id="tipoCuadro" 
+                          value="cuadro" 
+                          checked={tipoProducto === 'cuadro'}
+                          onChange={(e) => handleTipoProductoChange(e.target.value)}
+                        />
+                        <label className="btn btn-outline-secondary" htmlFor="tipoCuadro">
+                          <i className="bi bi-image me-2"></i>
+                          Cuadros y Arte
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="mb-3">
@@ -228,22 +482,43 @@ function FormularioAddProductoPage() {
                     <div className="mb-3">
                       <label className="form-label">
                         <i className="bi bi-grid me-2"></i>
-                        Categoría *
+                        Categorías * (selecciona una o más)
                       </label>
-                      <select
-                        className="form-select"
-                        name="categoria"
-                        value={formData.categoria}
-                        onChange={handleInputChange}
-                        required
-                      >
-                        <option value="Poleras">Poleras</option>
-                        <option value="Hoodies">Hoodies</option>
-                        <option value="Polerones">Polerones</option>
-                        <option value="AnimeBags">Bolsas Anime</option>
-                        <option value="Cuadros">Cuadros</option>
-                        <option value="Accesorios">Accesorios</option>
-                      </select>
+                      <div className="border rounded p-3" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        {categoriasLoading ? (
+                          <div className="text-center">
+                            <div className="spinner-border spinner-border-sm me-2"></div>
+                            Cargando categorías...
+                          </div>
+                        ) : categorias.length > 0 ? (
+                          categorias.map(categoria => (
+                            <div key={categoria.id} className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={`categoria-${categoria.id}`}
+                                checked={categoriasSeleccionadas.includes(categoria.id)}
+                                onChange={() => handleCategoriaChange(categoria.id)}
+                              />
+                              <label className="form-check-label" htmlFor={`categoria-${categoria.id}`}>
+                                {categoria.nombre}
+                              </label>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-muted">
+                            <i className="bi bi-exclamation-circle me-2"></i>
+                            No hay categorías disponibles. 
+                            <button 
+                              type="button" 
+                              className="btn btn-link p-0 ms-1"
+                              onClick={() => navigate('/admin')}
+                            >
+                              Crear una categoría primero
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -282,86 +557,229 @@ function FormularioAddProductoPage() {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label">
-                    <i className="bi bi-rulers me-2"></i>
-                    Tallas y Cantidades
-                  </label>
-                  {tallas.map((talla, index) => (
-                    <div key={index} className="row align-items-center mb-2">
-                      <div className="col-md-4">
-                        <select
-                          className="form-select"
-                          value={talla.talla}
-                          onChange={(e) => handleTallaChange(index, 'talla', e.target.value)}
-                        >
-                          <option value="XS">XS</option>
-                          <option value="S">S</option>
-                          <option value="M">M</option>
-                          <option value="L">L</option>
-                          <option value="XL">XL</option>
-                          <option value="XXL">XXL</option>
-                          <option value="XXXL">XXXL</option>
-                          <option value="Único">Talla Única</option>
-                        </select>
-                      </div>
-                      <div className="col-md-4">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Cantidad"
-                          min="1"
-                          value={talla.cantidad}
-                          onChange={(e) => handleTallaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
-                        />
-                      </div>
-                      <div className="col-md-4">
-                        <div className="btn-group">
-                          {index === tallas.length - 1 && (
-                            <button
-                              type="button"
-                              className="btn btn-outline-primary btn-sm"
-                              onClick={agregarTalla}
+                {/* Tallas o Medidas según el tipo de producto */}
+                {tipoProducto === 'ropa' ? (
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <i className="bi bi-rulers me-2 text-warning"></i>
+                      Tallas y Cantidades
+                    </label>
+                    <div className="border rounded p-3 bg-light">
+                      {tallas.map((talla, index) => (
+                        <div key={index} className="row align-items-center mb-2">
+                          <div className="col-md-4">
+                            <label className="form-label small">Talla</label>
+                            <select
+                              className="form-select"
+                              value={talla.talla}
+                              onChange={(e) => handleTallaChange(index, 'talla', e.target.value)}
                             >
-                              <i className="bi bi-plus"></i>
-                            </button>
-                          )}
-                          {tallas.length > 1 && (
-                            <button
-                              type="button"
-                              className="btn btn-outline-danger btn-sm"
-                              onClick={() => eliminarTalla(index)}
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          )}
+                              <option value="XS">XS</option>
+                              <option value="S">S</option>
+                              <option value="M">M</option>
+                              <option value="L">L</option>
+                              <option value="XL">XL</option>
+                              <option value="XXL">XXL</option>
+                              <option value="XXXL">XXXL</option>
+                              <option value="Único">Talla Única</option>
+                            </select>
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Cantidad</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="Cantidad"
+                              min="1"
+                              value={talla.cantidad}
+                              onChange={(e) => handleTallaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Acciones</label>
+                            <div className="btn-group w-100">
+                              {index === tallas.length - 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-success btn-sm"
+                                  onClick={agregarTalla}
+                                >
+                                  <i className="bi bi-plus"></i> Agregar
+                                </button>
+                              )}
+                              {tallas.length > 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => eliminarTalla(index)}
+                                >
+                                  <i className="bi bi-trash"></i> Eliminar
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ) : (
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <i className="bi bi-aspect-ratio me-2 text-info"></i>
+                      Medidas y Cantidades
+                    </label>
+                    <div className="border rounded p-3 bg-light">
+                      {medidas.map((medida, index) => (
+                        <div key={index} className="row align-items-center mb-2">
+                          <div className="col-md-4">
+                            <label className="form-label small">Medida</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Ej: 30x40 cm"
+                              value={medida.medida}
+                              onChange={(e) => handleMedidaChange(index, 'medida', e.target.value)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Cantidad</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="Cantidad"
+                              min="1"
+                              value={medida.cantidad}
+                              onChange={(e) => handleMedidaChange(index, 'cantidad', parseInt(e.target.value) || 1)}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small">Acciones</label>
+                            <div className="btn-group w-100">
+                              {index === medidas.length - 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-success btn-sm"
+                                  onClick={agregarMedida}
+                                >
+                                  <i className="bi bi-plus"></i> Agregar
+                                </button>
+                              )}
+                              {medidas.length > 1 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => eliminarMedida(index)}
+                                >
+                                  <i className="bi bi-trash"></i> Eliminar
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mb-4">
                   <label className="form-label">
                     <i className="bi bi-image me-2"></i>
-                    Imagen del Producto
+                    Imagen del Producto (URL)
                   </label>
                   <input
-                    type="file"
+                    type="url"
                     className="form-control"
-                    onChange={handleImagenChange}
-                    accept="image/*"
+                    name="imagenUrl"
+                    value={formData.imagenUrl || ''}
+                    onChange={handleImageUrlChange}
+                    placeholder="https://ejemplo.com/imagen.jpg"
                   />
                   <div className="form-text">
-                    Si no seleccionas una imagen, se usará una imagen predeterminada según la categoría.
+                    Ingresa la URL de la imagen del producto
                   </div>
+
+                  {/* Vista previa de imagen */}
+                  {previewUrl && (
+                    <div className="mt-3">
+                      <label className="form-label">Vista Previa:</label>
+                      <div className="image-preview">
+                        <img 
+                          src={previewUrl} 
+                          alt="Preview" 
+                          className="img-thumbnail"
+                          style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }} 
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="form-text">
+                    Selecciona una imagen del proyecto o sube tu propia imagen. Las imágenes locales cargan más rápido.
+                  </div>
+                </div>
+
+                {/* Sección de categorías */}
+                <div className="mb-4">
+                  <label className="form-label">
+                    <i className="bi bi-tags me-2"></i>
+                    Categorías *
+                  </label>
+                  <div className="form-text mb-3">
+                    {tipoProducto === 'cuadro' 
+                      ? 'Categoria seleccionada automáticamente para cuadros:'
+                      : 'Selecciona las categorías de ropa:'
+                    }
+                  </div>
+                  {categorias.length > 0 ? (
+                    <div className="row">
+                      {categorias
+                        .filter(categoria => 
+                          tipoProducto === 'cuadro' 
+                            ? categoria.nombre === 'CUADRO'
+                            : categoria.nombre !== 'CUADRO'
+                        )
+                        .map(categoria => (
+                        <div key={categoria.id} className="col-md-4 col-6 mb-2">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={`categoria-${categoria.id}`}
+                              checked={categoriasSeleccionadas.includes(categoria.id)}
+                              onChange={() => handleCategoriaChange(categoria.id)}
+                              disabled={tipoProducto === 'cuadro'}
+                            />
+                            <label 
+                              className="form-check-label" 
+                              htmlFor={`categoria-${categoria.id}`}
+                            >
+                              {categoria.nombre}
+                              {categoria.nombre === 'POLERA' && ' (Camisetas)'}
+                              {categoria.nombre === 'POLERON' && ' (Sudaderas)'}
+                              {categoria.nombre === 'CUADRO' && ' (Arte y Decoración)'}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="alert alert-warning">
+                      <i className="bi bi-exclamation-triangle me-2"></i>
+                      No hay categorías disponibles. Crea una categoría primero en el panel de administración.
+                    </div>
+                  )}
+                  {categoriasSeleccionadas.length === 0 && (
+                    <div className="form-text text-danger">
+                      Debe seleccionar al menos una categoría
+                    </div>
+                  )}
                 </div>
 
                 <div className="d-flex justify-content-between">
                   <button
                     type="button"
                     className="btn btn-outline-secondary"
-                    onClick={() => navigate(currentUser.role === 'empleado' ? '/panel-empleado' : '/admin')}
+                    onClick={() => navigate(currentUser.rol === 'empleado' ? '/panel-empleado' : '/admin')}
                   >
                     <i className="bi bi-x-circle me-2"></i>
                     Cancelar
@@ -370,7 +788,7 @@ function FormularioAddProductoPage() {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                    disabled={loading}
+                    disabled={loading || categoriasSeleccionadas.length === 0}
                   >
                     {loading ? (
                       <>

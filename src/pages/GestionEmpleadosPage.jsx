@@ -21,8 +21,17 @@ function GestionEmpleadosPage() {
     cargarEmpleados();
   }, []);
 
-  const cargarEmpleados = () => {
-    setEmpleados(obtenerEmpleados());
+  const cargarEmpleados = async () => {
+    try {
+      console.log('🔄 Cargando empleados...');
+      const listaEmpleados = await obtenerEmpleados();
+      console.log('👥 Lista de empleados recibida:', listaEmpleados);
+      setEmpleados(listaEmpleados);
+      console.log('✅ Estado de empleados actualizado');
+    } catch (error) {
+      console.error('❌ Error al cargar empleados:', error);
+      setMensaje({ tipo: 'error', texto: 'Error al cargar la lista de empleados' });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -46,7 +55,7 @@ function GestionEmpleadosPage() {
     setEditingEmpleado(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validaciones básicas
@@ -55,33 +64,48 @@ function GestionEmpleadosPage() {
       return;
     }
 
-    if (editingEmpleado) {
-      // Editar empleado
-      const { contrasena, ...datosParaEditar } = formData;
-      if (contrasena) {
-        datosParaEditar.contrasena = contrasena;
-      }
-      
-      const resultado = editarEmpleado(editingEmpleado.id, datosParaEditar);
-      if (resultado.success) {
-        setMensaje({ tipo: 'success', texto: 'Empleado actualizado correctamente' });
-        cargarEmpleados();
-        setShowModal(false);
-        limpiarFormulario();
+    try {
+      if (editingEmpleado) {
+        // Editar empleado
+        const { contrasena, ...datosParaEditar } = formData;
+        if (contrasena) {
+          datosParaEditar.contrasena = contrasena;
+        }
+        
+        const resultado = await editarEmpleado(editingEmpleado.id, datosParaEditar);
+        if (resultado.success) {
+          setMensaje({ tipo: 'success', texto: 'Empleado actualizado correctamente' });
+          await cargarEmpleados();
+          setShowModal(false);
+          limpiarFormulario();
+        } else {
+          setMensaje({ tipo: 'error', texto: resultado.message });
+        }
       } else {
-        setMensaje({ tipo: 'error', texto: resultado.message });
+        // Crear nuevo empleado
+        console.log('🆕 CREANDO EMPLEADO - Datos del formulario:', formData);
+        const resultado = await crearEmpleado(formData);
+        console.log('🆕 RESULTADO CREACIÓN:', resultado);
+        
+        if (resultado.success) {
+          setMensaje({ tipo: 'success', texto: 'Empleado creado correctamente' });
+          console.log('✅ Empleado creado exitosamente, recargando lista...');
+          
+          // Esperar un poco y recargar
+          setTimeout(async () => {
+            await cargarEmpleados();
+          }, 500);
+          
+          setShowModal(false);
+          limpiarFormulario();
+        } else {
+          console.error('❌ Error en creación:', resultado.message);
+          setMensaje({ tipo: 'error', texto: resultado.message });
+        }
       }
-    } else {
-      // Crear nuevo empleado
-      const resultado = crearEmpleado(formData);
-      if (resultado.success) {
-        setMensaje({ tipo: 'success', texto: 'Empleado creado correctamente' });
-        cargarEmpleados();
-        setShowModal(false);
-        limpiarFormulario();
-      } else {
-        setMensaje({ tipo: 'error', texto: resultado.message });
-      }
+    } catch (error) {
+      console.error('Error en handleSubmit:', error);
+      setMensaje({ tipo: 'error', texto: 'Error al procesar la solicitud' });
     }
 
     // Limpiar mensaje después de 3 segundos
@@ -104,19 +128,37 @@ function GestionEmpleadosPage() {
     setShowModal(true);
   };
 
-  const handleToggleActivo = (id) => {
-    const resultado = toggleEmpleadoActivo(id);
-    if (resultado.success) {
-      cargarEmpleados();
-      setMensaje({ 
-        tipo: 'success', 
-        texto: `Estado del empleado ${resultado.empleado.activo ? 'activado' : 'desactivado'}` 
-      });
-      setTimeout(() => {
-        setMensaje({ tipo: '', texto: '' });
-      }, 3000);
+  const handleToggleActivo = async (id) => {
+    try {
+      const resultado = await toggleEmpleadoActivo(id);
+      if (resultado.success) {
+        await cargarEmpleados();
+        setMensaje({ 
+          tipo: 'success', 
+          texto: `Estado del empleado ${resultado.empleado.activo ? 'activado' : 'desactivado'}` 
+        });
+        setTimeout(() => {
+          setMensaje({ tipo: '', texto: '' });
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Error al cambiar estado del empleado:', error);
+      setMensaje({ tipo: 'error', texto: 'Error al cambiar el estado del empleado' });
     }
   };
+
+  // Verificar permisos de administrador
+  if (!currentUser || currentUser.rol !== 'admin') {
+    return (
+      <div className="container py-4">
+        <div className="alert alert-danger" role="alert">
+          <i className="bi bi-shield-x me-2"></i>
+          <strong>Acceso denegado</strong><br />
+          Solo los administradores pueden gestionar empleados.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-4">
@@ -126,17 +168,81 @@ function GestionEmpleadosPage() {
             <h2 className="text-primary">
               <i className="bi bi-people-fill me-2"></i>
               Gestión de Empleados
+              <small className="text-muted ms-2">({empleados.length} empleados)</small>
             </h2>
-            <button 
-              className="btn btn-primary"
-              onClick={() => {
-                limpiarFormulario();
-                setShowModal(true);
-              }}
-            >
-              <i className="bi bi-person-plus me-2"></i>
-              Agregar Empleado
-            </button>
+            <div>
+              <button 
+                className="btn btn-outline-info me-2"
+                onClick={() => {
+                  // Debug completo
+                  console.log('🔍 DEBUG COMPLETO:');
+                  console.log('📊 Estado actual de empleados:', empleados);
+                  console.log('🗄️ localStorage usuarios_dev:', localStorage.getItem('usuarios_dev'));
+                  console.log('🗄️ localStorage empleados:', localStorage.getItem('empleados'));
+                  console.log('👤 Usuario actual:', currentUser);
+                  
+                  // Forzar inicialización
+                  const usuariosPorDefecto = [
+                    {
+                      id: 1,
+                      nombre: 'Administrador',
+                      apellido: 'Sistema',
+                      email: 'admin@admin.com',
+                      passwordHash: 'admin',
+                      rol: 'admin',
+                      telefono: '+56912345678',
+                      cargo: 'Administrador del Sistema',
+                      departamento: 'TI',
+                      fechaRegistro: new Date().toISOString(),
+                      activo: true
+                    },
+                    {
+                      id: 2,
+                      nombre: 'Empleado',
+                      apellido: 'Demo',
+                      email: 'empleado@demo.com',
+                      passwordHash: 'empleado',
+                      rol: 'empleado',
+                      telefono: '+56987654321',
+                      cargo: 'Vendedor',
+                      departamento: 'Ventas',
+                      fechaRegistro: new Date().toISOString(),
+                      activo: true
+                    }
+                  ];
+                  
+                  localStorage.setItem('usuarios_dev', JSON.stringify(usuariosPorDefecto));
+                  console.log('✅ Usuarios por defecto forzados en localStorage');
+                  console.log('🔄 localStorage actualizado:', localStorage.getItem('usuarios_dev'));
+                  
+                  cargarEmpleados();
+                }}
+              >
+                <i className="bi bi-bug me-2"></i>
+                Debug
+              </button>
+              <button 
+                className="btn btn-outline-secondary me-2"
+                onClick={() => {
+                  console.log('🔄 Recargando empleados manualmente...');
+                  console.log('📊 Estado actual de empleados:', empleados);
+                  cargarEmpleados();
+                }}
+              >
+                <i className="bi bi-arrow-clockwise me-2"></i>
+                Recargar
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  limpiarFormulario();
+                  setShowModal(true);
+                }}
+              >
+                <i className="bi bi-person-plus me-2"></i>
+                Agregar Empleado
+              </button>
+            </div>
           </div>
 
           {/* Mensajes */}

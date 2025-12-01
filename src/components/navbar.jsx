@@ -108,8 +108,8 @@ function Navbar() {
                   >
                     <i className="bi bi-person-circle me-2"></i> 
                     {/* Mostrar rol del usuario */}
-                    {currentUser.role === 'admin' ? 'Administrador' : 
-                     currentUser.role === 'empleado' ? 'Empleado' : 'Mi cuenta'}
+                    {currentUser.rol === 'admin' ? 'Administrador' : 
+                     currentUser.rol === 'empleado' ? 'Empleado' : 'Mi cuenta'}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                     {/* Opciones comunes */}
@@ -125,32 +125,60 @@ function Navbar() {
                     </li>
                     
                     {/* Opciones específicas para admin */}
-                    {currentUser.role === 'admin' && (
+                    {currentUser.rol === 'admin' && (
                       <>
                         <li><hr className="dropdown-divider" /></li>
+                        <li className="dropdown-header">
+                          <i className="bi bi-shield-check me-1"></i>
+                          Administración
+                        </li>
                         <li>
                           <Link className="dropdown-item" to="/admin">
-                            <i className="bi bi-gear me-2"></i>
-                            Panel Admin
+                            <i className="bi bi-speedometer2 me-2"></i>
+                            Panel de Control
                           </Link>
                         </li>
                         <li>
-                          <Link className="dropdown-item" to="/formulario-add">
-                            <i className="bi bi-person-plus me-2"></i>
-                            Panel de Empleados
+                          <Link className="dropdown-item" to="/admin/productos/nuevo">
+                            <i className="bi bi-plus-circle me-2"></i>
+                            Agregar Producto
                           </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/debug-productos">
+                            <i className="bi bi-box-seam me-2"></i>
+                            Gestión de Productos
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/asignar-categorias">
+                            <i className="bi bi-tags me-2"></i>
+                            Gestión de Categorías
+                          </Link>
+                        </li>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li className="dropdown-header">
+                          <i className="bi bi-people me-1"></i>
+                          Personal
                         </li>
                         <li>
                           <Link className="dropdown-item" to="/gestion-empleados">
-                            <i className="bi bi-people me-2"></i>
+                            <i className="bi bi-person-gear me-2"></i>
                             Gestión de Empleados
                           </Link>
                         </li>
+                        <li>
+                          <Link className="dropdown-item" to="/panel-empleado">
+                            <i className="bi bi-briefcase me-2"></i>
+                            Panel de Trabajo
+                          </Link>
+                        </li>
+
                       </>
                     )}
                     
                     {/* Opciones específicas para empleados */}
-                    {currentUser.role === 'empleado' && (
+                    {currentUser.rol === 'empleado' && (
                       <>
                         <li><hr className="dropdown-divider" /></li>
                         <li>

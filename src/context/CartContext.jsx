@@ -130,17 +130,35 @@ export function CartProvider({ children }) {
     }
 
     try {
-      // Preparar datos del pedido según el modelo de Spring Boot
+      // Preparar datos del pedido
+      console.log('👤 Usuario actual para pedido:', currentUser);
+      
+      // Determinar ID de usuario de forma más robusta
+      let usuarioId;
+      if (currentUser.email === "admin" || currentUser.email === "admin@admin.com") {
+        usuarioId = 1;
+      } else if (currentUser.id) {
+        usuarioId = parseInt(currentUser.id);
+      } else {
+        // Si no hay ID, crear uno basado en timestamp del email
+        usuarioId = Date.now() % 1000000; // ID único basado en timestamp
+      }
+      
+      console.log('🆔 ID de usuario determinado:', usuarioId);
+      
       const pedidoData = {
+        usuarioId: usuarioId, // Usar usuarioId directo para modo desarrollo
         usuario: {
-          id: currentUser.id
+          id: usuarioId
         },
+        estado: "PENDIENTE",
+        total: getTotalPrice(),
         detalles: cartItems.map(item => ({
           producto: {
-            id: item.id
+            id: parseInt(item.id)
           },
           cantidad: item.quantity,
-          precioUnit: item.precio
+          precioUnitario: parseFloat(item.precio)
         }))
       };
 

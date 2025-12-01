@@ -69,12 +69,59 @@ export default function AdminPage() {
   const eliminarProducto = async (id) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       try {
+        console.log('🗑️ Eliminando producto con ID:', id);
+        
+        // Verificar que el producto existe en la lista local primero
+        const productoExiste = productos.find(p => p.id === id);
+        if (!productoExiste) {
+          setError('El producto ya no existe en la lista. Recargando datos...');
+          cargarDatos();
+          return;
+        }
+        
         await productoService.eliminar(id);
-        setMensaje('Producto eliminado correctamente');
-        cargarDatos(); // Recargar datos
+        setError(''); // Limpiar errores previos
+        setMensaje('✅ Producto eliminado correctamente');
+        
+        // Actualizar la lista de productos inmediatamente
+        setProductos(prev => prev.filter(p => p.id !== id));
+        
+        // Limpiar mensaje de éxito después de 3 segundos
+        setTimeout(() => {
+          setMensaje('');
+        }, 3000);
+        
+        // Recargar datos para asegurar sincronización
+        setTimeout(() => {
+          cargarDatos();
+        }, 1000);
+        
       } catch (error) {
-        console.error('Error eliminando producto:', error);
-        setError('Error al eliminar el producto');
+        console.error('❌ Error eliminando producto:', error);
+        
+        // Manejo específico de errores
+        if (error.message.includes('404')) {
+          setError('El producto ya fue eliminado o no existe. Actualizando lista...');
+          // Si el producto no existe en el servidor, quitarlo de la lista local
+          setProductos(prev => prev.filter(p => p.id !== id));
+          setTimeout(() => {
+            cargarDatos();
+          }, 500);
+        } else if (error.message.includes('500')) {
+          setError('Error interno del servidor. Intenta nuevamente en unos segundos.');
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+          setError('Error de conexión. Verifica tu conexión a internet.');
+        } else {
+          const errorMessage = error.message || 'Error desconocido al eliminar el producto';
+          setError(`Error al eliminar el producto: ${errorMessage}`);
+        }
+        
+        setMensaje(''); // Limpiar mensajes de éxito previos
+        
+        // En caso de error, recargar datos para sincronizar
+        setTimeout(() => {
+          cargarDatos();
+        }, 2000);
       }
     }
   };
@@ -140,6 +187,17 @@ export default function AdminPage() {
           >
             <i className="bi bi-people me-2"></i>
             Empleados
+          </button>
+          
+          <hr className="my-2 text-light" />
+          
+          <button 
+            className="list-group-item mb-1"
+            onClick={() => navigate('/admin/utilidades')}
+            style={{ backgroundColor: '#28a745', color: 'white', border: 'none' }}
+          >
+            <i className="bi bi-tools me-2"></i>
+            Utilidades
           </button>
         </div>
         
@@ -268,10 +326,20 @@ export default function AdminPage() {
           <>
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h1>Gestión de Productos</h1>
-              <Link to="/admin/productos/nuevo" className="btn btn-success">
-                <i className="bi bi-plus-circle me-2"></i>
-                Nuevo Producto
-              </Link>
+              <div className="btn-group">
+                <button 
+                  onClick={cargarDatos} 
+                  className="btn btn-outline-primary"
+                  disabled={loading}
+                >
+                  <i className="bi bi-arrow-clockwise me-2"></i>
+                  {loading ? 'Recargando...' : 'Recargar'}
+                </button>
+                <Link to="/admin/agregar-producto" className="btn btn-success">
+                  <i className="bi bi-plus-circle me-2"></i>
+                  Nuevo Producto
+                </Link>
+              </div>
             </div>
             
             {productos.length > 0 ? (
@@ -350,7 +418,7 @@ export default function AdminPage() {
             ) : (
               <div className="text-center p-5">
                 <h3>No hay productos registrados</h3>
-                <Link to="/admin/productos/nuevo" className="btn btn-primary">
+                <Link to="/admin/agregar-producto" className="btn btn-primary">
                   Crear primer producto
                 </Link>
               </div>

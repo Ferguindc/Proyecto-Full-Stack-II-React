@@ -32,10 +32,15 @@ export const registrarUsuario = async (usuario) => {
     const nuevoUsuario = {
       id: Date.now(),
       nombre: usuario.nombre,
+      apellido: usuario.apellido || '',
       email: usuario.email,
-      passwordHash: usuario.passwordHash, // En desarrollo no hasheamos
+      passwordHash: usuario.passwordHash || usuario.contrasena, // En desarrollo no hasheamos
       rol: usuario.rol || "cliente",
-      fechaRegistro: new Date().toISOString()
+      telefono: usuario.telefono || '',
+      cargo: usuario.cargo || '',
+      departamento: usuario.departamento || '',
+      fechaRegistro: new Date().toISOString(),
+      activo: true
     };
     
     usuarios.push(nuevoUsuario);
@@ -155,6 +160,13 @@ export const loginUsuario = async (email, password) => {
 
 // Obtener todos los usuarios
 export const obtenerUsuarios = async () => {
+  // Modo de desarrollo - usar localStorage
+  if (API_CONFIG.DEV_MODE) {
+    console.log('🔧 MODO DESARROLLO - Obteniendo usuarios desde localStorage');
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    return usuarios;
+  }
+
   try {
     const url = buildApiUrl(API_CONFIG.ENDPOINTS.USUARIOS.BASE);
     const response = await fetch(url, {
@@ -165,6 +177,155 @@ export const obtenerUsuarios = async () => {
     return await handleResponse(response);
   } catch (error) {
     console.error('Error obteniendo usuarios:', error);
-    throw error;
+    // Fallback a localStorage si falla la API
+    console.log('⚠️ Fallback a localStorage por error en API');
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    return usuarios;
   }
 };
+
+// Obtener usuario por ID
+export const obtenerUsuarioPorId = async (id, token) => {
+  // Modo de desarrollo - usar localStorage
+  if (API_CONFIG.DEV_MODE) {
+    console.log('🔧 MODO DESARROLLO - Obteniendo usuario por ID desde localStorage');
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    const usuario = usuarios.find(u => u.id === parseInt(id));
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    return usuario;
+  }
+
+  try {
+    const url = buildApiUrl(API_CONFIG.ENDPOINTS.USUARIOS.BASE) + `/${id}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        ...API_CONFIG.DEFAULT_HEADERS,
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error obteniendo usuario por ID:', error);
+    // Fallback a localStorage
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    const usuario = usuarios.find(u => u.id === parseInt(id));
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    return usuario;
+  }
+};
+
+// Actualizar usuario
+export const actualizarUsuario = async (id, datos, token) => {
+  // Modo de desarrollo - usar localStorage
+  if (API_CONFIG.DEV_MODE) {
+    console.log('🔧 MODO DESARROLLO - Actualizando usuario en localStorage');
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    const index = usuarios.findIndex(u => u.id === parseInt(id));
+    
+    if (index === -1) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Actualizar usuario manteniendo algunos campos
+    usuarios[index] = {
+      ...usuarios[index],
+      ...datos,
+      id: usuarios[index].id, // Mantener ID original
+      fechaActualizacion: new Date().toISOString()
+    };
+    
+    localStorage.setItem('usuarios_dev', JSON.stringify(usuarios));
+    console.log('✅ Usuario actualizado en localStorage');
+    return usuarios[index];
+  }
+
+  try {
+    const url = buildApiUrl(API_CONFIG.ENDPOINTS.USUARIOS.BASE) + `/${id}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        ...API_CONFIG.DEFAULT_HEADERS,
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(datos)
+    });
+
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error actualizando usuario:', error);
+    // Fallback a localStorage
+    const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
+    const index = usuarios.findIndex(u => u.id === parseInt(id));
+    
+    if (index === -1) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    usuarios[index] = {
+      ...usuarios[index],
+      ...datos,
+      fechaActualizacion: new Date().toISOString()
+    };
+    
+    localStorage.setItem('usuarios_dev', JSON.stringify(usuarios));
+    return usuarios[index];
+  }
+};
+
+// Inicializar datos por defecto en localStorage (solo para desarrollo)
+const inicializarDatosDev = () => {
+  if (API_CONFIG.DEV_MODE && !localStorage.getItem('usuarios_dev')) {
+    const usuariosPorDefecto = [
+      {
+        id: 1,
+        nombre: 'Administrador',
+        email: 'admin@admin.com',
+        passwordHash: 'admin', // En desarrollo, sin hash
+        rol: 'admin',
+        telefono: '+56912345678',
+        cargo: 'Administrador del Sistema',
+        departamento: 'TI',
+        fechaRegistro: new Date().toISOString(),
+        activo: true
+      },
+      {
+        id: 2,
+        nombre: 'Empleado Demo',
+        email: 'empleado@demo.com',
+        passwordHash: 'empleado',
+        rol: 'empleado',
+        telefono: '+56987654321',
+        cargo: 'Vendedor',
+        departamento: 'Ventas',
+        fechaRegistro: new Date().toISOString(),
+        activo: true
+      }
+    ];
+    
+    localStorage.setItem('usuarios_dev', JSON.stringify(usuariosPorDefecto));
+    console.log('✅ Usuarios por defecto inicializados en localStorage');
+  }
+};
+
+// Inicializar datos al cargar el servicio
+if (typeof window !== 'undefined') {
+  inicializarDatosDev();
+}
+
+// Objeto usuarioService para compatibilidad con AuthContext
+const usuarioService = {
+  register: registrarUsuario,
+  login: loginUsuario,
+  getAll: obtenerUsuarios,
+  getById: obtenerUsuarioPorId,
+  getByEmail: obtenerUsuarioPorEmail,
+  update: actualizarUsuario
+};
+
+export default usuarioService;
