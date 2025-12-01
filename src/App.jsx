@@ -65,8 +65,9 @@ function App() {
           <Route path="/cliente/editar" element={<FormularioEditarPage />} />
           <Route path="/cliente/envio" element={<FormularioAddPage tipo="Envío" />} />
           <Route path="/cliente/facturacion" element={<FormularioAddPage tipo="Facturación" />} />
-          <Route path="/panel-empleado" element={<PanelEmpleadoPage />} />
-          <Route path="/gestion-empleados" element={<GestionEmpleadosPage />} />
+          {/* RUTAS DE EMPLEADO - TEMPORALMENTE DESHABILITADAS */}
+          {/* <Route path="/panel-empleado" element={<PanelEmpleadoPage />} />
+          <Route path="/gestion-empleados" element={<GestionEmpleadosPage />} /> */}
           <Route path="/formulario-add" element={<FormularioAddProductoPage />} />
           <Route path="/admin/agregar-producto" element={<FormularioAddProductoPage />} />
           <Route path="/formulario-editar/:id" element={<FormularioEditarProductoPage />} />

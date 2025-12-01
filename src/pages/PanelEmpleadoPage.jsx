@@ -10,7 +10,7 @@ function PanelEmpleadoPage() {
 
   useEffect(() => {
     // Verificar que el usuario sea empleado
-    if (!currentUser || currentUser.role !== 'empleado') {
+    if (!currentUser || currentUser.rol !== 'empleado') {
       navigate('/sesion');
       return;
     }
@@ -39,7 +39,7 @@ function PanelEmpleadoPage() {
     }
   };
 
-  if (!currentUser || currentUser.role !== 'empleado') {
+  if (!currentUser || currentUser.rol !== 'empleado') {
     return null;
   }
 

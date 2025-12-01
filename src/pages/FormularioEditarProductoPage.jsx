@@ -303,7 +303,7 @@ function FormularioEditarProductoPage() {
     
     // Redirigir después de 2 segundos
     setTimeout(() => {
-      if (currentUser.role === 'empleado') {
+      if (currentUser.rol === 'empleado') {
         navigate('/panel-empleado');
       } else {
         navigate('/admin');

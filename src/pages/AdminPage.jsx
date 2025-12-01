@@ -181,13 +181,13 @@ export default function AdminPage() {
             <i className="bi bi-cart me-2"></i>
             Pedidos
           </button>
-          <button 
+          {/* <button 
             className={`list-group-item mb-1 ${activeTab === 'empleados' ? 'active' : ''}`}
             onClick={() => cambiarTab('empleados')}
           >
             <i className="bi bi-people me-2"></i>
             Empleados
-          </button>
+          </button> */}
           
           <hr className="my-2 text-light" />
           
@@ -576,10 +576,10 @@ export default function AdminPage() {
           </>
         )}
 
-        {/* Pestaña EMPLEADOS */}
-        {activeTab === 'empleados' && (
+        {/* Pestaña EMPLEADOS - TEMPORALMENTE DESHABILITADA */}
+        {/* {activeTab === 'empleados' && (
           <GestionEmpleadosPage />
-        )}
+        )} */}
       </div>
     </div>
   );

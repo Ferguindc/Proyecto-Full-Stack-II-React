@@ -167,18 +167,18 @@ function Navbar() {
                             Gestión de Empleados
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link className="dropdown-item" to="/panel-empleado">
                             <i className="bi bi-briefcase me-2"></i>
                             Panel de Trabajo
                           </Link>
-                        </li>
+                        </li> */}
 
                       </>
                     )}
                     
-                    {/* Opciones específicas para empleados */}
-                    {currentUser.rol === 'empleado' && (
+                    {/* Opciones específicas para empleados - TEMPORALMENTE DESHABILITADO */}
+                    {/* {currentUser.rol === 'empleado' && (
                       <>
                         <li><hr className="dropdown-divider" /></li>
                         <li>
@@ -188,7 +188,7 @@ function Navbar() {
                           </Link>
                         </li>
                       </>
-                    )}
+                    )} */}
                     
                     <li><hr className="dropdown-divider" /></li>
                     <li>
