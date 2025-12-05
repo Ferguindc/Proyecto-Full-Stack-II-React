@@ -25,22 +25,37 @@ function RegistroPage() {
 
   // Función para validar RUT chileno
   const validarRUT = (rut) => {
-    // Eliminar puntos y guión
-    const cleanRUT = rut.replace(/[.-]/g, '');
+    if (!rut || rut.trim() === '') return false;
     
+    // Eliminar puntos y guión
+    const cleanRUT = rut.replace(/[.-]/g, '').trim();
+    
+    // Verificar longitud
     if (cleanRUT.length < 8 || cleanRUT.length > 9) {
       return false;
     }
     
+    // Verificar que solo contenga números y K al final
+    if (!/^[0-9]+[0-9kK]$/.test(cleanRUT)) {
+      return false;
+    }
+    
     const body = cleanRUT.slice(0, -1);
-    const dv = cleanRUT.slice(-1).toLowerCase();
+    const dv = cleanRUT.slice(-1).toUpperCase();
+    
+    // Verificar que el cuerpo sean solo números
+    if (!/^[0-9]+$/.test(body)) {
+      return false;
+    }
     
     let sum = 0;
     let multiplier = 2;
     
     // Calcular dígito verificador
     for (let i = body.length - 1; i >= 0; i--) {
-      sum += parseInt(body.charAt(i)) * multiplier;
+      const digit = parseInt(body.charAt(i));
+      if (isNaN(digit)) return false;
+      sum += digit * multiplier;
       multiplier = multiplier === 7 ? 2 : multiplier + 1;
     }
     
@@ -50,7 +65,7 @@ function RegistroPage() {
     if (expectedDV === 11) {
       calculatedDV = '0';
     } else if (expectedDV === 10) {
-      calculatedDV = 'k';
+      calculatedDV = 'K';
     } else {
       calculatedDV = expectedDV.toString();
     }
@@ -61,18 +76,35 @@ function RegistroPage() {
   // Función para formatear RUT mientras se escribe
   const formatearRUT = (rut) => {
     // Eliminar todo lo que no sea número o K
-    const cleaned = rut.replace(/[^0-9kK]/g, '');
+    let cleaned = rut.replace(/[^0-9kK]/g, '').toUpperCase();
     
+    // Si está vacío o tiene solo 1 carácter, devolverlo tal como está
     if (cleaned.length <= 1) {
       return cleaned;
+    }
+    
+    // Limitar a máximo 9 caracteres (8 números + 1 dígito verificador)
+    if (cleaned.length > 9) {
+      cleaned = cleaned.substring(0, 9);
     }
     
     // Separar cuerpo y dígito verificador
     const body = cleaned.slice(0, -1);
     const dv = cleaned.slice(-1);
     
-    // Formatear cuerpo con puntos
-    const formattedBody = body.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    // Solo formatear si tiene al menos 2 dígitos
+    if (body.length === 0) {
+      return cleaned;
+    }
+    
+    // Formatear cuerpo con puntos (cada 3 dígitos de derecha a izquierda)
+    let formattedBody = '';
+    for (let i = body.length - 1; i >= 0; i--) {
+      formattedBody = body[i] + formattedBody;
+      if ((body.length - i) % 3 === 0 && i > 0) {
+        formattedBody = '.' + formattedBody;
+      }
+    }
     
     return `${formattedBody}-${dv}`;
   };
@@ -112,24 +144,43 @@ function RegistroPage() {
     const { name, value } = e.target;
     
     if (name === 'rut') {
-      // Formatear RUT automáticamente
-      const formattedRUT = formatearRUT(value);
-      setFormData({
-        ...formData,
-        [name]: formattedRUT,
-      });
+      // Solo procesar si el valor ha cambiado realmente
+      const currentRUT = formData.rut;
+      if (value !== currentRUT) {
+        const formattedRUT = formatearRUT(value);
+        setFormData({
+          ...formData,
+          [name]: formattedRUT,
+        });
+      }
     } else if (name === 'telefono') {
       // Permitir solo números y símbolo +
       const cleanedPhone = value.replace(/[^+0-9]/g, '');
-      setFormData({
-        ...formData,
-        [name]: cleanedPhone,
-      });
+      if (cleanedPhone.length <= 12) { // Limitar longitud
+        setFormData({
+          ...formData,
+          [name]: cleanedPhone,
+        });
+      }
     } else {
       setFormData({
         ...formData,
         [name]: value,
       });
+    }
+  };
+
+  // Función especial para manejar teclas en el RUT
+  const handleRutKeyDown = (e) => {
+    // Permitir teclas de navegación y edición
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
+    if (allowedKeys.includes(e.key)) {
+      return;
+    }
+    
+    // Permitir solo números y la letra K
+    if (!/[0-9kK]/.test(e.key)) {
+      e.preventDefault();
     }
   };
 
@@ -303,9 +354,11 @@ function RegistroPage() {
               required
               value={formData.rut}
               onChange={handleChange}
-              placeholder="12.345.678-9"
+              onKeyDown={handleRutKeyDown}
               maxLength="12"
               title="Formato: 12.345.678-9"
+              autoComplete="off"
+              style={{ fontFamily: 'monospace', letterSpacing: '1px' }}
             />
             <label>RUT*</label>
           </div>
@@ -362,7 +415,7 @@ function RegistroPage() {
           {/* Indicador de fortaleza de contraseña */}
           {formData.password && (
             <div style={{ margin: '10px 0', fontSize: '12px' }}>
-              <p style={{ margin: '5px 0', fontWeight: 'bold', color: '#333' }}>Fortaleza de contraseña:</p>
+              <div style={{ margin: '5px 0', fontWeight: 'bold', color: '#333' }}>Fortaleza de contraseña:</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                 <span style={{ 
                   color: validarPassword(formData.password).minLength ? 'green' : 'red',
@@ -394,24 +447,24 @@ function RegistroPage() {
 
           {/* Validación de coincidencia de contraseñas */}
           {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-            <p style={{ color: 'red', fontSize: '12px', textAlign: 'center', margin: '5px 0' }}>
+            <div style={{ color: 'red', fontSize: '12px', textAlign: 'center', margin: '5px 0' }}>
               Las contraseñas no coinciden
-            </p>
+            </div>
           )}
 
           {/* Validación de RUT en tiempo real */}
           {formData.rut && formData.rut.length > 8 && (
-            <p style={{ 
+            <div style={{ 
               color: validarRUT(formData.rut) ? 'green' : 'red', 
               fontSize: '12px', 
               textAlign: 'center', 
               margin: '5px 0' 
             }}>
               {validarRUT(formData.rut) ? '✓ RUT válido' : '✗ RUT inválido'}
-            </p>
+            </div>
           )}
 
-          {error && <p style={{ color: 'red', textAlign: 'center', margin: '10px 0' }}>{error}</p>}
+          {error && <div style={{ color: 'red', textAlign: 'center', margin: '10px 0' }}>{error}</div>}
 
           <input 
             type="submit" 

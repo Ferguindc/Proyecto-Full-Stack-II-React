@@ -32,8 +32,8 @@
 /* --- Estilo de cada barra --- */
 .ticker-bar {
   display: flex;
-  background: var(--color-primary, #000); 
-  color: var(--color-white, #fff); 
+  background: linear-gradient(45deg, #228B22, #DC143C); /* Verde y rojo navideño */
+  color: #fff; 
   padding: 10px 0;
   
   transform: rotate(-3deg);
@@ -47,7 +47,7 @@
 }
 
 .ticker-bar.reverse {
-  background: var(--color-light, #f0f0f0); 
+  background: linear-gradient(45deg, #DC143C, #FFD700); /* Rojo navideño y dorado */ 
   color: var(--color-primary, #000); 
   transform: rotate(3deg); 
   margin-top: 10px;
@@ -206,7 +206,7 @@
 }
 
 .ticker-text-span.custom-ticker .ticker-item:not(:last-child)::after {
-  content: '🎃';
+  content: '⭐';
   position: absolute;
   right: -20px;
   top: 50%;

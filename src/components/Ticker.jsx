@@ -6,31 +6,31 @@ import './Ticker.css'; // Usaremos el Ticker.css final
 // Componente interno con el texto REPETIDO MUCHAS VECES
 const TickerText = () => (
   <span className="ticker-text-span">
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
-    <i className="bi bi-star-fill"></i> POLERAS OVERSIZE
+    🎄 POLERAS OVERSIZE
+    🎁 POLERAS OVERSIZE
+    ⭐ POLERAS OVERSIZE
+    🎄 POLERAS OVERSIZE
+    🎁 POLERAS OVERSIZE
+    ⭐ POLERAS OVERSIZE
+    🎄 POLERAS OVERSIZE
+    🎁 POLERAS OVERSIZE
+    ⭐ POLERAS OVERSIZE
+    🎄 POLERAS OVERSIZE
   </span>
 );
 
 const TickerTextReverse = () => (
   <span className="ticker-text-span">
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
-    <i className="bi bi-star-fill"></i> CUADROS ANIME
+    ❄️ CUADROS ANIME
+    🎅 CUADROS ANIME
+    🎁 CUADROS ANIME
+    ❄️ CUADROS ANIME
+    🎅 CUADROS ANIME
+    🎁 CUADROS ANIME
+    ❄️ CUADROS ANIME
+    🎅 CUADROS ANIME
+    🎁 CUADROS ANIME
+    ❄️ CUADROS ANIME
   </span>
 );
 

@@ -18,14 +18,14 @@ function Navbar() {
 
   return (
     <>
-      {/* ----- Barra de envíos ----- */}
-      <nav className="navbar bg-dark">
+      {/* ----- Barra de envíos navideña ----- */}
+      <nav className="navbar" style={{ background: 'linear-gradient(45deg, #228B22, #DC143C)' }}>
         <div className="container-fluid d-flex justify-content-center">
           <div className="tamañoletra text-white mb-0">
                   <Ticker>
-                  <div className="ticker-item">¡Feliz Navidad!</div>
-                  <div className="ticker-item">Envíos gratis sobre $50.000</div>
-                  <div className="ticker-item">¡Feliz Navidad!</div>
+                  <div className="ticker-item">🎄 ¡Feliz Navidad! 🎅</div>
+                  <div className="ticker-item">🎁 Envíos gratis sobre $50.000 ⭐</div>
+                  <div className="ticker-item">❄️ ¡Ofertas Navideñas! 🎄</div>
                 </Ticker>
           </div>
         </div>
