@@ -22,10 +22,15 @@ export const registrarUsuario = async (usuario) => {
     
     // Verificar que no exista en localStorage
     const usuarios = JSON.parse(localStorage.getItem('usuarios_dev') || '[]');
-    const existe = usuarios.find(u => u.email === usuario.email);
+    const existeEmail = usuarios.find(u => u.email === usuario.email);
+    const existeRUT = usuarios.find(u => u.rut === usuario.rut);
     
-    if (existe) {
+    if (existeEmail) {
       throw new Error('El email ya está registrado');
+    }
+    
+    if (existeRUT) {
+      throw new Error('El RUT ya está registrado');
     }
     
     // Simular usuario registrado con estructura correcta
@@ -33,6 +38,7 @@ export const registrarUsuario = async (usuario) => {
       id: Date.now(),
       nombre: usuario.nombre,
       apellido: usuario.apellido || '',
+      rut: usuario.rut || '',
       email: usuario.email,
       passwordHash: usuario.passwordHash || usuario.contrasena, // En desarrollo no hasheamos
       rol: usuario.rol || "cliente",
