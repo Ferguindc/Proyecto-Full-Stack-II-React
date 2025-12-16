@@ -275,7 +275,7 @@ function ClientePage() {
   } = useDirecciones();
   const navigate = useNavigate();
   
-  const [activeTab, setActiveTab] = useState('detalles');
+  const [activeTab, setActiveTab] = useState('historial');
 
   useEffect(() => {
     if (!currentUser) {
@@ -319,100 +319,9 @@ function ClientePage() {
             <i className="bi bi-list-ul me-2"></i> Historial de pedidos
           </button>
         </li>
-        <li className="nav-item">
-          <button 
-            className={`nav-link ${activeTab === 'detalles' ? 'active' : ''}`}
-            onClick={() => setActiveTab('detalles')}
-            type="button"
-            role="tab"
-          >
-            <i className="bi bi-person-fill me-2"></i> Detalles de la cuenta
-          </button>
-        </li>
       </ul>
 
       <div className="tab-content">
-        {activeTab === 'detalles' && (
-          <div className="tab-pane fade show active cliente-content-wrapper"> 
-            <div className="row">
-              
-              <div className="col-md-2 mb-4 mb-md-0"> 
-                <div className="card cliente-card"> 
-                  <div className="card-body">
-                    <h5 className="card-title">Detalles de contacto</h5>
-                    <hr />
-                    <p><small>CORREO ELECTRÓNICO</small><br />{currentUser.email}</p>
-                    <p><small>TELÉFONO</small><br />{telefonoUsuario}</p>
-                    
-                    {/* 👇 Botón "Editar" es ahora un Link */}
-                    <Link to="/cliente/editar" className="btn btn-editar">
-                      <i className="bi bi-pencil-fill me-2"></i> Editar
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-10 direcciones-container"> 
-                <div className="card direcciones-card mb-4">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h5 className="card-title mb-0">Direcciones de envío</h5>
-                      {direccionesEnvio.length < 2 && (
-                        <Link to="/cliente/envio" className="btn btn-outline-primary-custom">
-                          <i className="bi bi-plus-circle me-1"></i> Agregar nueva
-                        </Link>
-                      )}
-                    </div>
-                    <hr />
-                    
-                    {direccionesEnvio.length === 0 ? (
-                      <p>Aún no tienes datos de envío. Puedes incorporarlos haciendo clic en el botón de arriba o se agregarán automáticamente cuando realices una compra.</p>
-                    ) : (
-                      direccionesEnvio.map((direccion) => (
-                        <DireccionGuardada
-                          key={direccion.id}
-                          direccion={direccion}
-                          tipo="Envío"
-                          onEliminar={eliminarDireccionEnvio}
-                          onEditar={(id) => handleEditarDireccion(id, 'envio')}
-                        />
-                      ))
-                    )}
-                  </div>
-                </div>
-                
-                <div className="card direcciones-card">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h5 className="card-title mb-0">Direcciones de Facturación</h5>
-                      {direccionesFacturacion.length < 2 && (
-                        <Link to="/cliente/facturacion" className="btn btn-outline-primary-custom">
-                          <i className="bi bi-plus-circle me-1"></i> Agregar nueva
-                        </Link>
-                      )}
-                    </div>
-                    <hr />
-                    
-                    {direccionesFacturacion.length === 0 ? (
-                      <p>Aún no tienes datos de facturación. Puedes incorporarlos haciendo clic en el botón de arriba o se agregarán automáticamente cuando realices una compra.</p>
-                    ) : (
-                      direccionesFacturacion.map((direccion) => (
-                        <DireccionGuardada
-                          key={direccion.id}
-                          direccion={direccion}
-                          tipo="Facturación"
-                          onEliminar={eliminarDireccionFacturacion}
-                          onEditar={(id) => handleEditarDireccion(id, 'facturacion')}
-                        />
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {activeTab === 'historial' && (
           <HistorialPedidos />
         )}
