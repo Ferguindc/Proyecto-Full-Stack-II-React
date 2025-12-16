@@ -120,7 +120,7 @@ export function CartProvider({ children }) {
   };
 
   // Crear pedido en el backend
-  const crearPedido = async () => {
+  const crearPedido = async (datosEnvio = {}, metodoPago = 'transferencia') => {
     if (!currentUser) {
       throw new Error('Debes iniciar sesión para realizar un pedido');
     }
@@ -132,6 +132,8 @@ export function CartProvider({ children }) {
     try {
       // Preparar datos del pedido
       console.log('👤 Usuario actual para pedido:', currentUser);
+      console.log('📦 Datos de envío recibidos:', datosEnvio);
+      console.log('💳 Método de pago:', metodoPago);
       
       // Determinar ID de usuario de forma más robusta
       let usuarioId;
@@ -147,22 +149,31 @@ export function CartProvider({ children }) {
       console.log('🆔 ID de usuario determinado:', usuarioId);
       
       const pedidoData = {
-        usuarioId: usuarioId, // Usar usuarioId directo para modo desarrollo
+        usuarioId: usuarioId,
         usuario: {
           id: usuarioId
         },
         estado: "PENDIENTE",
-        total: getTotalPrice(),
+        total: getFinalTotal(),
+        // Información de envío
+        direccion: datosEnvio.direccion || 'No especificada',
+        ciudad: datosEnvio.ciudad || 'No especificada',
+        comuna: datosEnvio.comuna || 'No especificada',
+        notas: datosEnvio.notas || '',
+        // Método de pago
+        metodoPago: metodoPago,
+        // Detalles con talla incluida
         detalles: cartItems.map(item => ({
           producto: {
             id: parseInt(item.id)
           },
           cantidad: item.quantity,
-          precioUnitario: parseFloat(item.precio)
+          precioUnitario: parseFloat(item.precio),
+          talla: item.selectedSize || 'N/A'
         }))
       };
 
-      console.log('Creando pedido:', pedidoData);
+      console.log('📦 Creando pedido completo:', pedidoData);
       
       const pedidoCreado = await pedidoService.crear(pedidoData);
       

@@ -28,6 +28,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [pedidoExpandido, setPedidoExpandido] = useState(null);
 
   // Para aplicar la clase admin2 al body
   useEffect(() => {
@@ -46,6 +47,9 @@ export default function AdminPage() {
       setError("");
       
       const estadisticasData = await adminService.estadisticas.obtenerResumen();
+      console.log('📊 Datos de admin cargados:', estadisticasData);
+      console.log('🛒 Pedidos recibidos:', estadisticasData.pedidos);
+      
       setEstadisticas(estadisticasData);
       setProductos(estadisticasData.productos);
       setCategorias(estadisticasData.categorias);
@@ -487,90 +491,238 @@ export default function AdminPage() {
         {/* Pestaña PEDIDOS */}
         {activeTab === 'pedidos' && !loading && (
           <>
-            <h1>Gestión de Pedidos</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h1>Gestión de Pedidos</h1>
+              <button 
+                onClick={cargarDatos} 
+                className="btn btn-outline-primary"
+                disabled={loading}
+              >
+                <i className="bi bi-arrow-clockwise me-2"></i>
+                Recargar
+              </button>
+            </div>
             
             {pedidos.length > 0 ? (
               <div className="table-responsive">
-                <table className="table table-dark table-striped table-hover mt-3">
+                <table className="table table-dark table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
+                      <th style={{width: '80px'}}>ID</th>
                       <th>Cliente</th>
-                      <th>Fecha</th>
-                      <th>Total</th>
-                      <th>Estado</th>
-                      <th>Productos</th>
-                      <th>Acciones</th>
+                      <th>Dirección</th>
+                      <th style={{width: '120px'}}>Fecha</th>
+                      <th style={{width: '150px'}}>Total</th>
+                      <th style={{width: '150px'}}>Estado</th>
+                      <th style={{width: '100px'}}>Productos</th>
+                      <th style={{width: '100px'}}>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     {pedidos.map((pedido) => (
-                      <tr key={pedido.id}>
-                        <td>{pedido.id}</td>
-                        <td>
-                          <div>
-                            <strong>{pedido.usuario?.nombre}</strong>
+                      <React.Fragment key={pedido.id}>
+                        <tr>
+                          <td className="align-middle">
+                            <strong>#{pedido.id}</strong>
+                          </td>
+                          <td className="align-middle">
+                            <div>
+                              <strong>{pedido.usuario?.nombre || pedido.nombreCliente || 'Cliente'}</strong>
+                            </div>
+                            <small className="text-muted">{pedido.usuario?.email || pedido.emailCliente || 'No especificado'}</small>
                             <br />
-                            <small className="text-muted">{pedido.usuario?.email}</small>
-                          </div>
-                        </td>
-                        <td>
-                          {new Date(pedido.fecha).toLocaleDateString('es-CL')}
-                        </td>
-                        <td>
-                          <span className="fw-semibold text-success">
-                            {formatPrice(pedido.total)}
-                          </span>
-                        </td>
-                        <td>
-                          <select 
-                            className={`form-select form-select-sm ${
-                              pedido.estado === 'pendiente' ? 'bg-warning' :
-                              pedido.estado === 'entregado' ? 'bg-success' : 'bg-info'
-                            }`}
-                            value={pedido.estado}
-                            onChange={(e) => actualizarEstadoPedido(pedido.id, e.target.value)}
-                          >
-                            <option value="pendiente">Pendiente</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="enviado">Enviado</option>
-                            <option value="entregado">Entregado</option>
-                            <option value="cancelado">Cancelado</option>
-                          </select>
-                        </td>
-                        <td>
-                          <span className="badge bg-secondary">
-                            {pedido.detalles?.length || 0} productos
-                          </span>
-                        </td>
-                        <td>
-                          <div className="btn-group">
-                            <button className="btn btn-sm btn-outline-info" title="Ver detalles">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button 
-                              className="btn btn-sm btn-outline-danger"
-                              onClick={() => {
-                                if (window.confirm('¿Eliminar este pedido?')) {
-                                  pedidoService.eliminar(pedido.id).then(() => {
-                                    setMensaje('Pedido eliminado correctamente');
-                                    cargarDatos();
-                                  });
-                                }
-                              }}
+                            <small className="text-muted">
+                              <i className="bi bi-telephone me-1"></i>
+                              {pedido.usuario?.telefono || pedido.telefonoCliente || 'N/A'}
+                            </small>
+                          </td>
+                          <td className="align-middle">
+                            <div><strong>{pedido.direccion || pedido.direccionEnvio || 'No especificada'}</strong></div>
+                            <small className="text-muted">{pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}</small>
+                            {(pedido.notas || pedido.notasEnvio) && (
+                              <>
+                                <br />
+                                <small className="text-info">
+                                  <i className="bi bi-chat-left-text me-1"></i>
+                                  {pedido.notas || pedido.notasEnvio}
+                                </small>
+                              </>
+                            )}
+                          </td>
+                          <td className="align-middle">
+                            <small>{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleDateString('es-CL')}</small>
+                            <br />
+                            <small className="text-muted">{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleTimeString('es-CL')}</small>
+                          </td>
+                          <td className="align-middle">
+                            <strong className="text-success fs-5">
+                              {formatPrice(pedido.total)}
+                            </strong>
+                            <br />
+                            <small className="text-muted">
+                              <i className="bi bi-credit-card me-1"></i>
+                              {pedido.metodoPago || pedido.tipoPago || 'No especificado'}
+                            </small>
+                          </td>
+                          <td className="align-middle">
+                            <select 
+                              className={`form-select form-select-sm ${
+                                pedido.estado === 'pendiente' ? 'bg-warning text-dark' :
+                                pedido.estado === 'entregado' ? 'bg-success' :
+                                pedido.estado === 'cancelado' ? 'bg-danger' : 'bg-info'
+                              }`}
+                              value={pedido.estado}
+                              onChange={(e) => actualizarEstadoPedido(pedido.id, e.target.value)}
                             >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                              <option value="pendiente">Pendiente</option>
+                              <option value="pagado">Pagado</option>
+                              <option value="enviado">Enviado</option>
+                              <option value="entregado">Entregado</option>
+                              <option value="cancelado">Cancelado</option>
+                            </select>
+                          </td>
+                          <td className="align-middle text-center">
+                            <span className="badge bg-secondary fs-6">
+                              {pedido.detalles?.length || 0}
+                            </span>
+                          </td>
+                          <td className="align-middle">
+                            <div className="btn-group">
+                              <button 
+                                className="btn btn-sm btn-outline-info"
+                                onClick={() => setPedidoExpandido(pedidoExpandido === pedido.id ? null : pedido.id)}
+                                title="Ver detalles"
+                              >
+                                <i className={`bi bi-chevron-${pedidoExpandido === pedido.id ? 'up' : 'down'}`}></i>
+                              </button>
+                              <button 
+                                className="btn btn-sm btn-outline-danger"
+                                onClick={async () => {
+                                  if (window.confirm(`¿Eliminar el pedido #${pedido.id}?\n\nEsta acción no se puede deshacer.`)) {
+                                    try {
+                                      await pedidoService.eliminar(pedido.id);
+                                      setMensaje(`Pedido #${pedido.id} eliminado correctamente`);
+                                      setTimeout(() => setMensaje(''), 3000);
+                                      await cargarDatos();
+                                    } catch (error) {
+                                      console.error('Error eliminando pedido:', error);
+                                      setError(`Error al eliminar el pedido: ${error.message}`);
+                                      setTimeout(() => setError(''), 5000);
+                                    }
+                                  }
+                                }}
+                                title="Eliminar"
+                              >
+                                <i className="bi bi-trash"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        
+                        {/* Fila expandible con detalles de productos */}
+                        {pedidoExpandido === pedido.id && (
+                          <tr>
+                            <td colSpan="8" className="bg-secondary">
+                              <div className="p-3">
+                                {/* Información adicional del pedido */}
+                                <div className="row mb-3">
+                                  <div className="col-md-6">
+                                    <div className="card bg-dark">
+                                      <div className="card-body">
+                                        <h6 className="text-primary">
+                                          <i className="bi bi-truck me-2"></i>
+                                          Información de Envío
+                                        </h6>
+                                        <p className="mb-1 small"><strong>Dirección:</strong> {pedido.direccion || pedido.direccionEnvio || 'No especificada'}</p>
+                                        <p className="mb-1 small"><strong>Ciudad:</strong> {pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}</p>
+                                        <p className="mb-0 small"><strong>Comuna:</strong> {pedido.comuna || pedido.comunaEnvio || 'No especificada'}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div className="card bg-dark">
+                                      <div className="card-body">
+                                        <h6 className="text-success">
+                                          <i className="bi bi-credit-card me-2"></i>
+                                          Información de Pago
+                                        </h6>
+                                        <p className="mb-1 small"><strong>Método:</strong> {pedido.metodoPago || pedido.tipoPago || 'No especificado'}</p>
+                                        <p className="mb-1 small"><strong>Total:</strong> <span className="text-success">{formatPrice(pedido.total)}</span></p>
+                                        <p className="mb-0 small"><strong>Fecha:</strong> {new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleString('es-CL')}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <h5 className="text-info mb-3">
+                                  <i className="bi bi-box-seam me-2"></i>
+                                  Detalle de Productos
+                                </h5>
+                                <table className="table table-sm table-dark mb-0">
+                                  <thead>
+                                    <tr>
+                                      <th style={{width: '80px'}}>Imagen</th>
+                                      <th>Producto</th>
+                                      <th style={{width: '120px'}}>Talla/Medida</th>
+                                      <th style={{width: '100px'}} className="text-center">Cantidad</th>
+                                      <th style={{width: '120px'}} className="text-end">Precio Unit.</th>
+                                      <th style={{width: '120px'}} className="text-end">Subtotal</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {pedido.detalles && pedido.detalles.length > 0 ? (
+                                      pedido.detalles.map((detalle, index) => (
+                                        <tr key={index}>
+                                          <td>
+                                            <img 
+                                              src={detalle.producto?.imagenUrl || '/placeholder.jpg'} 
+                                              alt={detalle.producto?.nombre}
+                                              style={{ width: '60px', height: '60px', objectFit: 'cover' }}
+                                              className="rounded"
+                                            />
+                                          </td>
+                                          <td className="align-middle">
+                                            <strong>{detalle.producto?.nombre || 'Producto eliminado'}</strong>
+                                          </td>
+                                          <td className="align-middle">
+                                            <span className="badge bg-dark border">{detalle.talla || 'N/A'}</span>
+                                          </td>
+                                          <td className="align-middle text-center">
+                                            <span className="badge bg-primary fs-6">{detalle.cantidad}</span>
+                                          </td>
+                                          <td className="align-middle text-end">
+                                            {formatPrice(detalle.precioUnitario)}
+                                          </td>
+                                          <td className="align-middle text-end">
+                                            <strong className="text-success">
+                                              {formatPrice(detalle.precioUnitario * detalle.cantidad)}
+                                            </strong>
+                                          </td>
+                                        </tr>
+                                      ))
+                                    ) : (
+                                      <tr>
+                                        <td colSpan="6" className="text-center text-muted">
+                                          No hay detalles de productos
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>
               </div>
             ) : (
               <div className="text-center p-5">
-                <h3>No hay pedidos registrados</h3>
+                <i className="bi bi-inbox" style={{fontSize: '4rem', opacity: 0.5}}></i>
+                <h3 className="mt-3">No hay pedidos registrados</h3>
+                <p className="text-muted">Los pedidos aparecerán aquí cuando los clientes realicen compras</p>
               </div>
             )}
           </>

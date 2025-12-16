@@ -184,7 +184,7 @@ function HomePage() {
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
-                <h3>DISEÑOS</h3>
+                <h3 style={{color: '#ffffff'}}>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -193,7 +193,7 @@ function HomePage() {
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="/poleras"> <img src={productoPoleron} alt="Producto 2" /></Link>
               <div className="card-info">
-                <h3>DISEÑOS</h3>
+                <h3 style={{color: '#ffffff'}}>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -202,7 +202,7 @@ function HomePage() {
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="polerass"> <img src={poleraanime} alt="Producto 3" /></Link>
               <div className="card-info">
-                <h3>DISEÑOS</h3>
+                <h3 style={{color: '#ffffff'}}>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -211,7 +211,7 @@ function HomePage() {
               {/* --- ENLACE CORREGIDO --- */}
               <Link to="/poleras"> <img src={productoArana} alt="Producto 1" /></Link>
               <div className="card-info">
-                <h3>DISEÑOS</h3>
+                <h3 style={{color: '#ffffff'}}>DISEÑOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -219,8 +219,8 @@ function HomePage() {
             <div className="card hover-lift animate-fadeInLeft delay-100">
               <img src={productoOriginal} alt="Producto 2" />
               <div className="card-info">
-                <h3>2 POR $35</h3>
-                <h3>POLERAS BÁSICAS</h3>
+                <h3 style={{color: '#ffffff'}}>2 POR $35</h3>
+                <h3 style={{color: '#ffffff'}}>POLERAS BÁSICAS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -228,7 +228,7 @@ function HomePage() {
             <div className="card hover-lift animate-fadeInLeft delay-200">
               <img src={productoCuadros} alt="Producto 3" />
               <div className="card-info">
-                <h3>CUADROS ANIME</h3>
+                <h3 style={{color: '#ffffff'}}>CUADROS ANIME</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/cuadros"><button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -236,7 +236,7 @@ function HomePage() {
             <div className="card hover-lift animate-fadeInLeft delay-300">
               <img src={productoGorro} alt="Producto 4" />
               <div className="card-info">
-                <h3>PRODUCTOS</h3>
+                <h3 style={{color: '#ffffff'}}>PRODUCTOS</h3>
                 {/* --- ENLACE CORREGIDO --- */}
                 <Link to="/poleras"> <button className="btn-gradient">COMPRA AHORA</button></Link>
               </div>
@@ -248,7 +248,9 @@ function HomePage() {
       </section>
 
       <div className="banner-standard">
-        <img src={bannerWeb} alt="Banner intermedio" />
+        <Link to="/poleras">
+          <img src={bannerWeb} alt="Banner intermedio" style={{cursor: 'pointer'}} />
+        </Link>
       </div>
 
       {/* ----- Contenedor 2 columnas ----- */}
@@ -278,59 +280,65 @@ function HomePage() {
           <button className="btn prev" onClick={() => handleScroll(categorySliderRef, 'left')}>❮</button>
           
           <div className="slider" ref={categorySliderRef}>
-            <div className="card">
-              <img src={cat1} alt="Categoría 1" />
-              <div className="card-info">
-                <h3>CATEGORÍA 1</h3>
-                <p>Diseños Especiales</p>
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+            <Link to="/poleras" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat1} alt="Diseños Especiales" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Diseños Especiales</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
             
-            <div className="card">
-              <img src={cat2} alt="Categoría 2" />
-              <div className="card-info">
-                <h3>CATEGORÍA 2</h3>
-                <p>Poleras Premium</p>
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+            <Link to="/poleras" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat2} alt="Poleras Premium" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Poleras Premium</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
             
-            <div className="card">
-              <img src={cat3} alt="Categoría 3" />
-              <div className="card-info">
-                <h3>CATEGORÍA 3</h3>
-                <p>Colección Limitada</p>
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+            <Link to="/poleras" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat3} alt="Colección Limitada" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Colección Limitada</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
             
-            <div className="card">
-              <img src={cat4} alt="Categoría 4" />
-              <div className="card-info">
-                <h3>CATEGORÍA 4</h3>
-                <p>Cuadros Anime</p>
-                <Link to="/cuadros"><button>COMPRA AHORA</button></Link>
+            <Link to="/cuadros" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat4} alt="Cuadros Anime" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Cuadros Anime</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
             
-            <div className="card">
-              <img src={cat5} alt="Categoría 5" />
-              <div className="card-info">
-                <h3>CATEGORÍA 5</h3>
-                <p>Anime Collection</p>
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+            <Link to="/poleras" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat5} alt="Anime Collection" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Anime Collection</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
             
-            <div className="card">
-              <img src={cat8} alt="Categoría 8" />
-              <div className="card-info">
-                <h3>CATEGORÍA 8</h3>
-                <p>Jujutsu Kaisen</p>
-                <Link to="/poleras"><button>COMPRA AHORA</button></Link>
+            <Link to="/poleras" style={{textDecoration: 'none'}}>
+              <div className="card" style={{cursor: 'pointer'}}>
+                <img src={cat8} alt="Jujutsu Kaisen" />
+                <div className="card-info">
+                  <h3 style={{color: '#ffffff'}}>Jujutsu Kaisen</h3>
+                  <button>COMPRA AHORA</button>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <button className="btn next" onClick={() => handleScroll(categorySliderRef, 'right')}>❯</button>
@@ -339,7 +347,9 @@ function HomePage() {
 
       <div className="banner-standard">
         {/* --- ENLACE CORREGIDO --- */}
-        <Link to="/poleras"> <img src={bannerFinal} alt="Banner final" /></Link>
+        <Link to="/polerones">
+          <img src={bannerFinal} alt="Banner final" style={{cursor: 'pointer'}} />
+        </Link>
       </div>
 
       <Ticker />

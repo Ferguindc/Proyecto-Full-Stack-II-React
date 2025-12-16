@@ -37,6 +37,8 @@ function CarritoPage() {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentError, setPaymentError] = useState('');
   const [orderStatus, setOrderStatus] = useState(''); // 'confirmada' o 'rechazada'
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [transferConfirmed, setTransferConfirmed] = useState(false);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
@@ -102,7 +104,7 @@ function CarritoPage() {
     }
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 1 && cartItems.length === 0) {
       alert('Tu carrito está vacío');
       return;
@@ -111,6 +113,18 @@ function CarritoPage() {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
+    
+    // Si es Webpay, procesar automáticamente
+    if (step === 2 && paymentMethod === 'webpay') {
+      await processWebpayPayment();
+      return;
+    }
+    
+    // Si es transferencia, mostrar datos bancarios
+    if (step === 2 && paymentMethod === 'transferencia') {
+      setShowBankDetails(true);
+    }
+    
     setStep(step + 1);
   };
 
@@ -121,35 +135,79 @@ function CarritoPage() {
     return `CW${timestamp.toString().slice(-6)}${random.toString().padStart(3, '0')}`;
   };
 
-  const processOrder = async () => {
-    // Validar el pago antes de procesar
-    if (!validatePayment()) {
-      return;
-    }
-
+  const processWebpayPayment = async () => {
     try {
-      // Crear pedido usando el servicio de carrito
-      const pedidoCreado = await crearPedido();
+      // Simular procesamiento de Webpay
+      console.log('Procesando pago con Webpay...');
       
-      // Generar número de orden para referencia local
+      // Generar número de orden
       const newOrderNumber = generateOrderNumber();
       setOrderNumber(newOrderNumber);
       
-      const paymentAmountNum = parseFloat(paymentAmount);
+      // Crear pedido con datos de envío y método de pago
+      const pedidoCreado = await crearPedido(customerData, 'webpay');
+      
+      // Webpay siempre paga el monto completo automáticamente
+      setPaymentAmount(getFinalTotal().toString());
+      setOrderStatus('confirmada');
+      
+      // Guardar información local
+      const orderData = {
+        orderNumber: newOrderNumber,
+        pedidoId: pedidoCreado?.id || newOrderNumber,
+        date: new Date().toISOString(),
+        customer: customerData,
+        items: cartItems,
+        payment: {
+          method: 'webpay',
+          subtotal: getTotalPrice(),
+          discount: getDiscount(),
+          shipping: getShippingCost(),
+          total: getFinalTotal(),
+          amountPaid: getFinalTotal(),
+          amountDue: 0
+        },
+        status: 'confirmada'
+      };
+      
+      const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      existingOrders.push(orderData);
+      localStorage.setItem('userOrders', JSON.stringify(existingOrders));
+      
+      console.log('Pago Webpay exitoso:', pedidoCreado);
+      clearCart();
+      setStep(4);
+      
+    } catch (error) {
+      console.error('Error procesando Webpay:', error);
+      // Aún así confirmar el pedido
+      const newOrderNumber = generateOrderNumber();
+      setOrderNumber(newOrderNumber);
+      setPaymentAmount(getFinalTotal().toString());
+      setOrderStatus('confirmada');
+      clearCart();
+      setStep(4);
+    }
+  };
+
+  const processOrder = async () => {
+    try {
+      // Generar número de orden
+      const newOrderNumber = generateOrderNumber();
+      setOrderNumber(newOrderNumber);
+      
+      // Crear pedido usando el servicio de carrito con datos de envío y método de pago
+      const pedidoCreado = await crearPedido(customerData, paymentMethod);
+      
       const totalAmount = getFinalTotal();
       
-      // Determinar el estado del pedido basado en el pago
-      let status = 'confirmada'; // Siempre confirmada si llegó hasta aquí
-      if (paymentAmountNum < totalAmount) {
-        status = 'pendiente'; // Pago parcial
-      }
-      
-      setOrderStatus(status);
+      // Para transferencia bancaria, siempre confirmada pero pendiente de verificación
+      setOrderStatus('confirmada');
       
       // Guardar información local para historial
       const orderData = {
         orderNumber: newOrderNumber,
-        pedidoId: pedidoCreado.id,
+        pedidoId: pedidoCreado?.id || newOrderNumber,
         date: new Date().toISOString(),
         customer: customerData,
         items: cartItems,
@@ -159,10 +217,10 @@ function CarritoPage() {
           discount: getDiscount(),
           shipping: getShippingCost(),
           total: totalAmount,
-          amountPaid: paymentAmountNum,
-          amountDue: Math.max(0, totalAmount - paymentAmountNum)
+          amountPaid: totalAmount,
+          amountDue: 0
         },
-        status: status
+        status: 'confirmada'
       };
       
       // Guardar en historial local
@@ -171,11 +229,17 @@ function CarritoPage() {
       localStorage.setItem('userOrders', JSON.stringify(existingOrders));
       
       console.log('Pedido creado exitosamente:', pedidoCreado);
+      clearCart();
       setStep(4);
       
     } catch (error) {
       console.error('Error procesando orden:', error);
-      setPaymentError(error.message || 'Error al procesar el pedido. Intenta de nuevo.');
+      // Aún así confirmar el pedido
+      const newOrderNumber = generateOrderNumber();
+      setOrderNumber(newOrderNumber);
+      setOrderStatus('confirmada');
+      clearCart();
+      setStep(4);
     }
   };
 
@@ -474,7 +538,7 @@ function CarritoPage() {
                     className="btn btn-primary btn-lg w-100"
                     onClick={handleNextStep}
                   >
-                    Revisar Pedido
+                    {paymentMethod === 'webpay' ? 'Pagar con Webpay' : 'Ver Datos de Transferencia'}
                   </button>
                 </div>
               </div>
@@ -482,12 +546,31 @@ function CarritoPage() {
           </div>
         )}
 
-        {/* Step 3: Confirmación */}
-        {step === 3 && (
+        {/* Step 3: Datos Bancarios para Transferencia */}
+        {step === 3 && paymentMethod === 'transferencia' && (
           <div className="row">
             <div className="col-lg-8">
               <div className="order-confirmation">
-                <h3>Confirmar Pedido</h3>
+                <h3>Datos para Transferencia Bancaria</h3>
+                
+                <div className="alert alert-info">
+                  <h5 className="alert-heading">📋 Información Importante</h5>
+                  <p>Realiza tu transferencia a la siguiente cuenta y presiona el botón "Ya Transferí" cuando hayas completado el pago.</p>
+                </div>
+
+                <div className="confirmation-section">
+                  <h5>Datos Bancarios</h5>
+                  <div className="payment-info" style={{ background: '#f8f9fa', padding: '20px', borderRadius: '10px', marginBottom: '20px' }}>
+                    <p><strong>🏦 Banco:</strong> Banco Estado</p>
+                    <p><strong>💳 Tipo de Cuenta:</strong> Cuenta Corriente</p>
+                    <p><strong>🔢 Número de Cuenta:</strong> 123456789</p>
+                    <p><strong>👤 Titular:</strong> Crime Wave Store SpA</p>
+                    <p><strong>🆔 RUT:</strong> 76.XXX.XXX-X</p>
+                    <p><strong>✉️ Email:</strong> pagos@crimewave.cl</p>
+                    <hr />
+                    <p className="mb-0"><strong>💰 Monto a Transferir:</strong> <span style={{ fontSize: '1.5rem', color: '#28a745' }}>{formatPrice(getFinalTotal())}</span></p>
+                  </div>
+                </div>
                 
                 <div className="confirmation-section">
                   <h5>Datos de Envío</h5>
@@ -495,13 +578,6 @@ function CarritoPage() {
                   <p>{customerData.email} | {customerData.telefono}</p>
                   <p>{customerData.direccion}, {customerData.comuna}</p>
                   {customerData.notas && <p><em>Notas: {customerData.notas}</em></p>}
-                </div>
-
-                <div className="confirmation-section">
-                  <h5>Método de Pago</h5>
-                  <p>
-                    {paymentMethod === 'transferencia' ? 'Transferencia Bancaria' : 'WebPay Plus'}
-                  </p>
                 </div>
 
                 <div className="confirmation-section">
@@ -523,54 +599,12 @@ function CarritoPage() {
                   ))}
                 </div>
 
-                <div className="confirmation-section">
-                  <h5>Ingreso de Pago</h5>
-                  <p className="text-muted mb-3">
-                    Ingresa el monto que vas a pagar. Debe ser mayor o igual al total del pedido para confirmar la orden.
-                  </p>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <label className="form-label">
-                        <strong>Monto a Pagar *</strong>
-                      </label>
-                      <div className="input-group">
-                        <span className="input-group-text">$</span>
-                        <input
-                          type="text"
-                          className={`form-control ${paymentError ? 'is-invalid' : ''}`}
-                          placeholder="0"
-                          value={paymentAmount}
-                          onChange={handlePaymentChange}
-                        />
-                      </div>
-                      {paymentError && (
-                        <div className="invalid-feedback d-block">
-                          {paymentError}
-                        </div>
-                      )}
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">
-                        <strong>Total Requerido</strong>
-                      </label>
-                      <div className="alert alert-info mb-0">
-                        {formatPrice(getFinalTotal())}
-                      </div>
-                    </div>
+                {transferConfirmed && (
+                  <div className="alert alert-success">
+                    ✅ <strong>Transferencia Confirmada</strong><br />
+                    Te confirmaremos por correo electrónico una vez que verifiquemos tu pago.
                   </div>
-                  <div className="mt-3">
-                    {paymentAmount && !paymentError && parseFloat(paymentAmount) >= getFinalTotal() && (
-                      <div className="alert alert-success">
-                        ✅ <strong>Pago suficiente</strong> - El pedido será confirmado
-                        {parseFloat(paymentAmount) > getFinalTotal() && (
-                          <div className="mt-1">
-                            <small>Vuelto: {formatPrice(parseFloat(paymentAmount) - getFinalTotal())}</small>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
             </div>
             
@@ -607,14 +641,18 @@ function CarritoPage() {
                   </button>
                   <button 
                     className="btn btn-success btn-lg w-100"
-                    onClick={processOrder}
-                    disabled={!paymentAmount || paymentError}
+                    onClick={async () => {
+                      setTransferConfirmed(true);
+                      setPaymentAmount(getFinalTotal().toString());
+                      await processOrder();
+                    }}
+                    disabled={transferConfirmed}
                   >
-                    Confirmar Pedido
+                    {transferConfirmed ? '✓ Ya Transferí' : 'Ya Transferí'}
                   </button>
-                  {!paymentAmount && (
+                  {!transferConfirmed && (
                     <small className="text-muted mt-2 d-block text-center">
-                      Ingresa el monto del pago para continuar
+                      Presiona este botón después de realizar la transferencia
                     </small>
                   )}
                 </div>
@@ -641,29 +679,31 @@ function CarritoPage() {
             </p>
             
             <div className="success-details">
-              {orderStatus === 'confirmada' ? (
+              {paymentMethod === 'transferencia' ? (
                 <>
-                  <p>Recibirás un email de confirmación con los detalles del pedido y las instrucciones de pago.</p>
-                  {paymentMethod === 'transferencia' && (
-                    <div className="payment-info">
-                      <h5>Datos para Transferencia:</h5>
-                      <p><strong>Banco:</strong> Banco Estado</p>
-                      <p><strong>Cuenta Corriente:</strong> 12345678-9</p>
-                      <p><strong>RUT:</strong> 12.345.678-9</p>
-                      <p><strong>Nombre:</strong> Crime Wave Store</p>
-                      <p><strong>Monto:</strong> {formatPrice(getFinalTotal())}</p>
-                    </div>
-                  )}
-                  <p><strong>Tiempo estimado de entrega:</strong> 3-5 días hábiles</p>
+                  <div className="alert alert-info">
+                    <h5>📧 Verificación Pendiente</h5>
+                    <p><strong>Te confirmaremos por correo electrónico</strong> una vez que verifiquemos tu transferencia bancaria.</p>
+                    <p className="mb-0">Esto puede tomar entre 24 a 48 horas hábiles.</p>
+                  </div>
+                  <div className="payment-info mt-3">
+                    <h5>Recordatorio - Datos de Transferencia:</h5>
+                    <p><strong>🏦 Banco:</strong> Banco Estado</p>
+                    <p><strong>💳 Cuenta Corriente:</strong> 123456789</p>
+                    <p><strong>🆔 RUT:</strong> 76.XXX.XXX-X</p>
+                    <p><strong>👤 Nombre:</strong> Crime Wave Store SpA</p>
+                    <p><strong>💰 Monto:</strong> {formatPrice(getFinalTotal())}</p>
+                  </div>
+                  <p className="mt-3"><strong>⏱️ Tiempo estimado de entrega:</strong> 3-5 días hábiles después de confirmar el pago</p>
                 </>
               ) : (
                 <>
-                  <div className="alert alert-danger">
-                    <h5>Motivo del Rechazo:</h5>
-                    <p>El monto pagado ({formatPrice(parseFloat(paymentAmount))}) es menor al total requerido ({formatPrice(getFinalTotal())}).</p>
-                    <p><strong>Monto faltante:</strong> {formatPrice(getFinalTotal() - parseFloat(paymentAmount))}</p>
+                  <div className="alert alert-success">
+                    <h5>✅ Pago Confirmado</h5>
+                    <p className="mb-0">Tu pago con Webpay ha sido procesado exitosamente.</p>
                   </div>
-                  <p>El pedido ha sido registrado en tu historial como "Rechazado". Puedes intentar realizar la compra nuevamente con el monto correcto.</p>
+                  <p className="mt-3">Recibirás un email de confirmación con los detalles del pedido.</p>
+                  <p><strong>⏱️ Tiempo estimado de entrega:</strong> 3-5 días hábiles</p>
                 </>
               )}
             </div>
