@@ -85,6 +85,22 @@
   margin-bottom: 1rem;
 }
 
+/* Limitar altura de descripción en preview */
+.descripcion-preview {
+  max-height: 3em;
+  overflow: hidden;
+  line-height: 1.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.descripcion-preview * {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
 .size-selector-quick {
   background-color: #f8f9fa;
   border-radius: 8px;

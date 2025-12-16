@@ -6,6 +6,7 @@ import { productoService } from '../services/productoService.js';
 import { useCart } from '../context/CartContext';
 import { obtenerUrlImagen } from '../data/imagenes';
 import '../styles/single-style.css';
+import '../styles/rich-text-editor.css';
 
 
 function SingleProductPage() {
@@ -259,16 +260,23 @@ function SingleProductPage() {
               </h2>
               <div id="collapseDescription" className="accordion-collapse collapse show" aria-labelledby="headingDescription" data-bs-parent="#productAccordion">
                 <div className="accordion-body">
-                  <p>{product.descripcion}</p>
-                  {(product.categorias?.some(cat => 
-                    cat.nombre && (
-                      cat.nombre.toLowerCase().includes('cuadro') || 
-                      cat.nombre.toUpperCase() === 'CUADRO'
-                    )
-                  ) || product.nombre?.toLowerCase().includes('cuadro')) ? (
-                    <p>Este cuadro ha sido cuidadosamente elaborado con materiales de alta calidad. Perfecto para decorar cualquier espacio, ya sea tu hogar, oficina o estudio. Los colores son vibrantes y duraderos, y el acabado profesional garantiza una presentación impecable que realzará cualquier ambiente.</p>
+                  {/* Renderizar HTML si la descripción contiene etiquetas HTML */}
+                  {product.descripcion && product.descripcion.includes('<') ? (
+                    <div className="product-description-html" dangerouslySetInnerHTML={{ __html: product.descripcion }} />
                   ) : (
-                    <p>Esta camiseta ha sido diseñada pensando en la comodidad y la durabilidad. El corte es moderno y se ajusta perfectamente al cuerpo sin ser demasiado apretado. El estampado utiliza una técnica de serigrafía de alta calidad para garantizar que los colores se mantengan vivos lavado tras lavado.</p>
+                    <>
+                      <p>{product.descripcion || 'Sin descripción disponible'}</p>
+                      {(product.categorias?.some(cat => 
+                        cat.nombre && (
+                          cat.nombre.toLowerCase().includes('cuadro') || 
+                          cat.nombre.toUpperCase() === 'CUADRO'
+                        )
+                      ) || product.nombre?.toLowerCase().includes('cuadro')) ? (
+                        <p>Este cuadro ha sido cuidadosamente elaborado con materiales de alta calidad. Perfecto para decorar cualquier espacio, ya sea tu hogar, oficina o estudio. Los colores son vibrantes y duraderos, y el acabado profesional garantiza una presentación impecable que realzará cualquier ambiente.</p>
+                      ) : (
+                        <p>Esta camiseta ha sido diseñada pensando en la comodidad y la durabilidad. El corte es moderno y se ajusta perfectamente al cuerpo sin ser demasiado apretado. El estampado utiliza una técnica de serigrafía de alta calidad para garantizar que los colores se mantengan vivos lavado tras lavado.</p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

@@ -44,12 +44,26 @@ async function fetchAPI(endpoint, options = {}) {
 export const productoService = {
   // GET /api/productos - Obtener todos los productos
   obtenerTodos: async () => {
-    return await fetchAPI('');
+    const productos = await fetchAPI('');
+    // Agregar imágenes locales desde localStorage
+    return productos.map(producto => {
+      const imagenLocal = localStorage.getItem(`producto_${producto.id}_imagen`);
+      if (imagenLocal && !producto.imagenUrl) {
+        return { ...producto, imagenUrl: imagenLocal };
+      }
+      return producto;
+    });
   },
 
   // GET /api/productos/{id} - Obtener producto por ID
   obtenerPorId: async (id) => {
-    return await fetchAPI(`/${id}`);
+    const producto = await fetchAPI(`/${id}`);
+    // Agregar imagen local desde localStorage si no tiene URL
+    const imagenLocal = localStorage.getItem(`producto_${id}_imagen`);
+    if (imagenLocal && !producto.imagenUrl) {
+      return { ...producto, imagenUrl: imagenLocal };
+    }
+    return producto;
   },
 
   // GET /api/productos/buscar?nombre={nombre} - Buscar productos por nombre
@@ -59,7 +73,15 @@ export const productoService = {
 
   // GET /api/productos/categoria/{categoriaId} - Productos por categoría
   obtenerPorCategoria: async (categoriaId) => {
-    return await fetchAPI(`/categoria/${categoriaId}`);
+    const productos = await fetchAPI(`/categoria/${categoriaId}`);
+    // Agregar imágenes locales desde localStorage
+    return productos.map(producto => {
+      const imagenLocal = localStorage.getItem(`producto_${producto.id}_imagen`);
+      if (imagenLocal && !producto.imagenUrl) {
+        return { ...producto, imagenUrl: imagenLocal };
+      }
+      return producto;
+    });
   },
 
   // POST /api/productos - Crear nuevo producto

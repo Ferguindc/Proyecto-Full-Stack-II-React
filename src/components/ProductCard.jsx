@@ -87,7 +87,18 @@ function ProductCard({ producto }) {
         <div className="card-body d-flex flex-column">
           <Link to={`/producto/${producto.id}`} className="text-decoration-none text-dark">
             <h5 className="card-title">{producto.nombre}</h5>
-            <p className="card-text text-muted small">{producto.descripcion}</p>
+            {producto.descripcion && producto.descripcion.includes('<') ? (
+              <div 
+                className="card-text text-muted small descripcion-preview"
+                dangerouslySetInnerHTML={{ 
+                  __html: producto.descripcion.substring(0, 100).replace(/<[^>]*>/g, ' ').trim() + '...' 
+                }}
+              />
+            ) : (
+              <p className="card-text text-muted small">
+                {producto.descripcion ? producto.descripcion.substring(0, 100) + '...' : ''}
+              </p>
+            )}
             <p className="card-price fw-bold text-primary">
               {formatPrice(producto.precio)}
             </p>

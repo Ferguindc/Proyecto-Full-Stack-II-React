@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Pedido - Crime Wave</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success {
+            background: #28a745;
+        }
+        .danger {
+            background: #dc3545;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Pedido - Crime Wave</h1>
+        <p>Esta herramienta te ayudará a crear un pedido de prueba con todos los datos completos.</p>
+        
+        <div class="info">
+            <strong>📌 Instrucciones:</strong>
+            <ol>
+                <li>Haz clic en "Crear Pedido de Prueba"</li>
+                <li>Ve al panel de administración</li>
+                <li>Recarga la página del admin</li>
+                <li>Verifica que los datos aparezcan correctamente</li>
+            </ol>
+        </div>
+
+        <button onclick="crearPedidoPrueba()">Crear Pedido de Prueba</button>
+        <button class="success" onclick="verPedidos()">Ver Pedidos Guardados</button>
+        <button class="danger" onclick="limpiarPedidos()">Limpiar Todos los Pedidos</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function crearPedidoPrueba() {
+            const pedidoPrueba = {
+                id: Date.now(),
+                usuarioId: 1,
+                usuario: {
+                    id: 1,
+                    nombre: "Juan Pérez",
+                    email: "juan.perez@example.com",
+                    telefono: "+56912345678"
+                },
+                estado: "PENDIENTE",
+                total: 15000,
+                
+                // Información de cliente
+                nombreCliente: "Juan Pérez",
+                emailCliente: "juan.perez@example.com",
+                telefonoCliente: "+56912345678",
+                
+                // Información de envío
+                direccion: "Av. Providencia 1234, Depto 501",
+                direccionEnvio: "Av. Providencia 1234, Depto 501",
+                ciudad: "Santiago",
+                ciudadEnvio: "Santiago",
+                comuna: "Providencia",
+                comunaEnvio: "Providencia",
+                codigoPostal: "7500000",
+                codigoPostalEnvio: "7500000",
+                notas: "Dejar en conserjería si no hay nadie. Timbre 501.",
+                notasEnvio: "Dejar en conserjería si no hay nadie. Timbre 501.",
+                
+                // Método de pago
+                metodoPago: "transferencia",
+                tipoPago: "transferencia",
+                
+                // Fechas
+                fechaCreacion: new Date().toISOString(),
+                fechaPedido: new Date().toISOString(),
+                fecha: new Date().toISOString(),
+                numeroOrden: `ORD-${Date.now()}`,
+                
+                // Detalles de productos
+                detalles: [
+                    {
+                        producto: {
+                            id: 1,
+                            nombre: "Polera Negra",
+                            imagenUrl: "https://via.placeholder.com/100"
+                        },
+                        cantidad: 2,
+                        precioUnitario: 5000,
+                        talla: "M"
+                    },
+                    {
+                        producto: {
+                            id: 2,
+                            nombre: "Polerón Gris",
+                            imagenUrl: "https://via.placeholder.com/100"
+                        },
+                        cantidad: 1,
+                        precioUnitario: 5000,
+                        talla: "L"
+                    }
+                ]
+            };
+
+            // Obtener pedidos existentes
+            const pedidosExistentes = JSON.parse(localStorage.getItem('pedidos_dev') || '[]');
+            
+            // Agregar el nuevo pedido
+            pedidosExistentes.push(pedidoPrueba);
+            
+            // Guardar en localStorage
+            localStorage.setItem('pedidos_dev', JSON.stringify(pedidosExistentes));
+            
+            // Mostrar resultado
+            document.getElementById('resultado').innerHTML = `
+                <div style="margin-top: 20px; padding: 20px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px;">
+                    <h3 style="color: #155724;">✅ Pedido Creado Exitosamente</h3>
+                    <p><strong>ID:</strong> ${pedidoPrueba.id}</p>
+                    <p><strong>Cliente:</strong> ${pedidoPrueba.nombreCliente}</p>
+                    <p><strong>Dirección:</strong> ${pedidoPrueba.direccion}</p>
+                    <p><strong>Comuna:</strong> ${pedidoPrueba.comuna}, ${pedidoPrueba.ciudad}</p>
+                    <p><strong>Total:</strong> $${pedidoPrueba.total.toLocaleString()}</p>
+                    <p><strong>Total de pedidos:</strong> ${pedidosExistentes.length}</p>
+                    <hr>
+                    <p style="color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px;">
+                        ⚠️ Ahora ve al <strong>Panel de Administración</strong> y recarga la página para ver este pedido.
+                    </p>
+                </div>
+            `;
+            
+            console.log('✅ Pedido de prueba creado:', pedidoPrueba);
+        }
+
+        function verPedidos() {
+            const pedidos = JSON.parse(localStorage.getItem('pedidos_dev') || '[]');
+            
+            if (pedidos.length === 0) {
+                document.getElementById('resultado').innerHTML = `
+                    <div style="margin-top: 20px; padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
+                        <p>⚠️ No hay pedidos guardados</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div style="margin-top: 20px;">
+                    <h3>📦 Pedidos Guardados (${pedidos.length})</h3>
+            `;
+
+            pedidos.forEach((pedido, index) => {
+                html += `
+                    <div style="background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007bff;">
+                        <p><strong>Pedido #${index + 1}</strong> (ID: ${pedido.id})</p>
+                        <p>Cliente: ${pedido.nombreCliente || pedido.usuario?.nombre || 'No especificado'}</p>
+                        <p>Dirección: ${pedido.direccion || 'No especificada'}</p>
+                        <p>Comuna: ${pedido.comuna || 'No especificada'}</p>
+                        <p>Total: $${(pedido.total || 0).toLocaleString()}</p>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('resultado').innerHTML = html;
+            console.log('📦 Todos los pedidos:', pedidos);
+        }
+
+        function limpiarPedidos() {
+            if (confirm('¿Estás seguro de que quieres eliminar TODOS los pedidos?')) {
+                localStorage.removeItem('pedidos_dev');
+                document.getElementById('resultado').innerHTML = `
+                    <div style="margin-top: 20px; padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px;">
+                        <p style="color: #721c24;">🗑️ Todos los pedidos han sido eliminados</p>
+                    </div>
+                `;
+                console.log('🗑️ Pedidos eliminados');
+            }
+        }
+
+        // Mostrar info al cargar
+        window.onload = function() {
+            const pedidos = JSON.parse(localStorage.getItem('pedidos_dev') || '[]');
+            console.log(`📊 Hay ${pedidos.length} pedido(s) guardado(s)`);
+        };
+    </script>
+</body>
+</html>

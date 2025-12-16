@@ -148,20 +148,38 @@ export function CartProvider({ children }) {
       
       console.log('🆔 ID de usuario determinado:', usuarioId);
       
+      console.log('🔍 DEBUG - Datos de envío recibidos:', datosEnvio);
+      console.log('🔍 DEBUG - Usuario actual:', currentUser);
+      console.log('🔍 DEBUG - Método de pago:', metodoPago);
+      
       const pedidoData = {
         usuarioId: usuarioId,
         usuario: {
-          id: usuarioId
+          id: usuarioId,
+          nombre: datosEnvio.nombre || currentUser.nombre || 'Cliente',
+          email: datosEnvio.email || currentUser.email || 'No especificado',
+          telefono: datosEnvio.telefono || currentUser.telefono || 'No especificado'
         },
         estado: "PENDIENTE",
         total: getFinalTotal(),
+        // Información de cliente
+        nombreCliente: datosEnvio.nombre || currentUser.nombre || 'Cliente',
+        emailCliente: datosEnvio.email || currentUser.email || 'No especificado',
+        telefonoCliente: datosEnvio.telefono || currentUser.telefono || 'No especificado',
         // Información de envío
         direccion: datosEnvio.direccion || 'No especificada',
+        direccionEnvio: datosEnvio.direccion || 'No especificada',
         ciudad: datosEnvio.ciudad || 'No especificada',
+        ciudadEnvio: datosEnvio.ciudad || 'No especificada',
         comuna: datosEnvio.comuna || 'No especificada',
+        comunaEnvio: datosEnvio.comuna || 'No especificada',
+        codigoPostal: datosEnvio.codigoPostal || '',
+        codigoPostalEnvio: datosEnvio.codigoPostal || '',
         notas: datosEnvio.notas || '',
+        notasEnvio: datosEnvio.notas || '',
         // Método de pago
         metodoPago: metodoPago,
+        tipoPago: metodoPago,
         // Detalles con talla incluida
         detalles: cartItems.map(item => ({
           producto: {
@@ -174,6 +192,9 @@ export function CartProvider({ children }) {
       };
 
       console.log('📦 Creando pedido completo:', pedidoData);
+      console.log('📍 Dirección que se está enviando:', pedidoData.direccion);
+      console.log('🏙️ Ciudad que se está enviando:', pedidoData.ciudad);
+      console.log('🏘️ Comuna que se está enviando:', pedidoData.comuna);
       
       const pedidoCreado = await pedidoService.crear(pedidoData);
       

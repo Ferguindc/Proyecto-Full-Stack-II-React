@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { productoService } from '../services/productoService.js';
 import { categoriaService } from '../services/categoriaService.js';
+import { CKEditor } from 'ckeditor4-react';
+import '../styles/rich-text-editor.css';
 
 
 function FormularioAddProductoPage() {
@@ -25,6 +27,60 @@ function FormularioAddProductoPage() {
   const [loading, setLoading] = useState(false);
   const [categoriasLoading, setCategoriasLoading] = useState(true);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
+  const [modoRichText, setModoRichText] = useState(false);
+  const textareaRef = useRef(null);
+  const [imagenArchivo, setImagenArchivo] = useState(null);
+
+  // Medidas predefinidas para cuadros
+  const medidasPredefinidas = [
+    '20x25 cm',
+    '30x40 cm',
+    '40x50 cm',
+    '50x60 cm',
+    '50x70 cm',
+    '60x80 cm',
+    '70x100 cm',
+    '80x120 cm',
+    '100x150 cm'
+  ];
+
+  // Función para convertir imagen a base64
+  const convertirImagenABase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Manejar selección de archivo de imagen
+  const handleImagenArchivoChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar que sea una imagen
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido');
+        return;
+      }
+      
+      // Validar tamaño (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen es muy grande. Máximo 5MB');
+        return;
+      }
+
+      try {
+        const base64 = await convertirImagenABase64(file);
+        setImagenArchivo(file);
+        setFormData(prev => ({ ...prev, imagenUrl: base64 }));
+        setPreviewUrl(base64);
+      } catch (error) {
+        console.error('Error al convertir imagen:', error);
+        alert('Error al procesar la imagen');
+      }
+    }
+  };
 
   // Cargar categorías al iniciar
   useEffect(() => {
@@ -169,22 +225,30 @@ function FormularioAddProductoPage() {
 
       // Preparar datos del producto
       let imagenUrl = formData.imagenUrl;
+      let imagenBase64 = null;
+      
+      // Detectar si es una imagen base64 (local) o URL
+      const esImagenLocal = imagenUrl && imagenUrl.startsWith('data:image');
+      
+      if (esImagenLocal) {
+        // Guardar la imagen base64 para localStorage
+        imagenBase64 = imagenUrl;
+        // NO enviar la imagen a la API
+        imagenUrl = null;
+      }
       
       const producto = {
         nombre: formData.nombre,
         precio: parseFloat(formData.precio),
         descripcion: formData.descripcion,
         stock: parseInt(formData.stock) || 0,
-        imagenUrl: imagenUrl || null
+        imagenUrl: imagenUrl || null // Solo URLs, no base64
         // Nota: Los campos del creador se manejan en localStorage después de la creación
       };
 
       console.log('Creando producto:', producto);
+      console.log('Imagen local (base64):', esImagenLocal);
       console.log('Usuario actual:', currentUser);
-      console.log('Datos del creador:', {
-        creadoPor: producto.creadoPor,
-        creadorNombre: producto.creadorNombre
-      });
 
       // 1. Crear el producto primero
       const productoCreado = await productoService.crear(producto);
@@ -202,6 +266,12 @@ function FormularioAddProductoPage() {
       if (productoCreado?.id) {
         localStorage.setItem(`producto_${productoCreado.id}_creador`, JSON.stringify(creadorInfo));
         console.log('✅ Información del creador guardada en localStorage');
+        
+        // Guardar imagen local (base64) en localStorage si existe
+        if (imagenBase64) {
+          localStorage.setItem(`producto_${productoCreado.id}_imagen`, imagenBase64);
+          console.log('✅ Imagen local guardada en localStorage');
+        }
       }
 
       // 2. Asignar categorías al producto
@@ -542,19 +612,74 @@ function FormularioAddProductoPage() {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">
-                    <i className="bi bi-card-text me-2"></i>
-                    Descripción *
-                  </label>
-                  <textarea
-                    className="form-control"
-                    name="descripcion"
-                    value={formData.descripcion}
-                    onChange={handleInputChange}
-                    required
-                    rows="3"
-                    placeholder="Describe el producto, sus características, materiales, etc."
-                  />
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <label className="form-label mb-0">
+                      <i className="bi bi-card-text me-2"></i>
+                      Descripción *
+                    </label>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => setModoRichText(!modoRichText)}
+                    >
+                      <i className={`bi bi-${modoRichText ? 'code-slash' : 'type-bold'} me-1`}></i>
+                      {modoRichText ? 'Modo Simple' : 'Editor Rico'}
+                    </button>
+                  </div>
+                  
+                  {modoRichText ? (
+                    <div className="border rounded p-2">
+                      <CKEditor
+                        key="ckeditor-add"
+                        initData={formData.descripcion || '<p>Escribe la descripción del producto aquí...</p>'}
+                        editorUrl="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"
+                        onInstanceReady={(editor) => {
+                          console.log('CKEditor listo', editor);
+                        }}
+                        onChange={(evt) => {
+                          const data = evt.editor.getData();
+                          setFormData(prev => ({ ...prev, descripcion: data }));
+                        }}
+                        config={{
+                          toolbar: [
+                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                            { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                            { name: 'styles', items: ['Format'] },
+                            { name: 'insert', items: ['Image'] },
+                            { name: 'links', items: ['Link', 'Unlink'] },
+                            { name: 'tools', items: ['RemoveFormat'] }
+                          ],
+                          height: 300,
+                          format_tags: 'p;h2;h3',
+                          removePlugins: 'elementspath',
+                          resize_enabled: false,
+                          filebrowserImageBrowseUrl: '',
+                          filebrowserUploadUrl: '',
+                          extraPlugins: 'uploadimage,clipboard',
+                          uploadUrl: '',
+                          imageUploadUrl: '',
+                          pasteFromWordRemoveStyles: false,
+                          pasteFromWordRemoveFontStyles: false,
+                          forcePasteAsPlainText: false,
+                          allowedContent: true
+                        }}
+                      />
+                      <small className="text-muted d-block mt-2">
+                        <i className="bi bi-info-circle me-1"></i>
+                        Usa la barra de herramientas para dar formato al texto
+                      </small>
+                    </div>
+                  ) : (
+                    <textarea
+                      className="form-control"
+                      name="descripcion"
+                      value={formData.descripcion}
+                      onChange={handleInputChange}
+                      required
+                      rows="3"
+                      placeholder="Describe el producto, sus características, materiales, etc."
+                    />
+                  )}
                 </div>
 
                 {/* Tallas o Medidas según el tipo de producto */}
@@ -633,13 +758,15 @@ function FormularioAddProductoPage() {
                         <div key={index} className="row align-items-center mb-2">
                           <div className="col-md-4">
                             <label className="form-label small">Medida</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Ej: 30x40 cm"
+                            <select
+                              className="form-select"
                               value={medida.medida}
                               onChange={(e) => handleMedidaChange(index, 'medida', e.target.value)}
-                            />
+                            >
+                              {medidasPredefinidas.map(med => (
+                                <option key={med} value={med}>{med}</option>
+                              ))}
+                            </select>
                           </div>
                           <div className="col-md-4">
                             <label className="form-label small">Cantidad</label>
@@ -682,40 +809,73 @@ function FormularioAddProductoPage() {
                 )}
 
                 <div className="mb-4">
-                  <label className="form-label">
-                    <i className="bi bi-image me-2"></i>
-                    Imagen del Producto (URL)
+                  <label className="form-label fw-semibold">
+                    <i className="bi bi-image me-2 text-info"></i>
+                    Imagen del Producto
                   </label>
-                  <input
-                    type="url"
-                    className="form-control"
-                    name="imagenUrl"
-                    value={formData.imagenUrl || ''}
-                    onChange={handleImageUrlChange}
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                  />
-                  <div className="form-text">
-                    Ingresa la URL de la imagen del producto
+                  
+                  {/* Opción 1: Subir archivo */}
+                  <div className="mb-3">
+                    <label className="form-label small">Subir imagen desde tu computadora:</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/*"
+                      onChange={handleImagenArchivoChange}
+                    />
+                    <div className="form-text">
+                      Formatos: JPG, PNG, GIF, WEBP (Máximo 5MB)
+                    </div>
+                  </div>
+
+                  {/* Opción 2: URL */}
+                  <div className="mb-3">
+                    <label className="form-label small">O ingresa una URL:</label>
+                    <input
+                      type="url"
+                      className="form-control"
+                      name="imagenUrl"
+                      value={imagenArchivo ? '' : (formData.imagenUrl || '')}
+                      onChange={handleImageUrlChange}
+                      placeholder="https://ejemplo.com/imagen.jpg"
+                      disabled={!!imagenArchivo}
+                    />
+                    {imagenArchivo && (
+                      <button 
+                        type="button" 
+                        className="btn btn-sm btn-outline-secondary mt-2"
+                        onClick={() => {
+                          setImagenArchivo(null);
+                          setFormData(prev => ({ ...prev, imagenUrl: '' }));
+                          setPreviewUrl(null);
+                        }}
+                      >
+                        <i className="bi bi-x-circle me-1"></i>
+                        Quitar imagen y usar URL
+                      </button>
+                    )}
                   </div>
 
                   {/* Vista previa de imagen */}
                   {previewUrl && (
                     <div className="mt-3">
                       <label className="form-label">Vista Previa:</label>
-                      <div className="image-preview">
+                      <div className="image-preview border rounded p-2 bg-light">
                         <img 
                           src={previewUrl} 
                           alt="Preview" 
                           className="img-thumbnail"
-                          style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }} 
+                          style={{ maxWidth: '300px', maxHeight: '300px', objectFit: 'contain' }} 
                         />
+                        {imagenArchivo && (
+                          <div className="mt-2 small text-muted">
+                            <i className="bi bi-check-circle text-success me-1"></i>
+                            Archivo: {imagenArchivo.name} ({(imagenArchivo.size / 1024).toFixed(1)} KB)
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
-                  
-                  <div className="form-text">
-                    Selecciona una imagen del proyecto o sube tu propia imagen. Las imágenes locales cargan más rápido.
-                  </div>
                 </div>
 
                 {/* Sección de categorías */}

@@ -50,6 +50,21 @@ export default function AdminPage() {
       console.log('📊 Datos de admin cargados:', estadisticasData);
       console.log('🛒 Pedidos recibidos:', estadisticasData.pedidos);
       
+      // Log detallado de cada pedido
+      if (estadisticasData.pedidos && estadisticasData.pedidos.length > 0) {
+        estadisticasData.pedidos.forEach((pedido, index) => {
+          console.log(`📦 Pedido #${index + 1}:`, {
+            id: pedido.id,
+            direccion: pedido.direccion,
+            ciudad: pedido.ciudad,
+            comuna: pedido.comuna,
+            nombreCliente: pedido.nombreCliente,
+            emailCliente: pedido.emailCliente,
+            telefonoCliente: pedido.telefonoCliente
+          });
+        });
+      }
+      
       setEstadisticas(estadisticasData);
       setProductos(estadisticasData.productos);
       setCategorias(estadisticasData.categorias);
@@ -527,18 +542,21 @@ export default function AdminPage() {
                           </td>
                           <td className="align-middle">
                             <div>
-                              <strong>{pedido.usuario?.nombre || pedido.nombreCliente || 'Cliente'}</strong>
+                              <strong className="text-white">{pedido.usuario?.nombre || pedido.nombreCliente || 'Cliente'}</strong>
                             </div>
-                            <small className="text-muted">{pedido.usuario?.email || pedido.emailCliente || 'No especificado'}</small>
+                            <small className="text-light">{pedido.usuario?.email || pedido.emailCliente || 'No especificado'}</small>
                             <br />
-                            <small className="text-muted">
+                            <small className="text-light">
                               <i className="bi bi-telephone me-1"></i>
                               {pedido.usuario?.telefono || pedido.telefonoCliente || 'N/A'}
                             </small>
                           </td>
                           <td className="align-middle">
-                            <div><strong>{pedido.direccion || pedido.direccionEnvio || 'No especificada'}</strong></div>
-                            <small className="text-muted">{pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}</small>
+                            <div><strong className="text-white">{pedido.direccion || pedido.direccionEnvio || 'No especificada'}</strong></div>
+                            <small className="text-light">
+                              {pedido.comuna || pedido.comunaEnvio || ''}{(pedido.comuna || pedido.comunaEnvio) && ', '}
+                              {pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}
+                            </small>
                             {(pedido.notas || pedido.notasEnvio) && (
                               <>
                                 <br />
@@ -550,16 +568,16 @@ export default function AdminPage() {
                             )}
                           </td>
                           <td className="align-middle">
-                            <small>{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleDateString('es-CL')}</small>
+                            <small className="text-light">{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleDateString('es-CL')}</small>
                             <br />
-                            <small className="text-muted">{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleTimeString('es-CL')}</small>
+                            <small className="text-light">{new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleTimeString('es-CL')}</small>
                           </td>
                           <td className="align-middle">
                             <strong className="text-success fs-5">
                               {formatPrice(pedido.total)}
                             </strong>
                             <br />
-                            <small className="text-muted">
+                            <small className="text-light">
                               <i className="bi bi-credit-card me-1"></i>
                               {pedido.metodoPago || pedido.tipoPago || 'No especificado'}
                             </small>
@@ -626,29 +644,51 @@ export default function AdminPage() {
                               <div className="p-3">
                                 {/* Información adicional del pedido */}
                                 <div className="row mb-3">
-                                  <div className="col-md-6">
-                                    <div className="card bg-dark">
+                                  <div className="col-md-4">
+                                    <div className="card" style={{backgroundColor: '#2d3748', border: '1px solid #4a5568'}}>
+                                      <div className="card-body">
+                                        <h6 className="text-warning">
+                                          <i className="bi bi-person-circle me-2"></i>
+                                          Datos del Cliente
+                                        </h6>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Nombre:</strong> {pedido.usuario?.nombre || pedido.nombreCliente || 'No especificado'}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Email:</strong> {pedido.usuario?.email || pedido.emailCliente || 'No especificado'}</p>
+                                        <p className="mb-0 small text-light"><strong className="text-white">Teléfono:</strong> {pedido.usuario?.telefono || pedido.telefonoCliente || 'No especificado'}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="card" style={{backgroundColor: '#2d3748', border: '1px solid #4a5568'}}>
                                       <div className="card-body">
                                         <h6 className="text-primary">
                                           <i className="bi bi-truck me-2"></i>
                                           Información de Envío
                                         </h6>
-                                        <p className="mb-1 small"><strong>Dirección:</strong> {pedido.direccion || pedido.direccionEnvio || 'No especificada'}</p>
-                                        <p className="mb-1 small"><strong>Ciudad:</strong> {pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}</p>
-                                        <p className="mb-0 small"><strong>Comuna:</strong> {pedido.comuna || pedido.comunaEnvio || 'No especificada'}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Dirección:</strong> {pedido.direccion || pedido.direccionEnvio || 'No especificada'}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Comuna:</strong> {pedido.comuna || pedido.comunaEnvio || 'No especificada'}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Ciudad:</strong> {pedido.ciudad || pedido.ciudadEnvio || 'No especificada'}</p>
+                                        {(pedido.codigoPostal || pedido.codigoPostalEnvio) && (
+                                          <p className="mb-0 small text-light"><strong className="text-white">Código Postal:</strong> {pedido.codigoPostal || pedido.codigoPostalEnvio}</p>
+                                        )}
+                                        {(pedido.notas || pedido.notasEnvio) && (
+                                          <div className="mt-2 pt-2 border-top border-secondary">
+                                            <p className="mb-0 small text-light"><strong className="text-white">Notas:</strong></p>
+                                            <p className="mb-0 small text-info fst-italic">{pedido.notas || pedido.notasEnvio}</p>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="col-md-6">
-                                    <div className="card bg-dark">
+                                  <div className="col-md-4">
+                                    <div className="card" style={{backgroundColor: '#2d3748', border: '1px solid #4a5568'}}>
                                       <div className="card-body">
                                         <h6 className="text-success">
                                           <i className="bi bi-credit-card me-2"></i>
                                           Información de Pago
                                         </h6>
-                                        <p className="mb-1 small"><strong>Método:</strong> {pedido.metodoPago || pedido.tipoPago || 'No especificado'}</p>
-                                        <p className="mb-1 small"><strong>Total:</strong> <span className="text-success">{formatPrice(pedido.total)}</span></p>
-                                        <p className="mb-0 small"><strong>Fecha:</strong> {new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleString('es-CL')}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Método:</strong> {pedido.metodoPago || pedido.tipoPago || 'No especificado'}</p>
+                                        <p className="mb-1 small text-light"><strong className="text-white">Total:</strong> <span className="text-success">{formatPrice(pedido.total)}</span></p>
+                                        <p className="mb-0 small text-light"><strong className="text-white">Fecha:</strong> {new Date(pedido.fecha || pedido.fechaCreacion || pedido.fechaPedido).toLocaleString('es-CL')}</p>
                                       </div>
                                     </div>
                                   </div>

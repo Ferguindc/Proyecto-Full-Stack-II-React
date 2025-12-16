@@ -57,6 +57,11 @@ export const obtenerUrlImagen = (nombreImagen) => {
     return '/src/assets/img/Sin título-1.png';
   }
   
+  // Si es una imagen base64 (local subida), devolverla directamente
+  if (nombreImagen.startsWith('data:image')) {
+    return nombreImagen;
+  }
+  
   // Si ya es una URL completa (http/https)
   if (nombreImagen.startsWith('http')) {
     return nombreImagen;

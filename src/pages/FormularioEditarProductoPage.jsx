@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { productoService } from '../services/productoService.js';
 import { categoriaService } from '../services/categoriaService.js';
+import { CKEditor } from 'ckeditor4-react';
+import '../styles/rich-text-editor.css';
 
 function FormularioEditarProductoPage() {
   const navigate = useNavigate();
@@ -25,6 +27,21 @@ function FormularioEditarProductoPage() {
   const [loadingData, setLoadingData] = useState(true);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
   const [producto, setProducto] = useState(null);
+  const [modoRichText, setModoRichText] = useState(false);
+  const textareaRef = useRef(null);
+
+  // Medidas predefinidas para cuadros
+  const medidasPredefinidas = [
+    '20x25 cm',
+    '30x40 cm',
+    '40x50 cm',
+    '50x60 cm',
+    '50x70 cm',
+    '60x80 cm',
+    '70x100 cm',
+    '80x120 cm',
+    '100x150 cm'
+  ];
 
   // Función helper para obtener información del creador/editor desde localStorage
   const obtenerInfoCreadorEditor = (productoId) => {
@@ -182,8 +199,79 @@ function FormularioEditarProductoPage() {
     }
   };
 
-  const handleImagenChange = (e) => {
-    setImagenArchivo(e.target.files[0]);
+  // Función para insertar HTML en el textarea
+  const insertarHTML = (tipo) => {
+    if (!textareaRef.current) return;
+
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart || 0;
+    const end = textarea.selectionEnd || 0;
+    const textoActual = formData.descripcion || '';
+    const textoSeleccionado = textoActual.substring(start, end);
+    const textoAntes = textoActual.substring(0, start);
+    const textoDespues = textoActual.substring(end);
+    
+    let nuevoHTML = '';
+
+    switch(tipo) {
+      case 'titulo':
+        nuevoHTML = textoSeleccionado ? `<h2>${textoSeleccionado}</h2>` : '<h2>Título aquí</h2>';
+        break;
+      case 'parrafo':
+        nuevoHTML = textoSeleccionado ? `<p>${textoSeleccionado}</p>` : '<p>Texto del párrafo</p>';
+        break;
+      case 'negrita':
+        nuevoHTML = textoSeleccionado ? `<strong>${textoSeleccionado}</strong>` : '<strong>texto en negrita</strong>';
+        break;
+      case 'lista':
+        nuevoHTML = '<ul>\n  <li>Punto 1</li>\n  <li>Punto 2</li>\n  <li>Punto 3</li>\n</ul>';
+        break;
+      case 'enlace':
+        const url = prompt('Ingresa la URL:');
+        if (!url) return;
+        nuevoHTML = textoSeleccionado ? `<a href="${url}">${textoSeleccionado}</a>` : `<a href="${url}">texto del enlace</a>`;
+        break;
+      default:
+        return;
+    }
+
+    const nuevoTexto = textoAntes + nuevoHTML + textoDespues;
+    setFormData(prev => ({ ...prev, descripcion: nuevoTexto }));
+    
+    setTimeout(() => {
+      textarea.focus();
+      const newPos = start + nuevoHTML.length;
+      textarea.setSelectionRange(newPos, newPos);
+    }, 10);
+  };
+
+  const handleImagenChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar que sea una imagen
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido');
+        return;
+      }
+      
+      // Validar tamaño (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen es muy grande. Máximo 5MB');
+        return;
+      }
+
+      try {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImagenArchivo(file);
+          setFormData(prev => ({ ...prev, imagenUrl: reader.result }));
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Error al procesar imagen:', error);
+        alert('Error al procesar la imagen');
+      }
+    }
   };
 
   const editarProducto = (id, datosActualizados) => {
@@ -236,21 +324,29 @@ function FormularioEditarProductoPage() {
 
       console.log('📝 Actualizando producto ID:', id);
 
+      // Detectar si es una imagen base64 (local) o URL
+      let imagenBase64 = null;
+      let imagenUrlParaAPI = formData.imagenUrl;
+      const esImagenLocal = formData.imagenUrl && formData.imagenUrl.startsWith('data:image');
+      
+      if (esImagenLocal) {
+        // Guardar la imagen base64 para localStorage
+        imagenBase64 = formData.imagenUrl;
+        // NO enviar la imagen a la API
+        imagenUrlParaAPI = null;
+      }
+
       const datosActualizados = {
         nombre: formData.nombre,
         precio: parseFloat(formData.precio),
         descripcion: formData.descripcion,
         stock: formData.stock ? parseInt(formData.stock) : 0,
-        imagenUrl: formData.imagenUrl || null
+        imagenUrl: imagenUrlParaAPI || null
         // Nota: Los campos del creador/editor se manejan en localStorage
       };
 
       console.log('📝 Datos a actualizar:', datosActualizados);
-      console.log('📝 Usuario actual:', currentUser);
-      console.log('📝 Datos del editor:', {
-        editadoPor: datosActualizados.editadoPor,
-        editorNombre: datosActualizados.editorNombre
-      });
+      console.log('📝 Imagen local (base64):', esImagenLocal);
 
       // Actualizar el producto usando la API
       const productoActualizado = await productoService.actualizar(id, datosActualizados);
@@ -278,6 +374,12 @@ function FormularioEditarProductoPage() {
       const infoCompleta = { ...infoProducto, ...editorInfo };
       localStorage.setItem(`producto_${id}_creador`, JSON.stringify(infoCompleta));
       console.log('✅ Información del editor actualizada en localStorage');
+      
+      // Guardar imagen local (base64) en localStorage si existe
+      if (imagenBase64) {
+        localStorage.setItem(`producto_${id}_imagen`, imagenBase64);
+        console.log('✅ Imagen local actualizada en localStorage');
+      }
 
       setMensaje({ tipo: 'success', texto: 'Producto actualizado exitosamente' });
       
@@ -571,20 +673,75 @@ function FormularioEditarProductoPage() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="form-label fw-semibold">
-                    <i className="bi bi-card-text me-2 text-secondary"></i>
-                    Descripción *
-                  </label>
-                  <textarea
-                    className="form-control"
-                    name="descripcion"
-                    value={formData.descripcion}
-                    onChange={handleInputChange}
-                    required
-                    rows="4"
-                    placeholder="Describe el producto, sus características, materiales, etc."
-                    style={{resize: 'vertical'}}
-                  />
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <label className="form-label fw-semibold mb-0">
+                      <i className="bi bi-card-text me-2 text-secondary"></i>
+                      Descripción *
+                    </label>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => setModoRichText(!modoRichText)}
+                    >
+                      <i className={`bi bi-${modoRichText ? 'code-slash' : 'type-bold'} me-1`}></i>
+                      {modoRichText ? 'Modo Simple' : 'Editor Rico'}
+                    </button>
+                  </div>
+                  
+                  {modoRichText ? (
+                    <div className="border rounded p-2">
+                      <CKEditor
+                        key="ckeditor-edit"
+                        initData={formData.descripcion || '<p>Escribe la descripción del producto aquí...</p>'}
+                        editorUrl="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"
+                        onInstanceReady={(editor) => {
+                          console.log('CKEditor listo', editor);
+                        }}
+                        onChange={(evt) => {
+                          const data = evt.editor.getData();
+                          setFormData(prev => ({ ...prev, descripcion: data }));
+                        }}
+                        config={{
+                          toolbar: [
+                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                            { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                            { name: 'styles', items: ['Format'] },
+                            { name: 'insert', items: ['Image'] },
+                            { name: 'links', items: ['Link', 'Unlink'] },
+                            { name: 'tools', items: ['RemoveFormat'] }
+                          ],
+                          height: 300,
+                          format_tags: 'p;h2;h3',
+                          removePlugins: 'elementspath',
+                          resize_enabled: false,
+                          filebrowserImageBrowseUrl: '',
+                          filebrowserUploadUrl: '',
+                          extraPlugins: 'uploadimage,clipboard',
+                          uploadUrl: '',
+                          imageUploadUrl: '',
+                          pasteFromWordRemoveStyles: false,
+                          pasteFromWordRemoveFontStyles: false,
+                          forcePasteAsPlainText: false,
+                          allowedContent: true
+                        }}
+                      />
+                      <small className="text-muted d-block mt-2">
+                        <i className="bi bi-info-circle me-1"></i>
+                        Usa la barra de herramientas para dar formato al texto
+                      </small>
+                    </div>
+                  ) : (
+                    <textarea
+                      className="form-control"
+                      name="descripcion"
+                      value={formData.descripcion}
+                      onChange={handleInputChange}
+                      required
+                      rows="4"
+                      placeholder="Describe el producto, sus características, materiales, etc."
+                      style={{resize: 'vertical'}}
+                    />
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -696,13 +853,15 @@ function FormularioEditarProductoPage() {
                         <div key={index} className="row align-items-center mb-3">
                           <div className="col-md-4">
                             <label className="form-label small">Medida</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Ej: 30x40 cm"
+                            <select
+                              className="form-select"
                               value={medida.medida}
                               onChange={(e) => handleMedidaChange(index, 'medida', e.target.value)}
-                            />
+                            >
+                              {medidasPredefinidas.map(med => (
+                                <option key={med} value={med}>{med}</option>
+                              ))}
+                            </select>
                           </div>
                           <div className="col-md-4">
                             <label className="form-label small">Cantidad</label>
@@ -745,33 +904,45 @@ function FormularioEditarProductoPage() {
                 )}
 
                 <div className="mb-4">
-                  <label className="form-label">
-                    <i className="bi bi-image me-2"></i>
-                    Nueva Imagen del Producto
+                  <label className="form-label fw-semibold">
+                    <i className="bi bi-image me-2 text-info"></i>
+                    Imagen del Producto
                   </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={handleImagenChange}
-                    accept="image/*"
-                  />
-                  <div className="form-text">
-                    Si no seleccionas una nueva imagen, se mantendrá la imagen actual.
-                  </div>
                   
                   {/* Mostrar imagen actual */}
-                  {producto.imagen && (
-                    <div className="mt-2">
-                      <small className="text-muted">Imagen actual:</small>
-                      <br />
-                      <img 
-                        src={producto.imagen} 
-                        alt={producto.nombre}
-                        className="img-thumbnail mt-1"
-                        style={{maxWidth: '150px', maxHeight: '150px'}}
-                      />
+                  {(producto?.imagenUrl || formData.imagenUrl) && (
+                    <div className="mb-3">
+                      <label className="form-label small">Imagen actual:</label>
+                      <div className="border rounded p-2 bg-light">
+                        <img 
+                          src={formData.imagenUrl || producto?.imagenUrl} 
+                          alt={producto?.nombre}
+                          className="img-thumbnail"
+                          style={{maxWidth: '300px', maxHeight: '300px', objectFit: 'contain'}}
+                        />
+                      </div>
                     </div>
                   )}
+                  
+                  {/* Subir nueva imagen */}
+                  <div className="mb-3">
+                    <label className="form-label small">Cambiar imagen (desde tu computadora):</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={handleImagenChange}
+                      accept="image/*"
+                    />
+                    <div className="form-text">
+                      Formatos: JPG, PNG, GIF, WEBP (Máximo 5MB). Si no seleccionas nada, se mantiene la actual.
+                    </div>
+                    {imagenArchivo && (
+                      <div className="mt-2 small text-success">
+                        <i className="bi bi-check-circle me-1"></i>
+                        Nueva imagen seleccionada: {imagenArchivo.name}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="d-flex justify-content-between gap-3 pt-4 border-top">

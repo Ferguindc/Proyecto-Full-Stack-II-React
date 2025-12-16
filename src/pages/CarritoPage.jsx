@@ -50,10 +50,15 @@ function CarritoPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCustomerData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    console.log(`📝 Campo actualizado: ${name} = ${value}`);
+    setCustomerData(prev => {
+      const updated = {
+        ...prev,
+        [name]: value
+      };
+      console.log('📋 Datos de cliente actualizados:', updated);
+      return updated;
+    });
   };
 
   const validateForm = () => {
@@ -137,12 +142,23 @@ function CarritoPage() {
 
   const processWebpayPayment = async () => {
     try {
+      // Validar que los datos críticos existan
+      if (!customerData.nombre || !customerData.email || !customerData.telefono || !customerData.direccion || !customerData.comuna) {
+        alert('Error: Faltan datos de envío. Por favor completa todos los campos obligatorios.');
+        console.error('❌ Datos incompletos:', customerData);
+        return;
+      }
+      
       // Simular procesamiento de Webpay
       console.log('Procesando pago con Webpay...');
       
       // Generar número de orden
       const newOrderNumber = generateOrderNumber();
       setOrderNumber(newOrderNumber);
+      
+      console.log('📦 WEBPAY - Datos que se enviarán al pedido:', customerData);
+      console.log('📦 Dirección:', customerData.direccion);
+      console.log('📦 Comuna:', customerData.comuna);
       
       // Crear pedido con datos de envío y método de pago
       const pedidoCreado = await crearPedido(customerData, 'webpay');
@@ -192,9 +208,25 @@ function CarritoPage() {
 
   const processOrder = async () => {
     try {
+      // Validar que los datos críticos existan
+      if (!customerData.nombre || !customerData.email || !customerData.telefono || !customerData.direccion || !customerData.comuna) {
+        alert('Error: Faltan datos de envío. Por favor completa todos los campos obligatorios.');
+        console.error('❌ Datos incompletos:', customerData);
+        setStep(2); // Volver al formulario
+        return;
+      }
+      
       // Generar número de orden
       const newOrderNumber = generateOrderNumber();
       setOrderNumber(newOrderNumber);
+      
+      console.log('📦 TRANSFERENCIA - Datos que se enviarán al pedido:', customerData);
+      console.log('📦 Dirección:', customerData.direccion);
+      console.log('📦 Ciudad:', customerData.ciudad);
+      console.log('📦 Comuna:', customerData.comuna);
+      console.log('📦 Nombre:', customerData.nombre);
+      console.log('📦 Email:', customerData.email);
+      console.log('📦 Teléfono:', customerData.telefono);
       
       // Crear pedido usando el servicio de carrito con datos de envío y método de pago
       const pedidoCreado = await crearPedido(customerData, paymentMethod);
@@ -467,6 +499,20 @@ function CarritoPage() {
                   </div>
                 </form>
 
+                {/* Panel de Debug - Temporal */}
+                <div className="alert alert-info mt-3" style={{backgroundColor: '#e3f2fd', border: '1px solid #2196f3'}}>
+                  <h6 style={{color: '#1976d2'}}>🔍 Debug - Datos Capturados:</h6>
+                  <small style={{fontFamily: 'monospace', fontSize: '11px', display: 'block', color: '#333'}}>
+                    <strong>Nombre:</strong> {customerData.nombre || '❌ Vacío'}<br/>
+                    <strong>Email:</strong> {customerData.email || '❌ Vacío'}<br/>
+                    <strong>Teléfono:</strong> {customerData.telefono || '❌ Vacío'}<br/>
+                    <strong>Dirección:</strong> {customerData.direccion || '❌ Vacío'}<br/>
+                    <strong>Comuna:</strong> {customerData.comuna || '❌ Vacío'}<br/>
+                    <strong>Ciudad:</strong> {customerData.ciudad || '❌ Vacío'}<br/>
+                    <strong>Notas:</strong> {customerData.notas || 'Sin notas'}
+                  </small>
+                </div>
+
                 <h4 className="mt-4">Método de Pago</h4>
                 <div className="payment-methods">
                   <div className="form-check">
@@ -551,6 +597,7 @@ function CarritoPage() {
           <div className="row">
             <div className="col-lg-8">
               <div className="order-confirmation">
+                {console.log('📋 STEP 3 - Datos de cliente en confirmación:', customerData)}
                 <h3>Datos para Transferencia Bancaria</h3>
                 
                 <div className="alert alert-info">
